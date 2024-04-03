@@ -6,12 +6,13 @@
 /*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 04:29:03 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/03 16:44:27 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/04/03 17:52:43 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parser.h"
 #include "utilities.h"
+#include "minishell.h"
 
 char	*ft_append_char(char *str, int *len, char c)
 {

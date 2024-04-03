@@ -6,11 +6,12 @@
 /*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/29 00:22:57 by marvinleibe       #+#    #+#             */
-/*   Updated: 2024/04/01 22:35:04 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/04/03 17:53:26 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "free.h"
+#include "minishell.h"
 
 void	ft_free_env(char **env)
 {

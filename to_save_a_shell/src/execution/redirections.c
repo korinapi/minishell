@@ -6,12 +6,13 @@
 /*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 04:34:31 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/03 16:46:57 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/04/03 17:52:33 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "errors.h"
 #include "executor.h"
+#include "minishell.h"
 
 static char	*generate_tmp_file_name(void)
 {

@@ -6,10 +6,11 @@
 /*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 04:29:28 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/03 16:54:01 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/04/03 17:52:21 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "minishell.h"
 #include "builtins.h"
 #include "environment.h"
 #include "errors.h"

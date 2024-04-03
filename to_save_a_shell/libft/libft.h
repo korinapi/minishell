@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   libft.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvinleibenguth <marvinleibenguth@stud    +#+  +:+       +#+        */
+/*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/06 14:35:47 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/03/30 23:26:18 by marvinleibe      ###   ########.fr       */
+/*   Updated: 2024/04/03 20:21:44 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,5 +104,6 @@ int		ft_isoperator(char c);
 int 	ft_fprintf(int fd, const char *format, ...);
 char 	*ft_strjoin_free(char *new_var, char *value, int i);
 int		ft_snprintf(char *str, int size, const char *format, ...);
+int		ft_strtoi(const char *str, char **end);
 
 #endif

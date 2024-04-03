@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_snprintf.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvinleibenguth <marvinleibenguth@stud    +#+  +:+       +#+        */
+/*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/30 23:22:24 by marvinleibe       #+#    #+#             */
-/*   Updated: 2024/03/30 23:25:57 by marvinleibe      ###   ########.fr       */
+/*   Updated: 2024/04/03 19:02:01 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,74 +50,97 @@ void	custom_ft_itoa(int n, char *buf)
 	}
 }
 
-int ft_snprintf(char *str, int size, const char *format, ...) {
-    va_list args;
-    int len;
-    const char *fmt;
-    char *ptr;
-    char *str_val;
-    int int_val;
-    int num_len;
-    char char_val;
-    char buf[20];
+int	ft_snprintf(char *str, int size, const char *format, ...)
+{
+	va_list args;
+	int len;
+	const char *fmt;
+	char *ptr;
+	char *str_val;
+	int int_val;
+	int num_len;
+	char char_val;
+	char buf[20];
 
-    va_start(args, format);
-    len = 0;
-    ptr = str;
-    fmt = format;
+	va_start(args, format);
+	len = 0;
+	ptr = str;
+	fmt = format;
 
-    while (*fmt && (ptr - str) < size - 1) {
-        if (*fmt == '%') {
-            fmt++;
-            if (*fmt == 's') {
-                str_val = va_arg(args, char *);
-                num_len = strlen(str_val);
-                if (num_len < size - (ptr - str)) {
-                    ft_strcpy(ptr, str_val);
-                    ptr += num_len;
-                } else {
-                    ft_strncpy(ptr, str_val, size - (ptr - str) - 1);
-                    ptr += size - (ptr - str) - 1;
-                }
-                len += num_len;
-            } else if (*fmt == 'd') {
-                int_val = va_arg(args, int);
-                custom_ft_itoa(int_val, buf);
-                num_len = ft_strlen(buf);
-                if (num_len < size - (ptr - str)) {
-                    ft_strcpy(ptr, buf);
-                    ptr += num_len;
-                } else {
-                    ft_strncpy(ptr, buf, size - (ptr - str) - 1);
-                    ptr += size - (ptr - str) - 1;
-                }
-                len += num_len;
-            } else if (*fmt == 'c') {
-                char_val = (char)va_arg(args, int);
-                if ((ptr - str) < size - 1) {
-                    *ptr++ = char_val;
-                    len++;
-                } else {
-                    len = -1;
-                    break;
-                }
-            }
-            fmt++;
-        } else {
-            if ((ptr - str) < size - 1) {
-                *ptr++ = *fmt++;
-                len++;
-            } else {
-                len = -1;
-                break;
-            }
-        }
-    }
+	while (*fmt && (ptr - str) < size - 1)
+	{
+		if (*fmt == '%')
+		{
+			fmt++;
+			if (*fmt == 's')
+			{
+				str_val = va_arg(args, char *);
+				num_len = strlen(str_val);
+				if (num_len < size - (ptr - str))
+				{
+					ft_strcpy(ptr, str_val);
+					ptr += num_len;
+				}
+				else
+				{
+					ft_strncpy(ptr, str_val, size - (ptr - str) - 1);
+					ptr += size - (ptr - str) - 1;
+				}
+				len += num_len;
+			}
+			else if (*fmt == 'd')
+			{
+				int_val = va_arg(args, int);
+				custom_ft_itoa(int_val, buf);
+				num_len = ft_strlen(buf);
+				if (num_len < size - (ptr - str))
+				{
+					ft_strcpy(ptr, buf);
+					ptr += num_len;
+				}
+				else
+				{
+					ft_strncpy(ptr, buf, size - (ptr - str) - 1);
+					ptr += size - (ptr - str) - 1;
+				}
+				len += num_len;
+			}
+			else if (*fmt == 'c')
+			{
+				char_val = (char)va_arg(args, int);
+				if ((ptr - str) < size - 1)
+				{
+					*ptr++ = char_val;
+					len++;
+				}
+				else
+				{
+					len = -1;
+					break ;
+				}
+			}
+			fmt++;
+		}
+		else
+		{
+			if ((ptr - str) < size - 1)
+			{
+				*ptr++ = *fmt++;
+				len++;
+			}
+			else
+			{
+				len = -1;
+				break ;
+			}
+		}
+	}
 
-    if (size > 0) {
-        *ptr = '\0';
-    }
+	if (size > 0)
+	{
+		*ptr = '\0';
+	}
 
-    va_end(args);
-    return len >= 0 ? len : len + size;
+	va_end(args);
+	return (len >= 0 ? len : len + size);
 }

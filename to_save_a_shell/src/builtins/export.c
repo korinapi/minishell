@@ -6,15 +6,17 @@
 /*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/30 05:16:03 by marvinleibe       #+#    #+#             */
-/*   Updated: 2024/04/01 22:32:01 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/04/03 18:52:05 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "environment.h"
+#include "parser.h"
+#include "minishell.h"
 
 int	compare_strings(const char *a, const char *b)
 {
-	return (strcmp(a, b));
+	return (ft_strcmp(a, b));
 }
 
 void	swap_strings(char **a, char **b)

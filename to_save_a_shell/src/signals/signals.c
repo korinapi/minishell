@@ -6,13 +6,14 @@
 /*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 04:35:06 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/03 14:10:45 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/04/03 17:52:54 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #define _GNU_SOURCE
 #include "executor.h"
 #include "signals.h"
+#include "minishell.h"
 
 volatile sig_atomic_t	g_sigint_received = 0;
 

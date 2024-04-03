@@ -6,7 +6,7 @@
 /*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/01 19:59:37 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/02 04:51:06 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/04/03 17:25:03 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 # include "pipex.h"
 # include <curses.h>
 # include <dirent.h>
+# include <fcntl.h>
 # include <limits.h>
 # include <readline/history.h>
 # include <readline/readline.h>
@@ -23,7 +24,6 @@
 # include <sys/stat.h>
 # include <sys/wait.h>
 # include <termios.h>
-# include <fcntl.h>
 
 # define MAX_ARGS 262144
 # define DELIMITERS " \n\r\t\a"
@@ -39,7 +39,7 @@
 # define DIR "is a directory"
 # define NO_DIR "no directory"
 
-extern volatile sig_atomic_t    g_sigint_received;
-extern char **environ;
+extern volatile sig_atomic_t	g_sigint_received;
+extern char						**environ;
 
 #endif

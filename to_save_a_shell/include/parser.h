@@ -6,14 +6,12 @@
 /*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 04:26:02 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/02 04:55:46 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/04/03 17:49:07 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef PARSER_H
 # define PARSER_H
-
-# include "minishell.h"
 
 # define REDIR_OUT 1
 # define REDIR_OUT_APPEND 2
@@ -22,7 +20,6 @@
 
 typedef enum e_ast_type
 {
-	AST_COMMAND,
 	AST_PIPELINE,
 	AST_REDIRECTION,
 	AST_SIMPLE_COMMAND,

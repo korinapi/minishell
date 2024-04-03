@@ -6,11 +6,12 @@
 /*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/30 05:16:09 by marvinleibe       #+#    #+#             */
-/*   Updated: 2024/04/01 22:31:54 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/04/03 17:54:00 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "environment.h"
+#include "minishell.h"
 
 int	execute_env(void)
 {

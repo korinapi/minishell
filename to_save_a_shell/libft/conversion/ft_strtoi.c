@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_atoi.c                                          :+:      :+:    :+:   */
+/*   ft_strtoi.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/10/06 14:49:17 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/03 19:26:20 by mleibeng         ###   ########.fr       */
+/*   Created: 2024/04/03 19:04:21 by mleibeng          #+#    #+#             */
+/*   Updated: 2024/04/03 20:26:59 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,18 @@ int	ft_calc(char c)
 	return (number);
 }
 
-int	ft_atoi(const char *str)
+void	signcheck(const char *str, int *i, int *alarm)
+{
+	if (str[(*i)] == '+')
+		(*i)++;
+	else if (str[(*i)] == '-')
+	{
+		*alarm = -1;
+		(*i)++;
+	}
+}
+
+int	ft_strtoi(const char *str, char **end)
 {
 	int		i;
 	int		alarm;
@@ -43,20 +54,25 @@ int	ft_atoi(const char *str)
 	i = ft_whitespace_checker(str);
 	result = 0;
 	alarm = 1;
-	if (str[i] == '+')
-		i++;
-	else if (str[i] == '-')
-	{
-		alarm = -1;
-		i++;
-	}
-	while (str[i] != '\0')
+	signcheck(str, &i, &alarm);
+	while(str[i] != '\0')
 	{
 		if (str[i] >= '0' && str[i] <= '9')
 			result = result * 10 + ft_calc(str[i]);
-		else if (str[i] < '0' || str[i] > '9')
-			return (alarm * result);
+		else
+			break;
 		i++;
 	}
+	if (end)
+		*end = (char*) &str[i];
 	return (alarm * result);
 }
+
+// #include <stdio.h>
+
+// int	main(void)
+// {
+// 	char *end;
+// 	printf("%d, %c", ft_strtoi("2147483647", &end), *end);
+// 	return (0);
+// }
