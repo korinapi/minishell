@@ -6,7 +6,7 @@
 /*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 04:29:03 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/03 14:00:41 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/04/03 16:44:27 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -293,24 +293,18 @@ static void	parse_redirection(char *input, t_ast **ast)
 		if (input[1] == '<')
 		{
 			mode = REDIR_HEREDOC;
-			input += 2;
-			file = ft_get_word(&input);
-			node = create_ast_node(AST_REDIRECTION, NULL);
-			node->redirection_file = file;
-			node->redirection_mode = mode;
-			node->heredoc_delimiter = ft_strdup(file);
-			ast_append(*ast, node);
+			input++;
 		}
 		else
-		{
 			mode = REDIR_IN;
+		input++;
+		while(input && ft_isspace(*input))
 			input++;
-			file = ft_get_word(&input);
-			node = create_ast_node(AST_REDIRECTION, NULL);
-			node->redirection_file = file;
-			node->redirection_mode = mode;
-			ast_append(*ast, node);
-		}
+		file = ft_get_word(&input);
+		node = create_ast_node(AST_REDIRECTION, NULL);
+		node->redirection_file = file;
+		node->redirection_mode = mode;
+		ast_append(*ast, node);
 	}
 }
 

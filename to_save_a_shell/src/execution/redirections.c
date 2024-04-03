@@ -6,7 +6,7 @@
 /*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 04:34:31 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/03 14:04:37 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/04/03 16:46:57 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ void	execute_redirection(t_ast *node)
 	char	*tmp_file;
 
 	mode = node->redirection_mode;
-	printf("%s\n", node->heredoc_delimiter);
+	// printf("%s\n", node->heredoc_delimiter);
 	if (mode == REDIR_HEREDOC)
 	{
 		tmp_file = generate_tmp_file_name();

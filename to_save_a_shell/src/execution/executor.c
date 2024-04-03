@@ -6,7 +6,7 @@
 /*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 04:29:28 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/03 13:59:27 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/04/03 16:54:01 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -128,16 +128,16 @@ static void	execute_simple_command(t_ast *node, int *exit_status)
 		*exit_status = execute_external(node, exit_status);
 }
 
-//Since I fork both in execute_pipeline and in execute_external
-//The issue that arises is that I get too many child processes working independently
-//that feed their input into a new readline once the cycle is not finished.
-//My child process therefore become its own shell trying to build its own tree
-//and then execute that tree so the result becomes a command which definitely doesnt work.
-//Then the process finishes and my main process quits.
-//Solution: Either stop double forks (need to handle simple command seperately then
+// Since I fork both in execute_pipeline and in execute_external
+// The issue that arises is that I get too many child processes working independently
+// that feed their input into a new readline once the cycle is not finished.
+// My child process therefore become its own shell trying to build its own tree
+// and then execute that tree so the result becomes a command which definitely doesnt work.
+// Then the process finishes and my main process quits.
+// Solution: Either stop double forks (need to handle simple command seperately then
 //	because they at least need to fork in execute_external or my program quits).
-//Or modify execute_pipelines to not fork(difficult),
-//or create a function like execute external that doesnt fork(new selfwritten execute_external_pipe function)
+// Or modify execute_pipelines to not fork(difficult),
+// or create a function like execute external that doesnt fork(new selfwritten execute_external_pipe function)
 static void	execute_pipeline(t_ast *node, int *exit_status)
 {
 	pid_t	pid;
@@ -180,10 +180,17 @@ static void	execute_pipeline(t_ast *node, int *exit_status)
 
 int	execute_ast(t_ast *ast, int *exit_status)
 {
+	int saved_stdin, saved_stdout;
 	if (ast->type == AST_SIMPLE_COMMAND)
 	{
+		saved_stdin = dup(STDIN_FILENO);
+		saved_stdout = dup(STDOUT_FILENO);
 		handle_redirection(ast);
 		execute_simple_command(ast, exit_status);
+		dup2(saved_stdin, STDIN_FILENO);
+		dup2(saved_stdout, STDOUT_FILENO);
+		close(saved_stdin);
+		close(saved_stdout);
 		return (0);
 	}
 	else if (ast->type == AST_PIPELINE)
