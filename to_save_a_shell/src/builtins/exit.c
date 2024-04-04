@@ -6,7 +6,7 @@
 /*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 05:00:31 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/03 20:32:43 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/04/04 22:30:39 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ int	execute_exit(t_ast *ast, int *exit_status)
 	char	*end;
 	int		exit_value;
 
-	args = ast_to_arg(ast);
+	args = ast_to_arg(ast, exit_status);
 	if (!args[1])
 	{
 		printf("exit\n");

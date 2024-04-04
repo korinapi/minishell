@@ -6,7 +6,7 @@
 /*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 04:34:31 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/03 17:52:33 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/04/04 22:38:31 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@ static char	*generate_tmp_file_name(void)
 {
 	static const char	tmp_dir[] = "/tmp/minishell_";
 	char				*tmp_file;
+	int 				read_result;
 	int					fd;
 
 	tmp_file = malloc(sizeof(tmp_dir) + 12);
@@ -30,7 +31,8 @@ static char	*generate_tmp_file_name(void)
 		free(tmp_file);
 		return (NULL);
 	}
-	read(fd, tmp_file + ft_strlen(tmp_dir), 12);
+	read_result = read(fd, tmp_file + ft_strlen(tmp_dir), 12);
+	(void)read_result;
 	close(fd);
 	tmp_file[ft_strlen(tmp_file)] = '\0';
 	return (tmp_file);
@@ -45,7 +47,6 @@ void	execute_redirection(t_ast *node)
 	char	*tmp_file;
 
 	mode = node->redirection_mode;
-	// printf("%s\n", node->heredoc_delimiter);
 	if (mode == REDIR_HEREDOC)
 	{
 		tmp_file = generate_tmp_file_name();

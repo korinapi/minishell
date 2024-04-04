@@ -6,7 +6,7 @@
 /*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/01 19:59:44 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/03 20:35:35 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/04/04 22:01:42 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ int	main(int argc, char **argv)
 	{
 		g_sigint_received = 0;
 		input = get_input();
-		if (input == NULL)
+		if (!input)
 			break;
 		ast = parse_input(input);
 		if (ast)
@@ -47,8 +47,10 @@ int	main(int argc, char **argv)
 			execute_ast(ast, &exit_status);
 			free_ast(ast);
 		}
+		g_sigint_received = 0;
 	}
 	ft_free_env(environ);
+	rl_clear_history();
 	printf("exit\n");
 	return (exit_status);
 }

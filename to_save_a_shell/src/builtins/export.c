@@ -6,13 +6,14 @@
 /*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/30 05:16:03 by marvinleibe       #+#    #+#             */
-/*   Updated: 2024/04/03 18:52:05 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/04/04 22:36:52 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "environment.h"
-#include "parser.h"
 #include "minishell.h"
+#include "parser.h"
+#include "utilities.h"
 
 int	compare_strings(const char *a, const char *b)
 {
@@ -30,26 +31,42 @@ void	swap_strings(char **a, char **b)
 
 void	bubble_sort(int n)
 {
-	int i, j;
-	for (i = 0; i < n - 1; i++)
+	int	i;
+	int	j;
+
+	i = 0;
+	while (i < n - 1)
 	{
-		for (j = 0; j < n - i - 1; j++)
+		j = 0;
+		while (j < n - i - 1)
 		{
 			if (compare_strings(environ[j], environ[j + 1]) > 0)
-			{
 				swap_strings(&environ[j], &environ[j + 1]);
-			}
+			j++;
 		}
+		i++;
 	}
+}
+
+int	valid_check(t_ast *arg, char *var_name)
+{
+	if (!is_valid(var_name))
+	{
+		ft_putstr_fd("export: `", STDERR_FILENO);
+		ft_putstr_fd(arg->data, STDERR_FILENO);
+		ft_putendl_fd("': not a valid identifier", STDERR_FILENO);
+		return (1);
+	}
+	return (0);
 }
 
 int	execute_export(t_ast *args)
 {
-	t_ast *arg;
-	char *value;
-	char *var_name;
-	int i;
-	int env_count;
+	t_ast	*arg;
+	char	*value;
+	char	*var_name;
+	int		i;
+	int		env_count;
 
 	i = 0;
 	arg = NULL;
@@ -64,14 +81,14 @@ int	execute_export(t_ast *args)
 		while (environ[env_count])
 			env_count++;
 		bubble_sort(env_count);
-		for (i = 0; i < env_count; i++)
+		while (i < env_count)
 		{
 			ft_putstr_fd("declare -x ", STDOUT_FILENO);
 			ft_putendl_fd(environ[i], STDOUT_FILENO);
+			i++;
 		}
 		return (0);
 	}
-
 	while (arg)
 	{
 		if (arg->type == AST_WORD)
@@ -82,16 +99,19 @@ int	execute_export(t_ast *args)
 				*value = '\0';
 				value++;
 				var_name = arg->data;
+				if(valid_check(arg, var_name))
+					return (1);
 				ft_setenv(var_name, value, 1);
 			}
 			else
 			{
 				var_name = arg->data;
+				if(valid_check(arg, var_name))
+					return (1);
 				ft_setenv(var_name, "", 0);
 			}
 		}
 		arg = arg->right;
 	}
-
 	return (0);
 }

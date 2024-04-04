@@ -6,7 +6,7 @@
 /*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 05:16:28 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/01 22:31:54 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/04/04 22:11:17 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,8 +22,10 @@ int	is_only_or_last(t_ast *arg)
 
 int	is_option(t_ast *arg)
 {
-	if (arg->type == AST_WORD && arg->data[0] == '-')
-		return (1);
+	if ((arg->type == AST_WORD || arg->type == AST_SINGLEQUOTED_WORD
+			|| arg->type == AST_DOUBLEQUOTED_WORD) && arg->data[0] == '-'
+		&& arg->data[1] && ft_isalpha(arg->data[1]))
+			return (1);
 	return (0);
 }
 
@@ -78,16 +80,12 @@ int	execute_echo(t_ast *args, int *exit_status)
 		}
 		else if (arg->type == AST_SPECIAL_PARAM)
 			ft_putstr_fd(exit_stat, STDOUT_FILENO);
-
 		if (arg->right && !is_only_or_last(arg) && arg->type == AST_WHITESPACE)
 			ft_putstr_fd(arg->data, STDOUT_FILENO);
-
 		arg = arg->right;
 	}
-
 	if (print_newline)
 		ft_putendl_fd("", STDOUT_FILENO);
-
 	free(exit_stat);
 	return (0);
 }

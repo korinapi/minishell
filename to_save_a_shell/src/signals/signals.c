@@ -6,7 +6,7 @@
 /*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 04:35:06 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/03 17:52:54 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/04/04 18:09:29 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,9 +30,6 @@ void	signal_handler(int signo)
 		rl_point = 0;
 		g_sigint_received = 1;
 	}
-	else if (signo == SIGQUIT)
-	{
-	}
 	(void)return_value;
 }
 
@@ -45,5 +42,5 @@ void	setup_signals(void)
 	sa.sa_flags = SA_RESTART;
 
 	sigaction(SIGINT, &sa, NULL);
-	sigaction(SIGQUIT, &sa, NULL);
+	signal(SIGQUIT, SIG_IGN);
 }

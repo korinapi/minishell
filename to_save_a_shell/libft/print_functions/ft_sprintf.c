@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_sprintf.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
+/*   By: marvinleibenguth <marvinleibenguth@stud    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/19 01:33:50 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/03 19:02:07 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/04/03 22:16:08 by marvinleibe      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,15 +74,15 @@ int	ft_sprintf(char *str, const char *format, ...)
 			if (*fmt == 's')
 			{
 				str_val = va_arg(args, char *);
-				len += strlen(str_val);
+				len += ft_strlen(str_val);
 				ft_strcpy(ptr, str_val);
-				ptr += strlen(str_val);
+				ptr += ft_strlen(str_val);
 			}
 			else if (*fmt == 'd')
 			{
 				int_val = va_arg(args, int);
 				custom_ft_itoa(int_val, buf);
-				num_len = strlen(buf);
+				num_len = ft_strlen(buf);
 				len += num_len;
 				ft_strcpy(ptr, buf);
 				ptr += num_len;

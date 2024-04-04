@@ -6,7 +6,7 @@
 /*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/30 05:30:21 by marvinleibe       #+#    #+#             */
-/*   Updated: 2024/04/01 22:31:55 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/04/04 20:45:22 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,8 @@ int	execute_cd(t_ast *args)
 		if (arg->type == AST_VARIABLE)
 		{
 			var_name = (arg->data + 1);
+			if(!ft_strcmp(var_name, "PWD"))
+				return (0);
 			path = getenv(var_name);
 		}
 		else
@@ -61,7 +63,7 @@ int	execute_cd(t_ast *args)
 	}
 	if (chdir(path) != 0)
 	{
-		ft_putendl_fd("errno", STDERR_FILENO);
+		ft_putendl_fd(" No such file or directory", STDERR_FILENO);
 		return (1);
 	}
 	ft_setenv("OLDPWD", getenv("PWD"), 1);

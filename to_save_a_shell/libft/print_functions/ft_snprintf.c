@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_snprintf.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
+/*   By: marvinleibenguth <marvinleibenguth@stud    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/30 23:22:24 by marvinleibe       #+#    #+#             */
-/*   Updated: 2024/04/03 19:02:01 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/04/03 22:16:11 by marvinleibe      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,7 +75,7 @@ int	ft_snprintf(char *str, int size, const char *format, ...)
 			if (*fmt == 's')
 			{
 				str_val = va_arg(args, char *);
-				num_len = strlen(str_val);
+				num_len = ft_strlen(str_val);
 				if (num_len < size - (ptr - str))
 				{
 					ft_strcpy(ptr, str_val);

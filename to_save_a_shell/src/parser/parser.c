@@ -6,13 +6,13 @@
 /*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 04:29:03 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/03 17:52:43 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/04/04 22:15:13 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "minishell.h"
 #include "parser.h"
 #include "utilities.h"
-#include "minishell.h"
 
 char	*ft_append_char(char *str, int *len, char c)
 {
@@ -102,11 +102,17 @@ static char	*handle_variable_expansion(char *word)
 	word_len = 0;
 	while (*word)
 	{
-		if (*word == '$' && *(word + 1) != '?')
+		if (*word == '$' && *(word + 1) != '?' && !ft_isspace(*(word + 1)))
 		{
 			var_end = word + 1;
 			while (*var_end && ft_isalnum(*var_end))
 				var_end++;
+			if (var_end == word + 1)
+			{
+				new_word = ft_append_char(new_word, &word_len, *word);
+				word++;
+				continue ;
+			}
 			var_name = ft_substr(word + 1, 0, var_end - word - 1);
 			var_value = getenv(var_name);
 			free(var_name);
@@ -161,25 +167,40 @@ static char	*parse_quotes(char **input, char quote_char)
 	int		word_len;
 	char	nested_quote;
 	char	*nested_word;
+	int		in_quote;
 
 	word = NULL;
 	word_len = 0;
+	in_quote = 0;
 	(*input)++;
-	while (**input && **input != quote_char)
+	while (**input)
 	{
-		if (**input == '\'' || **input == '"')
+		if (**input == quote_char)
 		{
-			nested_quote = **input;
-			nested_word = parse_quotes(input, nested_quote);
-			word = ft_append_str(word, &word_len, nested_word);
-			free(nested_word);
+			in_quote = !in_quote;
+			(*input)++;
+		}
+		else if (in_quote)
+		{
+			if (**input == '\'' || **input == '"')
+			{
+				nested_quote = **input;
+				nested_word = parse_quotes(input, nested_quote);
+				word = ft_append_str(word, &word_len, nested_word);
+				free(nested_word);
+			}
+			else
+			{
+				word = ft_append_char(word, &word_len, **input);
+				(*input)++;
+			}
 		}
 		else
+		{
 			word = ft_append_char(word, &word_len, **input);
-		(*input)++;
+			(*input)++;
+		}
 	}
-	if (**input == quote_char)
-		(*input)++;
 	word = ft_append_char(word, &word_len, '\0');
 	return (word);
 }
@@ -213,9 +234,13 @@ static void	parse_simple_command(char **input, t_ast **ast)
 	char	*word;
 	t_ast	*node;
 	t_ast	*parent;
+	t_ast	*prev;
+	int		data_len;
 
 	parent = create_ast_node(AST_SIMPLE_COMMAND, NULL);
 	*ast = parent;
+	prev = NULL;
+	data_len = 0;
 	while (**input)
 	{
 		while (**input && ft_isspace(**input))
@@ -232,15 +257,41 @@ static void	parse_simple_command(char **input, t_ast **ast)
 		if (**input == '\'')
 		{
 			word = parse_quotes(input, '\'');
-			node = create_ast_node(AST_SINGLEQUOTED_WORD, word);
-			ast_append(parent, node);
+			if (prev && (prev->type == AST_SINGLEQUOTED_WORD
+					|| prev->type == AST_WORD) && !prev->right)
+			{
+				data_len = ft_strlen(prev->data);
+				prev->data = ft_append_str(prev->data,
+						&data_len, word);
+				prev->type = AST_SINGLEQUOTED_WORD;
+				free(word);
+			}
+			else
+			{
+				node = create_ast_node(AST_SINGLEQUOTED_WORD, word);
+				ast_append(parent, node);
+				prev = node;
+			}
 		}
 		else if (**input == '"')
 		{
 			word = parse_quotes(input, '"');
 			word = handle_variable_expansion(word);
-			node = create_ast_node(AST_DOUBLEQUOTED_WORD, word);
-			ast_append(parent, node);
+			if (prev && (prev->type == AST_DOUBLEQUOTED_WORD
+					|| prev->type == AST_WORD) && !prev->right)
+			{
+				data_len = ft_strlen(prev->data);
+				prev->data = ft_append_str(prev->data,
+						&data_len, word);
+				prev->type = AST_DOUBLEQUOTED_WORD;
+				free(word);
+			}
+			else
+			{
+				node = create_ast_node(AST_DOUBLEQUOTED_WORD, word);
+				ast_append(parent, node);
+				prev = node;
+			}
 		}
 		else if (**input == '$')
 		{
@@ -252,15 +303,38 @@ static void	parse_simple_command(char **input, t_ast **ast)
 				(*input) += 2;
 				continue ;
 			}
+			else if ((*(*input + 1) && ft_isspace(*(*input + 1))) || !*(*input
+					+ 1))
+			{
+				word = ft_strdup("$");
+				node = create_ast_node(AST_WORD, word);
+				ast_append(parent, node);
+				(*input)++;
+				continue ;
+			}
 			word = ft_get_variable(input);
 			node = create_ast_node(AST_VARIABLE, word);
 			ast_append(parent, node);
+			prev = node;
 		}
 		else
 		{
 			word = ft_get_word(input);
-			node = create_ast_node(AST_WORD, word);
-			ast_append(parent, node);
+			if (prev && (prev->type == AST_WORD
+					|| prev->type == AST_DOUBLEQUOTED_WORD
+					|| prev->type == AST_SINGLEQUOTED_WORD) && !prev->right)
+			{
+				printf("1\n");
+				data_len = ft_strlen(prev->data);
+				prev->data = ft_append_str(prev->data, &data_len, word);
+				free(word);
+			}
+			else
+			{
+				node = create_ast_node(AST_WORD, word);
+				ast_append(parent, node);
+				prev = node;
+			}
 		}
 	}
 }
@@ -273,7 +347,7 @@ static void	parse_redirection(char *input, t_ast **ast)
 
 	if (*input == '>')
 	{
-		if(input[1] == '>')
+		if (input[1] == '>')
 		{
 			mode = REDIR_OUT_APPEND;
 			input++;
@@ -299,7 +373,7 @@ static void	parse_redirection(char *input, t_ast **ast)
 		else
 			mode = REDIR_IN;
 		input++;
-		while(input && ft_isspace(*input))
+		while (input && ft_isspace(*input))
 			input++;
 		file = ft_get_word(&input);
 		node = create_ast_node(AST_REDIRECTION, NULL);

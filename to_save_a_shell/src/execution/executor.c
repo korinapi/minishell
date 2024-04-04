@@ -6,7 +6,7 @@
 /*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 04:29:28 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/03 17:52:21 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/04/04 22:38:22 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -143,16 +143,12 @@ static void	execute_pipeline(t_ast *node, int *exit_status)
 {
 	pid_t	pid;
 	int		pipe_fds[2];
-	int		saved_stdin;
-	int		saved_stdout;
 	int		status;
 
 	if (node->left)
 	{
 		if (pipe(pipe_fds) == -1)
 			ft_error("minishell", "pipe", strerror(errno));
-		saved_stdin = dup(STDIN_FILENO);
-		saved_stdout = dup(STDOUT_FILENO);
 		handle_redirection(node);
 		pid = fork();
 		if (pid == 0)
@@ -181,7 +177,8 @@ static void	execute_pipeline(t_ast *node, int *exit_status)
 
 int	execute_ast(t_ast *ast, int *exit_status)
 {
-	int saved_stdin, saved_stdout;
+	int saved_stdin;
+	int saved_stdout;
 	if (ast->type == AST_SIMPLE_COMMAND)
 	{
 		saved_stdin = dup(STDIN_FILENO);
