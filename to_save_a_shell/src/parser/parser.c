@@ -6,7 +6,7 @@
 /*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 04:29:03 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/04 23:06:42 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/04/05 00:28:06 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -409,7 +409,7 @@ static void	parse_pipeline(char **input, t_ast **ast)
 		if (**input == '|')
 		{
 			(*input)++;
-			node->right = create_ast_node(AST_SIMPLE_COMMAND, NULL);
+			node->right = create_ast_node(AST_PIPELINE, NULL);
 			node = node->right;
 		}
 		else if (**input == '>' || **input == '<')

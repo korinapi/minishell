@@ -1,6 +1,6 @@
 NAME		:= minishell
 CC			:= gcc -std=gnu99
-CFLAGS		:= -Wall -Wextra -Werror -g -O3
+CFLAGS		:= -Wall -Wextra -Werror -g
 LIBFT_DIR	:= libft
 #PIPEX_DIR	:= pipex
 LIBFT		:= $(LIBFT_DIR)/libft.a

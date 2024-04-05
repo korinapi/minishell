@@ -6,7 +6,7 @@
 /*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/29 09:43:41 by cpuiu             #+#    #+#             */
-/*   Updated: 2024/04/03 17:25:09 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/04/05 02:31:37 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,7 +77,7 @@ void		parent_free(t_pipex_bonus *pipex);
 void		child_free(t_pipex_bonus *pipex);
 void		pipe_free(t_pipex_bonus *pipex);
 void		here_doc(char *argv, t_pipex_bonus *pipex);
-void		close_pipes(t_pipex_bonus *pipex);
+// void		close_pipes(t_pipex_bonus *pipex);
 void		child(t_pipex_bonus pipex, char **argv, char **envp);
 
 #endif

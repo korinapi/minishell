@@ -6,16 +6,16 @@
 /*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 04:29:28 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/04 22:38:22 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/04/05 02:36:14 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
 #include "builtins.h"
 #include "environment.h"
 #include "errors.h"
 #include "executor.h"
 #include "free.h"
+#include "minishell.h"
 #include "redirection.h"
 #include "utilities.h"
 
@@ -139,37 +139,91 @@ static void	execute_simple_command(t_ast *node, int *exit_status)
 //	because they at least need to fork in execute_external or my program quits).
 // Or modify execute_pipelines to not fork(difficult),
 // or create a function like execute external that doesnt fork(new selfwritten execute_external_pipe function)
-static void	execute_pipeline(t_ast *node, int *exit_status)
-{
-	pid_t	pid;
-	int		pipe_fds[2];
-	int		status;
 
-	if (node->left)
+void	close_pipes(int *pipe_fds, int num_pipes)
+{
+	int i;
+
+	i = 0;
+	while (i < 2 * num_pipes)
 	{
-		if (pipe(pipe_fds) == -1)
-			ft_error("minishell", "pipe", strerror(errno));
-		handle_redirection(node);
-		pid = fork();
-		if (pid == 0)
+		close(pipe_fds[i]);
+		i++;
+	}
+}
+
+void	execute_pipeline(t_ast *node, int *exit_status)
+{
+	int		num_pipes;
+	t_ast	*curr;
+	int		*pipe_fds;
+	int		pid;
+	int		status;
+	int		i;
+
+	if (node->type == AST_PIPELINE)
+	{
+		num_pipes = 0;
+		curr = node;
+		while (curr->right && curr->type == AST_PIPELINE)
 		{
-			close(pipe_fds[0]);
-			dup2(pipe_fds[1], STDOUT_FILENO);
-			close(pipe_fds[1]);
-			execute_ast(node->left, exit_status);
-			exit(*exit_status);
+			num_pipes++;
+			curr = curr->right;
 		}
-		else if (pid != 0)
+		pipe_fds = malloc(2 * num_pipes * sizeof(int));
+		if (pipe_fds == NULL)
 		{
-			close(pipe_fds[1]);
-			dup2(pipe_fds[0], STDIN_FILENO);
-			close(pipe_fds[0]);
+			perror("malloc");
+			exit(EXIT_FAILURE);
+		}
+		i = 0;
+		while (i < num_pipes)
+		{
+			if (pipe(pipe_fds + 2 * i) == -1)
+			{
+				perror("pipe");
+				exit(EXIT_FAILURE);
+			}
+			i++;
+		}
+		curr = node;
+		pid = 0;
+		i = 0;
+		while (i <= num_pipes)
+		{
+			pid = fork();
+			if (pid == -1)
+			{
+				perror("fork");
+				exit(EXIT_FAILURE);
+			}
+			else if (pid == 0)
+			{
+				if (i > 0)
+				{
+					dup2(pipe_fds[2 * (i - 1)], STDIN_FILENO);
+					close(pipe_fds[2 * (i - 1)]);
+				}
+				if (i < num_pipes)
+				{
+					dup2(pipe_fds[2 * i + 1], STDOUT_FILENO);
+					close(pipe_fds[2 * i + 1]);
+				}
+				close_pipes(pipe_fds, num_pipes);
+				execute_simple_command(curr->left, exit_status);
+				exit(EXIT_SUCCESS);
+			}
+			curr = curr->right;
+			i++;
+		}
+		close_pipes(pipe_fds, num_pipes);
+		i = 0;
+		while (i <= num_pipes)
+		{
 			waitpid(pid, &status, 0);
-			if (WIFEXITED(status))
-				*exit_status = WEXITSTATUS(status);
-			if (node->right)
-				execute_pipeline(node->right, exit_status);
+			i++;
 		}
+		free(pipe_fds);
 	}
 	else
 		execute_simple_command(node, exit_status);
@@ -177,8 +231,9 @@ static void	execute_pipeline(t_ast *node, int *exit_status)
 
 int	execute_ast(t_ast *ast, int *exit_status)
 {
-	int saved_stdin;
-	int saved_stdout;
+	int	saved_stdin;
+	int	saved_stdout;
+
 	if (ast->type == AST_SIMPLE_COMMAND)
 	{
 		saved_stdin = dup(STDIN_FILENO);
