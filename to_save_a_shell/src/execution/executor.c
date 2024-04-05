@@ -6,7 +6,7 @@
 /*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 04:29:28 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/05 02:36:14 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/04/05 02:48:27 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -129,17 +129,6 @@ static void	execute_simple_command(t_ast *node, int *exit_status)
 		*exit_status = execute_external(node, exit_status);
 }
 
-// Since I fork both in execute_pipeline and in execute_external
-// The issue that arises is that I get too many child processes working independently
-// that feed their input into a new readline once the cycle is not finished.
-// My child process therefore become its own shell trying to build its own tree
-// and then execute that tree so the result becomes a command which definitely doesnt work.
-// Then the process finishes and my main process quits.
-// Solution: Either stop double forks (need to handle simple command seperately then
-//	because they at least need to fork in execute_external or my program quits).
-// Or modify execute_pipelines to not fork(difficult),
-// or create a function like execute external that doesnt fork(new selfwritten execute_external_pipe function)
-
 void	close_pipes(int *pipe_fds, int num_pipes)
 {
 	int i;
@@ -210,6 +199,7 @@ void	execute_pipeline(t_ast *node, int *exit_status)
 					close(pipe_fds[2 * i + 1]);
 				}
 				close_pipes(pipe_fds, num_pipes);
+				handle_redirection(curr->left);
 				execute_simple_command(curr->left, exit_status);
 				exit(EXIT_SUCCESS);
 			}
@@ -221,12 +211,17 @@ void	execute_pipeline(t_ast *node, int *exit_status)
 		while (i <= num_pipes)
 		{
 			waitpid(pid, &status, 0);
+			if(WIFEXITED(status))
+				*exit_status = WEXITSTATUS(status);
 			i++;
 		}
 		free(pipe_fds);
 	}
 	else
+	{
+		handle_redirection(node);
 		execute_simple_command(node, exit_status);
+	}
 }
 
 int	execute_ast(t_ast *ast, int *exit_status)
