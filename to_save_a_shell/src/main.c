@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cpuiu <cpuiu@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/01 19:59:44 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/05 02:14:01 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/04/05 10:52:12 by cpuiu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ int	main(int argc, char **argv)
 		ast = parse_input(input);
 		if (ast)
 		{
-			// print_ast(ast, 0, "Root");
+		//	print_ast(ast, 0, "Root");
 			execute_ast(ast, &exit_status);
 			free_ast(ast);
 		}

@@ -12,7 +12,8 @@ SRCS		:= src/main.c src/builtins/echo.c src/builtins/exit.c src/environment/envi
 src/execution/exec_built.c src/execution/executor.c src/execution/redirections.c src/input/lex.c \
 src/parser/parser.c src/signals/signals.c src/errors/errors.c src/utils/print_checks.c src/free/free.c \
 src/builtins/unset.c src/builtins/export.c src/builtins/env.c src/builtins/cd.c src/builtins/pwd.c \
-src/utils/utilities.c
+src/utils/utilities.c src/builtins/builtins_utils.c src/environment/environment_utils.c src/execution/exec_pipe.c \
+src/execution/exec_utils.c
 
 OBJS		:= $(SRCS:.c=.o)
 
@@ -22,7 +23,7 @@ COLOR_GREEN			=	\033[32m
 COLOR_RED			=	\033[31m
 
 all: $(LIBFT) $(NAME)
-#$(PIPEX)
+
 $(PIPEX):
 	@$(MAKE) -C $(PIPEX_DIR)
 

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   env.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cpuiu <cpuiu@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/30 05:16:09 by marvinleibe       #+#    #+#             */
-/*   Updated: 2024/04/03 17:54:00 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/04/05 14:09:53 by cpuiu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,8 @@
 
 int	execute_env(void)
 {
-	int i;
+	int	i;
+
 	i = 0;
 	while (environ[i])
 	{

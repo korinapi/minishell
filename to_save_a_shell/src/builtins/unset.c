@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   unset.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cpuiu <cpuiu@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/30 05:15:55 by marvinleibe       #+#    #+#             */
-/*   Updated: 2024/04/03 17:53:34 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/04/05 14:10:15 by cpuiu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,8 @@
 
 int	execute_unset(t_ast *args)
 {
-	t_ast *arg;
-	char *var_name;
+	t_ast	*arg;
+	char	*var_name;
 
 	if (args->right && args->right->type == AST_WHITESPACE)
 		arg = args->right->right;
