@@ -13,7 +13,8 @@ src/execution/exec_built.c src/execution/executor.c src/execution/redirections.c
 src/parser/parser.c src/signals/signals.c src/errors/errors.c src/utils/print_checks.c src/free/free.c \
 src/builtins/unset.c src/builtins/export.c src/builtins/env.c src/builtins/cd.c src/builtins/pwd.c \
 src/utils/utilities.c src/builtins/builtins_utils.c src/environment/environment_utils.c src/execution/exec_pipe.c \
-src/execution/exec_utils.c
+src/execution/exec_utils.c src/parser/parser_utils_1.c src/parser/parser_utils_2.c src/parser/parser_utils_3.c \
+src/parser/parser_simple_command.c src/parser/parser_redirection.c src/parser/parser_pipeline.c 
 
 OBJS		:= $(SRCS:.c=.o)
 
