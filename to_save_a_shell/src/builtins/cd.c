@@ -6,7 +6,7 @@
 /*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/30 05:30:21 by marvinleibe       #+#    #+#             */
-/*   Updated: 2024/04/07 22:01:32 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/04/07 22:50:34 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,16 +55,15 @@ int	handle_var(t_ast *arg, char **path)
 			var_name = (arg->data + 1);
 			if (!ft_strcmp(var_name, "PWD"))
 			{
-				if(!*path)
+				if (!*path)
 					*path = getenv("PWD");
 				return (0);
 			}
-			if(!*path)
+			if (!*path)
 				*path = getenv(var_name);
 		}
-		else
-			if(!*path)
-				*path = arg->data;
+		else if (!*path)
+			*path = arg->data;
 		return (0);
 	}
 	return (1);
@@ -89,11 +88,9 @@ int	execute_cd(t_ast *args)
 {
 	t_ast	*arg;
 	char	*path;
-	char	*var_name;
 	char	cwd[PATH_MAX];
 
 	path = NULL;
-	var_name = NULL;
 	if (args->right && args->right->type == AST_WHITESPACE)
 		arg = args->right->right;
 	else

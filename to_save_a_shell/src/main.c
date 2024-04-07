@@ -6,7 +6,7 @@
 /*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/01 19:59:44 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/07 10:15:06 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/04/07 23:51:53 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,6 @@ int	main(int argc, char **argv)
 			execute_ast(ast, &exit_status);
 			free_ast(ast);
 		}
-		g_sigint_received = 0;
 	}
 	close_main();
 	return (exit_status);

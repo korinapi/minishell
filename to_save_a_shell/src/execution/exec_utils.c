@@ -6,7 +6,7 @@
 /*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/05 19:42:46 by cpuiu             #+#    #+#             */
-/*   Updated: 2024/04/07 11:12:11 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/04/07 23:37:27 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,6 +61,7 @@ void	execute_command_from_path(char **args)
 		exit(127);
 	}
 	execve(command_path, args, NULL);
+	free(command_path);
 	ft_fprintf(STDERR_FILENO, "execve failed: %s\n", strerror(errno));
 	exit(1);
 }

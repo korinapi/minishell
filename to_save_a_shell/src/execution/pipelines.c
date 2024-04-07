@@ -6,7 +6,7 @@
 /*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/07 05:09:17 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/07 11:46:31 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/04/07 22:14:35 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,22 +19,21 @@
 #include "redirection.h"
 #include "utilities.h"
 
-void	execute_command_in_child(int i, int num_pipes, int *pipe_fds,
-		t_ast *curr, int *exit_status)
+void	execute_command_in_child(int i, int num_pipes, t_pipehelper p_help, int *exit_status)
 {
 	if (i > 0)
 	{
-		dup2(pipe_fds[2 * (i - 1)], STDIN_FILENO);
-		close(pipe_fds[2 * (i - 1)]);
+		dup2(p_help.pipe_fds[2 * (i - 1)], STDIN_FILENO);
+		close(p_help.pipe_fds[2 * (i - 1)]);
 	}
 	if (i < num_pipes)
 	{
-		dup2(pipe_fds[2 * i + 1], STDOUT_FILENO);
-		close(pipe_fds[2 * i + 1]);
+		dup2(p_help.pipe_fds[2 * i + 1], STDOUT_FILENO);
+		close(p_help.pipe_fds[2 * i + 1]);
 	}
-	close_pipes(pipe_fds, num_pipes);
-	handle_redirection(curr->left);
-	execute_simple_command(curr->left, exit_status);
+	close_pipes(p_help.pipe_fds, num_pipes);
+	handle_redirection(p_help.curr->left);
+	execute_simple_command(p_help.curr->left, exit_status);
 	exit(EXIT_SUCCESS);
 }
 
@@ -43,10 +42,11 @@ void	fork_and_execute_commands_in_pipeline(t_ast *node, int num_pipes,
 {
 	int		i;
 	pid_t	pid;
-	t_ast	*curr;
+	t_pipehelper p_helper;
 
 	i = 0;
-	curr = node;
+	p_helper.curr = node;
+	p_helper.pipe_fds = pipe_fds;
 	while (i <= num_pipes)
 	{
 		pid = fork();
@@ -56,8 +56,8 @@ void	fork_and_execute_commands_in_pipeline(t_ast *node, int num_pipes,
 			exit(EXIT_FAILURE);
 		}
 		else if (pid == 0)
-			execute_command_in_child(i, num_pipes, pipe_fds, curr, exit_status);
-		curr = curr->right;
+			execute_command_in_child(i, num_pipes, p_helper, exit_status);
+		p_helper.curr = p_helper.curr->right;
 		i++;
 	}
 }

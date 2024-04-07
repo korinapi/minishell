@@ -6,7 +6,7 @@
 /*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/30 05:16:03 by marvinleibe       #+#    #+#             */
-/*   Updated: 2024/04/07 08:44:58 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/04/07 22:50:13 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,12 +46,10 @@ int	process_export_arg(t_ast *arg)
 
 t_ast	*find_arg_or_print_env(t_ast *args)
 {
-	t_ast	*arg;
 	int		env_count;
 	int		i;
 
 	i = 0;
-	arg = NULL;
 	if (args->right && args->right->type == AST_WHITESPACE
 		&& args->right->right)
 		return (args->right->right);

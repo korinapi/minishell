@@ -6,7 +6,7 @@
 /*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/07 08:49:41 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/07 10:33:03 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/04/08 00:15:57 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,15 +37,16 @@ char	**ft_realloc_env(char **environ, char *new_var)
 	new_env = malloc(sizeof(char *) * (size + 2));
 	if (!new_env)
 		return (NULL);
-	i = 0;
-	while (environ[i])
+	i = -1;
+	while (environ[++i])
 	{
 		new_env[i] = malloc(ft_strlen(environ[i]) + 1);
 		if (!new_env[i])
 			return (ft_free_env_split(new_env, i), NULL);
 		ft_strcpy(new_env[i], environ[i]);
-		i++;
+		free(environ[i]);
 	}
+	free(environ);
 	new_env[i] = malloc(ft_strlen(new_var) + 1);
 	if (!new_env[i])
 		return (ft_free_env_split(new_env, i), NULL);
@@ -85,6 +86,7 @@ int	ft_setenv(const char *name, const char *value, int overwrite)
 	char	*env_str;
 	int		len;
 	char	*existing;
+	int		status;
 
 	existing = getenv(name);
 	if (existing && !overwrite)
@@ -94,7 +96,9 @@ int	ft_setenv(const char *name, const char *value, int overwrite)
 	if (!env_str)
 		return (-1);
 	ft_snprintf(env_str, len, "%s=%s", name, value);
-	return (ft_putenv(env_str));
+	status = ft_putenv(env_str);
+	free(env_str);
+	return (status);
 }
 
 int	unset_env_var(char *var)

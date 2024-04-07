@@ -6,7 +6,7 @@
 /*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 04:29:03 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/07 10:37:57 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/04/07 23:16:40 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,7 @@ t_ast	*parse_input(char *input)
 	if (is_input_empty(input))
 	{
 		free(input);
+		input = NULL;
 		return (NULL);
 	}
 	ast = NULL;
@@ -65,12 +66,10 @@ void	parse_simple_command(char **input, t_ast **ast)
 {
 	t_ast	*parent;
 	t_ast	*prev;
-	int		data_len;
 
 	parent = create_ast_node(AST_SIMPLE_COMMAND, NULL);
 	*ast = parent;
 	prev = NULL;
-	data_len = 0;
 	while (**input)
 	{
 		parse_command_segment(input, &parent, &prev);

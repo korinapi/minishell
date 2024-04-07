@@ -6,7 +6,7 @@
 /*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 04:29:28 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/07 11:09:28 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/04/07 23:40:33 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,10 +19,6 @@
 #include "redirection.h"
 #include "utilities.h"
 
-// ft_free_split would be necessary
-// here if I didnt already free the ast elements later on...
-// Since i do not strdup the data in the nodes,
-// I dont need to free.
 int	execute_external(t_ast *ast, int *exit_status)
 {
 	pid_t	pid;
@@ -47,6 +43,7 @@ int	execute_external(t_ast *ast, int *exit_status)
 		execute_command_from_path(args);
 	else
 		wait_and_update_status(pid, exit_status);
+	free(args);
 	return (0);
 }
 
