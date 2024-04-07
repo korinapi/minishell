@@ -6,7 +6,7 @@
 /*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/30 05:30:21 by marvinleibe       #+#    #+#             */
-/*   Updated: 2024/04/07 10:31:36 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/04/07 22:01:32 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,14 +14,12 @@
 #include "minishell.h"
 #include "parser.h"
 
-int	handle_home(t_ast *arg)
+int	handle_home(t_ast *arg, char **path)
 {
-	char	*path;
-
 	if (!arg || arg->type == AST_WHITESPACE || !ft_strcmp(arg->data, "~"))
 	{
-		path = getenv("HOME");
-		if (!path)
+		*path = getenv("HOME");
+		if (!*path)
 		{
 			ft_putendl_fd("cd: HOME not set", STDERR_FILENO);
 			return (1);
@@ -31,14 +29,12 @@ int	handle_home(t_ast *arg)
 	return (0);
 }
 
-int	handle_old(t_ast *arg)
+int	handle_old(t_ast *arg, char **path)
 {
-	char	*path;
-
 	if (!ft_strcmp(arg->data, "-") && !*(arg->data + 1))
 	{
-		path = getenv("OLDPWD");
-		if (!path)
+		*path = getenv("OLDPWD");
+		if (!*path)
 		{
 			ft_putendl_fd("cd: OLDPWD not set", STDERR_FILENO);
 			return (1);
@@ -52,20 +48,23 @@ int	handle_var(t_ast *arg, char **path)
 {
 	char	*var_name;
 
-	if (arg->type == AST_WORD || arg->type == AST_VARIABLE)
+	if (arg && (arg->type == AST_WORD || arg->type == AST_VARIABLE))
 	{
 		if (arg->type == AST_VARIABLE)
 		{
 			var_name = (arg->data + 1);
 			if (!ft_strcmp(var_name, "PWD"))
 			{
-				*path = getenv("PWD");
+				if(!*path)
+					*path = getenv("PWD");
 				return (0);
 			}
-			*path = getenv(var_name);
+			if(!*path)
+				*path = getenv(var_name);
 		}
 		else
-			*path = arg->data;
+			if(!*path)
+				*path = arg->data;
 		return (0);
 	}
 	return (1);
@@ -93,14 +92,15 @@ int	execute_cd(t_ast *args)
 	char	*var_name;
 	char	cwd[PATH_MAX];
 
+	path = NULL;
 	var_name = NULL;
 	if (args->right && args->right->type == AST_WHITESPACE)
 		arg = args->right->right;
 	else
 		arg = args->right;
-	if (handle_home(arg))
+	if (handle_home(arg, &path))
 		return (1);
-	if (handle_old(arg))
+	if (handle_old(arg, &path))
 		return (1);
 	if (handle_var(arg, &path))
 		return (1);
