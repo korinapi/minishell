@@ -6,7 +6,7 @@
 /*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 04:29:28 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/07 06:03:20 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/04/07 08:16:05 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,10 +67,7 @@ int	execute_external(t_ast *ast, int *exit_status)
 	exechelper.args[i] = NULL;
 	pid = fork();
 	if (pid == -1)
-	{
-		perror("fork");
-		return (1);
-	}
+		return (perror("fork"), 1);
 	else if (pid == 0)
 	{
 		exechelper.path_env = getenv("PATH");
@@ -99,6 +96,7 @@ int	execute_external(t_ast *ast, int *exit_status)
 	return (*exit_status);
 }
 
+void	execute_simple_command(t_ast *node, int *exit_status)
 void	execute_simple_command(t_ast *node, int *exit_status)
 {
 	if (is_builtin(node->left->data))

@@ -6,7 +6,7 @@
 /*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 04:34:31 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/07 04:32:42 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/04/07 08:16:21 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,44 +28,83 @@ static char	*generate_tmp_file_name(void)
 	fd = open("/dev/urandom", O_RDONLY);
 	if (fd == -1)
 	{
-		free(tmp_file);
-		return (NULL);
+		perror("mkstemp failed");
+		free(template);
+		exit(EXIT_FAILURE);
 	}
-	read_result = read(fd, tmp_file + ft_strlen(tmp_dir), 12);
-	(void)read_result;
 	close(fd);
-	tmp_file[ft_strlen(tmp_file)] = '\0';
-	return (tmp_file);
+	return (template);
+}
+
+void	handle_heredoc_redirection(t_ast *node)
+{
+	char	*tmp_file;
+	int		fd;
+	char	*line;
+
+	tmp_file = generate_tmp_file_name();
+	printf("Generated temp file name: %s\n", tmp_file);
+	fd = open(tmp_file, O_CREAT | O_WRONLY | O_TRUNC, 0644);
+	if (fd == -1)
+	{
+		ft_error("Error opening temp file", tmp_file, strerror(errno));
+		free(tmp_file);
+		return ;
+	}
+	line = NULL;
+	while (1)
+	{
+		line = readline("> ");
+		if (!ft_strcmp(line, node->heredoc_delimiter))
+		{
+			free(line);
+			break ;
+		}
+		ft_putendl_fd(line, fd);
+		free(line);
+	}
+	close(fd);
+	fd = open(tmp_file, O_RDONLY);
+	if (fd == -1)
+	{
+		ft_error("Error opening temp file", tmp_file, strerror(errno));
+		free(tmp_file);
+		return ;
+	}
+	dup2(fd, STDIN_FILENO);
+	close(fd);
+	free(tmp_file);
 }
 
 void	execute_redirection(t_ast *node)
 {
-	int		mode;
-	int		fd;
-	int		flags;
-	char	*line;
-	char	*tmp_file;
+	int	mode;
+	int	fd;
+	int	flags;
 
+	// char	*line;
+	// char	*tmp_file;
 	mode = node->redirection_mode;
 	if (mode == REDIR_HEREDOC)
 	{
-		tmp_file = generate_tmp_file_name();
-		fd = open(tmp_file, O_CREAT | O_WRONLY | O_TRUNC, 0644);
-		line = NULL;
-		while (1)
-		{
-			line = readline("> ");
-			if (!ft_strcmp(line, node->heredoc_delimiter))
-				break ;
-			ft_putendl_fd(line, fd);
-			free(line);
-		}
-		free(line);
-		close(fd);
-		fd = open(tmp_file, O_RDONLY);
-		dup2(fd, STDIN_FILENO);
-		close(fd);
-		free(tmp_file);
+		handle_heredoc_redirection(node);
+		// tmp_file = generate_tmp_file_name();
+		// fd = open(tmp_file, O_CREAT | O_WRONLY | O_TRUNC, 0644);
+		// line = NULL;
+		// while (1)
+		// {
+		// 	line = readline("> ");
+		// 	if (!ft_strcmp(line, node->heredoc_delimiter))
+		// 		break ;
+		// 	ft_putendl_fd(line, fd);
+		// 	free(line);
+		// }
+		// free(line);
+		// close(fd);
+		// fd = open(tmp_file, O_RDONLY);
+		// dup2(fd, STDIN_FILENO);
+		// close(fd);
+		// free(tmp_file);
 	}
 	else
 	{
@@ -91,6 +130,7 @@ void	execute_redirection(t_ast *node)
 
 int	handle_redirection(t_ast *node)
 {
+	if (node == NULL)
 	if (node == NULL)
 		return (0);
 	if (node->type == AST_REDIRECTION)

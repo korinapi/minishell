@@ -6,7 +6,7 @@
 /*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 04:29:03 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/07 05:36:13 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/04/07 08:16:41 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@ static int	is_input_empty(char *input)
 
 static int	has_pipes(char *input)
 {
+	int	in_quote;
 	int	in_quote;
 
 	in_quote = 0;

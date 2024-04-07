@@ -6,11 +6,12 @@
 /*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 04:34:52 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/07 04:52:32 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/04/07 08:15:43 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "environment.h"
+#include "minishell.h"
 #include "minishell.h"
 #include "utilities.h"
 
@@ -62,27 +63,22 @@ char	**ft_copy_env(void)
 	int		i;
 
 	i = 0;
-	while (environ[i])
-		i++;
-	env = ft_calloc(i + 1, sizeof(char *));
-	if (!env)
-		return (NULL);
-	i = 0;
+	name_len = ft_strlen(name);
 	while (environ[i])
 	{
-		env[i] = ft_strdup(environ[i]);
-		if (!env[i])
+		if (ft_strncmp(environ[i], name, name_len) == 0
+			&& environ[i][name_len] == '=')
 		{
-			ft_free_env(env);
-			return (NULL);
+			free(environ[i]);
+			environ[i] = env_str;
+			return (1);
 		}
 		i++;
 	}
-	env[i] = NULL;
-	return (env);
+	return (0);
 }
 
-int	ft_setenv(const char *name, const char *value, int overwrite)
+int	prepare_env_input(const char *string, char **name,  char **value)
 {
 	char	*env_str;
 	int		len;

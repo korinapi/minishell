@@ -6,7 +6,7 @@
 /*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 04:26:02 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/07 05:44:21 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/04/07 06:40:51 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,5 +59,19 @@ void				parse_simple_command(char **input, t_ast **ast);
 char				*parse_quotes(char **input, char quote_char);
 void				parse_redirection(char *input, t_ast **ast);
 void				parse_pipeline(char **input, t_ast **ast);
+char				*ft_append_char(char *str, int *len, char c);
+char				*ft_append_str(char *str1, int *len1, const char *str2);
+int					ast_count_nodes(t_ast *ast);
+char				*ft_get_variable(char **input);
+char				*handle_variable_expansion(char *word);
+void				ast_append(t_ast *parent, t_ast *child);
+t_ast				*create_ast_node(t_ast_type type, char *data);
+char				*parse_quotes(char **input, char quote_char);
+void				parse_simple_command(char **input, t_ast **ast);
+char				*ft_get_word(char **input);
+void				parse_command_segment(char **input, t_ast **parent,
+						t_ast **prev);
+void				parse_redirection(char *input, t_ast **ast);
+void	parse_pipeline(char **input, t_ast **ast);
 
 #endif

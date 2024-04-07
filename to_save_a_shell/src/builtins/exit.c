@@ -6,7 +6,7 @@
 /*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 05:00:31 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/07 04:30:35 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/04/07 06:47:43 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@
 
 void	exit_shell(t_ast *ast, char **args, int exit_status)
 {
+	if (args)
 	if (args)
 		ft_free_split(args);
 	free_ast(ast);
