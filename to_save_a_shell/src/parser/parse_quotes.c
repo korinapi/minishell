@@ -6,7 +6,7 @@
 /*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/07 05:32:29 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/07 06:03:41 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/04/07 09:39:36 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,12 +14,57 @@
 #include "parser.h"
 #include "utilities.h"
 
-char	*parse_quotes(char **input, char quote_char)
+char	*parse_n(char **input, char quote_char)
 {
 	char	*word;
 	int		word_len;
 	char	nested_quote;
-	char	*nested_word;
+
+	word = NULL;
+	word_len = 0;
+	while (**input)
+	{
+		if (**input == quote_char)
+		{
+			(*input)++;
+			return (word);
+		}
+		else if (**input == '\'' || **input == '"')
+		{
+			nested_quote = **input;
+			word = ft_append_char(word, &word_len, **input);
+			word = ft_append_str(word, &word_len, parse_n(input, nested_quote));
+		}
+		else
+			word = ft_append_char(word, &word_len, **input);
+		(*input)++;
+	}
+	return (word);
+}
+
+void	handle_nested(char **input, char **word, int *word_len, int *in_quote)
+{
+	if (*in_quote)
+	{
+		if (**input == '\'' || **input == '"')
+			*word = ft_append_str(*word, word_len, parse_n(input, **input));
+		else
+		{
+			*word = ft_append_char(*word, word_len, **input);
+			(*input)++;
+		}
+	}
+	else
+	{
+		*word = ft_append_char(*word, word_len, **input);
+		(*input)++;
+	}
+}
+
+char	*parse_quotes(char **input, char quote_char)
+{
+	char	*word;
+	int		word_len;
 	int		in_quote;
 
 	word = NULL;
@@ -33,26 +78,8 @@ char	*parse_quotes(char **input, char quote_char)
 			in_quote = !in_quote;
 			(*input)++;
 		}
-		else if (in_quote)
-		{
-			if (**input == '\'' || **input == '"')
-			{
-				nested_quote = **input;
-				nested_word = parse_quotes(input, nested_quote);
-				word = ft_append_str(word, &word_len, nested_word);
-				free(nested_word);
-			}
-			else
-			{
-				word = ft_append_char(word, &word_len, **input);
-				(*input)++;
-			}
-		}
 		else
-		{
-			word = ft_append_char(word, &word_len, **input);
-			(*input)++;
-		}
+			handle_nested(input, &word, &word_len, &in_quote);
 	}
 	word = ft_append_char(word, &word_len, '\0');
 	return (word);

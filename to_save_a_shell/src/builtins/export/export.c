@@ -6,15 +6,15 @@
 /*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/30 05:16:03 by marvinleibe       #+#    #+#             */
-/*   Updated: 2024/04/07 08:15:10 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/04/07 08:44:58 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "builtins.h"
 #include "environment.h"
 #include "minishell.h"
 #include "parser.h"
 #include "utilities.h"
-#include "builtins.h"
 
 int	process_export_arg(t_ast *arg)
 {
@@ -82,26 +82,8 @@ int	execute_export(t_ast *args)
 		return (0);
 	while (arg)
 	{
-		if (arg->type == AST_WORD)
-		{
-			value = ft_strchr(arg->data, '=');
-			if (value)
-			{
-				*value = '\0';
-				value++;
-				var_name = arg->data;
-				if (valid_check(arg, var_name))
-					return (1);
-				ft_setenv(var_name, value, 1);
-			}
-			else
-			{
-				var_name = arg->data;
-				if (valid_check(arg, var_name))
-					return (1);
-				ft_setenv(var_name, "", 0);
-			}
-		}
+		if (process_export_arg(arg) != 0)
+			return (1);
 		arg = arg->right;
 	}
 	return (0);

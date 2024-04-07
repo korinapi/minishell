@@ -6,7 +6,7 @@
 /*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 05:16:28 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/07 08:14:46 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/04/07 10:31:35 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ void	check_flag_echo(t_ast **arg, int *print_newline)
 	}
 	if (contains_n_only)
 	{
-		print_newline = 0;
+		*print_newline = 0;
 		if ((*arg)->right && (*arg)->right->type == AST_WHITESPACE)
 			(*arg) = (*arg)->right->right;
 		else
@@ -50,13 +50,13 @@ void	check_flag_echo(t_ast **arg, int *print_newline)
 	}
 }
 
-void	process_double_quoted_str(const char *quoted_str, const char *exit_stat)
+void	process_double_quoted_str(const char *quoted_str, char *exit_stat)
 {
 	while (*quoted_str)
 	{
 		if (*quoted_str == '$' && *(quoted_str + 1) == '?')
 		{
-			printf("%s", exit_stat);
+			ft_putstr_fd(exit_stat, STDOUT_FILENO);
 			quoted_str += 2;
 		}
 		else
@@ -78,7 +78,14 @@ void	print_ast_arguments(t_ast *arg, char *exit_stat)
 	else if (arg->type == AST_VARIABLE)
 	{
 		var_name = arg->data + 1;
-		ft_putstr_fd(getenv(var_name), STDOUT_FILENO);
+		var_name = getenv(var_name);
+		if (!var_name)
+		{
+			if (arg->right->type == AST_WHITESPACE)
+				*arg = *arg->right;
+			return ;
+		}
+		ft_putstr_fd(var_name, STDOUT_FILENO);
 	}
 	else if (arg->type == AST_SPECIAL_PARAM)
 		ft_putstr_fd(exit_stat, STDOUT_FILENO);

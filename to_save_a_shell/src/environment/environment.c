@@ -6,173 +6,103 @@
 /*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 04:34:52 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/07 08:15:43 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/04/07 10:36:56 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "environment.h"
 #include "minishell.h"
-#include "minishell.h"
 #include "utilities.h"
 
-char	**ft_realloc_env(char **environ, char *new_var)
+int	parse_env_string(char *string, char **name, char **value)
 {
-	char	**new_env;
-	int		i;
-	int		size;
-	int		j;
+	char	*eq_pos;
 
-	size = 0;
-	while (environ[size])
-		size++;
-	new_env = malloc(sizeof(char *) * (size + 2));
-	if (!new_env)
-		return (NULL);
-	i = 0;
-	while (environ[i])
+	eq_pos = ft_strchr(string, '=');
+	if (!eq_pos)
 	{
-		new_env[i] = malloc(ft_strlen(environ[i]) + 1);
-		if (!new_env[i])
-		{
-			j = 0;
-			while (j < i)
-				free(new_env[j++]);
-			free(new_env);
-			return (NULL);
-		}
-		ft_strcpy(new_env[i], environ[i]);
-		i++;
+		*name = string;
+		*value = "";
 	}
-	new_env[i] = malloc(ft_strlen(new_var) + 1);
-	if (!new_env[i])
+	else
 	{
-		j = 0;
-		while (j < i)
-			free(new_env[j++]);
-		free(new_env);
-		return (NULL);
-	}
-	ft_strcpy(new_env[i], new_var);
-	new_env[i + 1] = NULL;
-	return (new_env);
-}
-
-char	**ft_copy_env(void)
-{
-	char	**env;
-	int		i;
-
-	i = 0;
-	name_len = ft_strlen(name);
-	while (environ[i])
-	{
-		if (ft_strncmp(environ[i], name, name_len) == 0
-			&& environ[i][name_len] == '=')
-		{
-			free(environ[i]);
-			environ[i] = env_str;
-			return (1);
-		}
-		i++;
+		*eq_pos = '\0';
+		*name = string;
+		*value = eq_pos + 1;
 	}
 	return (0);
 }
 
-int	prepare_env_input(const char *string, char **name,  char **value)
+int	find_env_var(char *name)
 {
-	char	*env_str;
-	int		len;
-	char	*existing;
+	int	i;
 
-	existing = getenv(name);
-	if (existing && !overwrite)
-		return (0);
-	len = ft_strlen(name) + ft_strlen(value) + 2;
-	env_str = (char *)malloc(len);
-	if (!env_str)
-		return (-1);
-	ft_snprintf(env_str, len, "%s=%s", name, value);
-	return (ft_putenv(env_str));
-}
-
-int	ft_putenv(char *string)
-{
-	t_envhelper	env_helper;
-	size_t		count;
-	size_t		i;
-	int			len;
-
-	env_helper.value = ft_strchr(string, '=');
-	if (!env_helper.value)
-	{
-		env_helper.value = "";
-		env_helper.name = string;
-	}
-	else
-	{
-		*(env_helper.value) = '\0';
-		(env_helper.value)++;
-		env_helper.name = string;
-	}
-	count = 0;
-	while (environ[count])
-		count++;
 	i = 0;
 	while (environ[i])
 	{
-		if (ft_strncmp(environ[i], env_helper.name,
-				ft_strlen(env_helper.name)) == 0
-			&& environ[i][ft_strlen(env_helper.name)] == '=')
-		{
-			len = ft_strlen(env_helper.name) + ft_strlen(env_helper.value) + 2;
-			env_helper.env_str = (char *)malloc(len);
-			if (!env_helper.env_str)
-				return (-1);
-			ft_snprintf(env_helper.env_str, len, "%s=%s", env_helper.name,
-				env_helper.value);
-			free(environ[i]);
-			environ[i] = env_helper.env_str;
-			return (0);
-		}
+		if (!ft_strncmp(environ[i], name, ft_strlen(name))
+			&& environ[i][ft_strlen(name)] == '=')
+			return (i);
 		i++;
 	}
-	env_helper.new_env = ft_realloc_env(environ, string);
-	if (!env_helper.new_env)
+	return (-1);
+}
+
+int	update_env_var(char *name, char *value)
+{
+	int		index;
+	int		len;
+	char	*new_str;
+
+	index = find_env_var(name);
+	if (index == -1)
 		return (-1);
-	environ = env_helper.new_env;
-	len = ft_strlen(env_helper.name) + ft_strlen(env_helper.value) + 2;
-	env_helper.env_str = (char *)malloc(len);
-	if (!env_helper.env_str)
+	len = ft_strlen(name) + ft_strlen(value) + 2;
+	new_str = (char *)malloc(len);
+	if (!new_str)
 		return (-1);
-	ft_snprintf(env_helper.env_str, len, "%s=%s", env_helper.name,
-		env_helper.value);
-	environ[count] = env_helper.env_str;
+	ft_snprintf(new_str, len, "%s=%s", name, value);
+	free(environ[index]);
+	environ[index] = new_str;
+	return (0);
+}
+
+int	add_env_var(char *name, char *value)
+{
+	int		count;
+	int		len;
+	char	*new_str;
+
+	count = 0;
+	while (environ[count])
+		count++;
+	len = ft_strlen(name) + ft_strlen(value) + 2;
+	new_str = (char *)malloc(len);
+	if (!new_str)
+		return (-1);
+	ft_snprintf(new_str, len, "%s=%s", name, value);
+	environ = ft_realloc_env(environ, new_str);
+	if (!environ)
+	{
+		free(new_str);
+		return (-1);
+	}
+	environ[count] = new_str;
 	environ[count + 1] = NULL;
 	return (0);
 }
 
-int	unset_env_var(char *var)
+int	ft_putenv(char *string)
 {
-	int	var_len;
-	int	i;
-	int	j;
+	int		index;
+	char	*name;
+	char	*value;
 
-	var_len = ft_strlen(var);
-	i = 0;
-	while (environ[i])
-	{
-		if (!ft_strncmp(environ[i], var, var_len) && environ[i][var_len] == '=')
-		{
-			free(environ[i]);
-			j = i;
-			while (environ[j])
-			{
-				environ[j] = environ[j + 1];
-				j++;
-			}
-			return (0);
-		}
-		i++;
-	}
-	return (1);
+	if (parse_env_string(string, &name, &value) != 0)
+		return (-1);
+	index = find_env_var(name);
+	if (index == -1)
+		return (add_env_var(name, value));
+	else
+		return (update_env_var(name, value));
 }

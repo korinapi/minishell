@@ -3,17 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   exec_built.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cpuiu <cpuiu@student.42.fr>                +#+  +:+       +#+        */
+/*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 04:30:09 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/05 18:45:25 by cpuiu            ###   ########.fr       */
+/*   Updated: 2024/04/03 17:52:06 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "builtins.h"
 #include "executor.h"
-#include "minishell.h"
 #include "parser.h"
+#include "minishell.h"
+#include "builtins.h"
 
 int	execute_builtin(t_ast *ast, int *exit_status)
 {

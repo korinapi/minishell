@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_utils.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cpuiu <cpuiu@student.42.fr>                +#+  +:+       +#+        */
+/*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/05 19:42:46 by cpuiu             #+#    #+#             */
-/*   Updated: 2024/04/05 20:39:31 by cpuiu            ###   ########.fr       */
+/*   Updated: 2024/04/07 11:12:11 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,7 @@ void	execute_command_from_path(char **args)
 		exit(127);
 	}
 	execve(command_path, args, NULL);
-	perror("execve");
+	ft_fprintf(STDERR_FILENO, "execve failed: %s\n", strerror(errno));
 	exit(1);
 }
 
@@ -74,4 +74,16 @@ void	wait_and_update_status(pid_t pid, int *exit_status)
 		*exit_status = WEXITSTATUS(status);
 	else
 		*exit_status = 1;
+}
+
+void	close_pipes(int *pipe_fds, int num_pipes)
+{
+	int	i;
+
+	i = 0;
+	while (i < 2 * num_pipes)
+	{
+		close(pipe_fds[i]);
+		i++;
+	}
 }
