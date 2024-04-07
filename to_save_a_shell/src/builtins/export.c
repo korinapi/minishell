@@ -6,7 +6,7 @@
 /*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/30 05:16:03 by marvinleibe       #+#    #+#             */
-/*   Updated: 2024/04/04 22:36:52 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/04/07 04:30:51 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,14 +99,14 @@ int	execute_export(t_ast *args)
 				*value = '\0';
 				value++;
 				var_name = arg->data;
-				if(valid_check(arg, var_name))
+				if (valid_check(arg, var_name))
 					return (1);
 				ft_setenv(var_name, value, 1);
 			}
 			else
 			{
 				var_name = arg->data;
-				if(valid_check(arg, var_name))
+				if (valid_check(arg, var_name))
 					return (1);
 				ft_setenv(var_name, "", 0);
 			}

@@ -6,7 +6,7 @@
 /*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/21 22:45:08 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/03/21 22:47:45 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/04/07 04:18:51 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,20 +14,25 @@
 
 char	*ft_strpbrk(const char *str1, const char *str2)
 {
-	const char	*p;
-	const char	*spanp;
+	const char	*p = str1;
+	const char	*spanp = str2;
 	char		c;
 	char		sc;
 
-	p = str1;
-	while ((c = *p++) != '\0')
+	while (1)
 	{
-		spanp = str2;
-		while ((sc = *spanp++) != '\0')
+		c = *p++;
+		while (1)
 		{
+			sc = *spanp++;
+			if (sc == '\0')
+				break ;
 			if (c == sc)
-				return (char *)(p - 1);
+				return ((char *)(p - 1));
 		}
+		if (c == '\0')
+			break ;
+		spanp = str2;
 	}
 	return (NULL);
 }

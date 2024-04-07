@@ -6,7 +6,7 @@
 /*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 05:16:28 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/04 22:11:17 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/04/07 04:40:41 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,17 +25,17 @@ int	is_option(t_ast *arg)
 	if ((arg->type == AST_WORD || arg->type == AST_SINGLEQUOTED_WORD
 			|| arg->type == AST_DOUBLEQUOTED_WORD) && arg->data[0] == '-'
 		&& arg->data[1] && ft_isalpha(arg->data[1]))
-			return (1);
+		return (1);
 	return (0);
 }
 
 int	execute_echo(t_ast *args, int *exit_status)
 {
-	t_ast *arg;
-	char *var_name;
-	char *exit_stat;
-	char *quoted_str;
-	int print_newline;
+	t_ast	*arg;
+	char	*var_name;
+	char	*exit_stat;
+	char	*quoted_str;
+	int		print_newline;
 
 	print_newline = 1;
 	exit_stat = ft_itoa(*exit_status);
@@ -76,7 +76,16 @@ int	execute_echo(t_ast *args, int *exit_status)
 		else if (arg->type == AST_VARIABLE)
 		{
 			var_name = arg->data + 1;
-			ft_putstr_fd(getenv(var_name), STDOUT_FILENO);
+			var_name = getenv(var_name);
+			if (!var_name)
+			{
+				if (arg->right->type == AST_WHITESPACE)
+					arg = arg->right->right;
+				else
+					arg = arg->right;
+				continue ;
+			}
+			ft_putstr_fd(var_name, STDOUT_FILENO);
 		}
 		else if (arg->type == AST_SPECIAL_PARAM)
 			ft_putstr_fd(exit_stat, STDOUT_FILENO);

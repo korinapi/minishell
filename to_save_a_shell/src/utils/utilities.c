@@ -6,13 +6,39 @@
 /*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/03 17:32:21 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/04 22:33:14 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/04/07 05:24:01 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 #include "parser.h"
 #include "utilities.h"
+
+int	count_nodes(t_ast *current)
+{
+	int	num_arg;
+
+	num_arg = 0;
+	while (current)
+	{
+		if (current->type != AST_WHITESPACE)
+			num_arg++;
+		current = current->right;
+	}
+	return (num_arg);
+}
+
+int	ast_count_nodes(t_ast *ast)
+{
+	int	count;
+
+	count = 1;
+	if (ast == NULL)
+		return (0);
+	count += ast_count_nodes(ast->left);
+	count += ast_count_nodes(ast->right);
+	return (count);
+}
 
 char	**ast_to_arg(t_ast *node, int *exit_status)
 {
@@ -21,13 +47,7 @@ char	**ast_to_arg(t_ast *node, int *exit_status)
 	char	**args;
 
 	current = node;
-	num_arg = 0;
-	while (current)
-	{
-		if (current->type != AST_WHITESPACE)
-			num_arg++;
-		current = current->right;
-	}
+	num_arg = count_nodes(current);
 	args = ft_calloc(num_arg + 1, sizeof(char *));
 	current = node;
 	num_arg = 0;
@@ -59,8 +79,29 @@ int	is_valid(const char *str)
 			return (0);
 		str++;
 	}
-	if (ft_strcmp(str, "for") == 0 || ft_strcmp(str, "while") == 0 || ft_strcmp(str,
-			"if") == 0 || ft_strcmp(str, "case") == 0)
+	if (ft_strcmp(str, "for") == 0 || ft_strcmp(str, "while") == 0
+		|| ft_strcmp(str, "if") == 0 || ft_strcmp(str, "case") == 0)
 		return (0);
 	return (1);
+}
+
+int	is_builtin(char *args)
+{
+	if (args == NULL)
+		return (0);
+	if (!ft_strcmp(args, "echo"))
+		return (1);
+	if (!ft_strcmp(args, "cd"))
+		return (1);
+	if (!ft_strcmp(args, "pwd"))
+		return (1);
+	if (!ft_strcmp(args, "unset"))
+		return (1);
+	if (!ft_strcmp(args, "export"))
+		return (1);
+	if (!ft_strcmp(args, "env"))
+		return (1);
+	if (!ft_strcmp(args, "exit"))
+		return (1);
+	return (0);
 }

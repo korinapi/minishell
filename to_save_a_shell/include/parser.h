@@ -6,7 +6,7 @@
 /*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 04:26:02 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/03 17:49:07 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/04/07 05:44:21 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,9 +42,22 @@ typedef struct s_ast
 	struct s_ast	*right;
 }					t_ast;
 
+t_ast				*create_ast_node(t_ast_type type, char *data);
 int					ast_count_nodes(t_ast *ast);
 t_ast				*parse_input(char *input);
 void				free_ast(t_ast *ast);
 void				print_ast(t_ast *node, int level, char *node_type);
+char				*ft_append_char(char *str, int *len, char c);
+char				*ft_append_str(char *str1, int *len1, const char *str2);
+void				ast_append(t_ast *parent, t_ast *child);
+/*get vars and expand*/
+char				*ft_get_word(char **input);
+char				*handle_variable_expansion(char *word);
+char				*ft_get_variable(char **input);
+/*Parse functions*/
+void				parse_simple_command(char **input, t_ast **ast);
+char				*parse_quotes(char **input, char quote_char);
+void				parse_redirection(char *input, t_ast **ast);
+void				parse_pipeline(char **input, t_ast **ast);
 
 #endif

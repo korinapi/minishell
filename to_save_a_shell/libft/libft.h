@@ -6,14 +6,14 @@
 /*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/06 14:35:47 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/03 20:21:44 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/04/07 04:14:57 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef LIBFT_H
 # define LIBFT_H
 
-#define OPERATORS "|&;()<>\\="
+# define OPERATORS "|&;()<>\\="
 
 # include <stdlib.h>
 # include <unistd.h>
@@ -95,14 +95,13 @@ char	*ft_strsub(char const *s, unsigned int start, size_t len);
 char	*ft_strndup(const char *s1, int len);
 char	**ft_split_quotes(char *str);
 int		ft_isspecialchar(char c);
-int		ft_sprintf(char *str, const char *format, ...);
 size_t	ft_strspn(const char *str1, const char *str2);
 char	*ft_strpbrk(const char *str1, const char *str2);
 char	*ft_strtok_r(char *str, const char *delim, char **save_ptr);
 void	*ft_realloc(void *ptr, size_t size);
 int		ft_isoperator(char c);
-int 	ft_fprintf(int fd, const char *format, ...);
-char 	*ft_strjoin_free(char *new_var, char *value, int i);
+int		ft_fprintf(int fd, const char *format, ...);
+char	*ft_strjoin_free(char *new_var, char *value, int i);
 int		ft_snprintf(char *str, int size, const char *format, ...);
 int		ft_strtoi(const char *str, char **end);
 

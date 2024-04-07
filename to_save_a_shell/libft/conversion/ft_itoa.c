@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_itoa.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
+/*   By: marvinleibenguth <marvinleibenguth@stud    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/06 14:49:26 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/03/25 23:14:31 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/04/06 13:22:24 by marvinleibe      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -122,7 +122,7 @@ char	*ft_itoa(int n)
 //     char *result = ft_itoa(num);
 //     if (result != NULL) {
 //         printf("Integer as a string: %s\n", result);
-//         free(result); // Don't forget to free the allocated memory
+//         free(result);
 //     } else {
 //         printf("Memory allocation failed.\n");
 //     }

@@ -6,19 +6,21 @@
 /*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 04:34:52 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/03 17:51:24 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/04/07 04:52:32 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
 #include "environment.h"
+#include "minishell.h"
 #include "utilities.h"
 
-char	**ft_realloc_env(char *new_var)
+char	**ft_realloc_env(char **environ, char *new_var)
 {
 	char	**new_env;
+	int		i;
+	int		size;
+	int		j;
 
-	int i, size;
 	size = 0;
 	while (environ[size])
 		size++;
@@ -30,13 +32,25 @@ char	**ft_realloc_env(char *new_var)
 	{
 		new_env[i] = malloc(ft_strlen(environ[i]) + 1);
 		if (!new_env[i])
+		{
+			j = 0;
+			while (j < i)
+				free(new_env[j++]);
+			free(new_env);
 			return (NULL);
+		}
 		ft_strcpy(new_env[i], environ[i]);
 		i++;
 	}
 	new_env[i] = malloc(ft_strlen(new_var) + 1);
 	if (!new_env[i])
+	{
+		j = 0;
+		while (j < i)
+			free(new_env[j++]);
+		free(new_env);
 		return (NULL);
+	}
 	ft_strcpy(new_env[i], new_var);
 	new_env[i + 1] = NULL;
 	return (new_env);
@@ -76,72 +90,77 @@ int	ft_setenv(const char *name, const char *value, int overwrite)
 
 	existing = getenv(name);
 	if (existing && !overwrite)
-	{
 		return (0);
-	}
 	len = ft_strlen(name) + ft_strlen(value) + 2;
 	env_str = (char *)malloc(len);
 	if (!env_str)
-	{
 		return (-1);
-	}
 	ft_snprintf(env_str, len, "%s=%s", name, value);
-	return (putenv(env_str));
+	return (ft_putenv(env_str));
 }
 
 int	ft_putenv(char *string)
 {
-	char	*name;
-	char	*value;
-	char	*env_str;
-	size_t	count;
-	size_t	i;
-	int		len;
-	char	**new_env;
+	t_envhelper	env_helper;
+	size_t		count;
+	size_t		i;
+	int			len;
 
-	value = ft_strchr(string, '=');
-	if (!value)
+	env_helper.value = ft_strchr(string, '=');
+	if (!env_helper.value)
 	{
-		return (-1);
+		env_helper.value = "";
+		env_helper.name = string;
 	}
-	*value = '\0';
-	value++;
-	name = string;
-	for (count = 0; environ[count]; count++)
-		;
-	new_env = (char **)ft_realloc(environ, (count + 2) * sizeof(char *));
-	if (!new_env)
+	else
 	{
-		return (-1);
+		*(env_helper.value) = '\0';
+		(env_helper.value)++;
+		env_helper.name = string;
 	}
-	environ = new_env;
-	len = ft_strlen(name) + ft_strlen(value) + 2;
-	env_str = (char *)malloc(len);
-	if (!env_str)
+	count = 0;
+	while (environ[count])
+		count++;
+	i = 0;
+	while (environ[i])
 	{
-		return (-1);
-	}
-	ft_snprintf(env_str, len, "%s=%s", name, value);
-	for (i = 0; environ[i]; i++)
-	{
-		if (ft_strncmp(environ[i], name, ft_strlen(name)) == 0
-			&& environ[i][ft_strlen(name)] == '=')
+		if (ft_strncmp(environ[i], env_helper.name,
+				ft_strlen(env_helper.name)) == 0
+			&& environ[i][ft_strlen(env_helper.name)] == '=')
 		{
+			len = ft_strlen(env_helper.name) + ft_strlen(env_helper.value) + 2;
+			env_helper.env_str = (char *)malloc(len);
+			if (!env_helper.env_str)
+				return (-1);
+			ft_snprintf(env_helper.env_str, len, "%s=%s", env_helper.name,
+				env_helper.value);
 			free(environ[i]);
-			environ[i] = env_str;
+			environ[i] = env_helper.env_str;
 			return (0);
 		}
+		i++;
 	}
-	environ[count] = env_str;
+	env_helper.new_env = ft_realloc_env(environ, string);
+	if (!env_helper.new_env)
+		return (-1);
+	environ = env_helper.new_env;
+	len = ft_strlen(env_helper.name) + ft_strlen(env_helper.value) + 2;
+	env_helper.env_str = (char *)malloc(len);
+	if (!env_helper.env_str)
+		return (-1);
+	ft_snprintf(env_helper.env_str, len, "%s=%s", env_helper.name,
+		env_helper.value);
+	environ[count] = env_helper.env_str;
 	environ[count + 1] = NULL;
 	return (0);
 }
 
 int	unset_env_var(char *var)
 {
-	int var_len;
-	int i;
-	int j;
+	int	var_len;
+	int	i;
+	int	j;
+
 	var_len = ft_strlen(var);
 	i = 0;
 	while (environ[i])

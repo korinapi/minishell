@@ -6,7 +6,7 @@
 /*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 04:34:31 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/04 22:38:31 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/04/07 04:32:42 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ static char	*generate_tmp_file_name(void)
 {
 	static const char	tmp_dir[] = "/tmp/minishell_";
 	char				*tmp_file;
-	int 				read_result;
+	int					read_result;
 	int					fd;
 
 	tmp_file = malloc(sizeof(tmp_dir) + 12);
@@ -91,7 +91,7 @@ void	execute_redirection(t_ast *node)
 
 int	handle_redirection(t_ast *node)
 {
-	if(node == NULL)
+	if (node == NULL)
 		return (0);
 	if (node->type == AST_REDIRECTION)
 		execute_redirection(node);

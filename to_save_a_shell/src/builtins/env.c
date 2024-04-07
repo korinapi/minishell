@@ -6,7 +6,7 @@
 /*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/30 05:16:09 by marvinleibe       #+#    #+#             */
-/*   Updated: 2024/04/03 17:54:00 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/04/07 04:30:11 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,8 @@
 
 int	execute_env(void)
 {
-	int i;
+	int	i;
+
 	i = 0;
 	while (environ[i])
 	{

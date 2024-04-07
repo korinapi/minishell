@@ -6,7 +6,7 @@
 /*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 04:29:28 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/05 02:48:27 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/04/07 06:03:20 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,27 +18,6 @@
 #include "minishell.h"
 #include "redirection.h"
 #include "utilities.h"
-
-int	is_builtin(char *args)
-{
-	if (args == NULL)
-		return (0);
-	if (!ft_strcmp(args, "echo"))
-		return (1);
-	if (!ft_strcmp(args, "cd"))
-		return (1);
-	if (!ft_strcmp(args, "pwd"))
-		return (1);
-	if (!ft_strcmp(args, "unset"))
-		return (1);
-	if (!ft_strcmp(args, "export"))
-		return (1);
-	if (!ft_strcmp(args, "env"))
-		return (1);
-	if (!ft_strcmp(args, "exit"))
-		return (1);
-	return (0);
-}
 
 char	*find_command_path(char *command, char **paths)
 {
@@ -65,29 +44,27 @@ char	*find_command_path(char *command, char **paths)
 	return (NULL);
 }
 
-// ft_free_split would be necessary here if I didnt already free the ast elements later on...
-// Since i do not strdup the data in the nodes, I dont need to free.
+// ft_free_split would be necessary
+// here if I didnt already free the ast elements later on...
+// Since i do not strdup the data in the nodes,
+// I dont need to free.
 int	execute_external(t_ast *ast, int *exit_status)
 {
-	pid_t	pid;
-	int		status;
-	char	**args;
-	int		i;
-	char	*path_env;
-	char	**paths;
-	char	*command_path;
-	t_ast	*current_node;
+	pid_t			pid;
+	int				status;
+	int				i;
+	t_exechelper	exechelper;
 
-	args = ft_calloc(ast_count_nodes(ast->left) + 1, sizeof(char *));
+	exechelper.args = ft_calloc(ast_count_nodes(ast->left) + 1, sizeof(char *));
 	i = 0;
-	current_node = ast->left;
-	while (current_node)
+	exechelper.current_node = ast->left;
+	while (exechelper.current_node)
 	{
-		if (current_node->type != AST_WHITESPACE)
-			args[i++] = current_node->data;
-		current_node = current_node->right;
+		if (exechelper.current_node->type != AST_WHITESPACE)
+			exechelper.args[i++] = exechelper.current_node->data;
+		exechelper.current_node = exechelper.current_node->right;
 	}
-	args[i] = NULL;
+	exechelper.args[i] = NULL;
 	pid = fork();
 	if (pid == -1)
 	{
@@ -96,18 +73,19 @@ int	execute_external(t_ast *ast, int *exit_status)
 	}
 	else if (pid == 0)
 	{
-		path_env = getenv("PATH");
-		paths = ft_split(path_env, ':');
-		command_path = find_command_path(args[0], paths);
-		if (command_path == NULL)
+		exechelper.path_env = getenv("PATH");
+		exechelper.paths = ft_split(exechelper.path_env, ':');
+		exechelper.command_path = find_command_path(exechelper.args[0],
+				exechelper.paths);
+		if (exechelper.command_path == NULL)
 		{
 			ft_putstr_fd("Command not found: ", STDERR_FILENO);
-			ft_putstr_fd(args[0], STDERR_FILENO);
+			ft_putstr_fd(exechelper.args[0], STDERR_FILENO);
 			ft_putchar_fd('\n', STDERR_FILENO);
 			exit(127);
 		}
-		execve(command_path, args, NULL);
-		perror("execve");
+		execve(exechelper.command_path, exechelper.args, NULL);
+		ft_fprintf(STDERR_FILENO, "execve failed: %s\n", strerror(errno));
 		exit(1);
 	}
 	else
@@ -118,10 +96,10 @@ int	execute_external(t_ast *ast, int *exit_status)
 		else
 			*exit_status = 1;
 	}
-	return (0);
+	return (*exit_status);
 }
 
-static void	execute_simple_command(t_ast *node, int *exit_status)
+void	execute_simple_command(t_ast *node, int *exit_status)
 {
 	if (is_builtin(node->left->data))
 		*exit_status = execute_builtin(node, exit_status);
@@ -129,106 +107,25 @@ static void	execute_simple_command(t_ast *node, int *exit_status)
 		*exit_status = execute_external(node, exit_status);
 }
 
-void	close_pipes(int *pipe_fds, int num_pipes)
+int	syntax_check(t_ast *ast, int *exit_status)
 {
-	int i;
-
-	i = 0;
-	while (i < 2 * num_pipes)
+	if (ast->type == AST_PIPELINE && !ast->left->right)
 	{
-		close(pipe_fds[i]);
-		i++;
+		ft_fprintf(STDERR_FILENO,
+			"minishell: syntax error near unexpected token `|'\n");
+		*exit_status = 258;
+		return (1);
 	}
+	return (0);
 }
 
-void	execute_pipeline(t_ast *node, int *exit_status)
-{
-	int		num_pipes;
-	t_ast	*curr;
-	int		*pipe_fds;
-	int		pid;
-	int		status;
-	int		i;
-
-	if (node->type == AST_PIPELINE)
-	{
-		num_pipes = 0;
-		curr = node;
-		while (curr->right && curr->type == AST_PIPELINE)
-		{
-			num_pipes++;
-			curr = curr->right;
-		}
-		pipe_fds = malloc(2 * num_pipes * sizeof(int));
-		if (pipe_fds == NULL)
-		{
-			perror("malloc");
-			exit(EXIT_FAILURE);
-		}
-		i = 0;
-		while (i < num_pipes)
-		{
-			if (pipe(pipe_fds + 2 * i) == -1)
-			{
-				perror("pipe");
-				exit(EXIT_FAILURE);
-			}
-			i++;
-		}
-		curr = node;
-		pid = 0;
-		i = 0;
-		while (i <= num_pipes)
-		{
-			pid = fork();
-			if (pid == -1)
-			{
-				perror("fork");
-				exit(EXIT_FAILURE);
-			}
-			else if (pid == 0)
-			{
-				if (i > 0)
-				{
-					dup2(pipe_fds[2 * (i - 1)], STDIN_FILENO);
-					close(pipe_fds[2 * (i - 1)]);
-				}
-				if (i < num_pipes)
-				{
-					dup2(pipe_fds[2 * i + 1], STDOUT_FILENO);
-					close(pipe_fds[2 * i + 1]);
-				}
-				close_pipes(pipe_fds, num_pipes);
-				handle_redirection(curr->left);
-				execute_simple_command(curr->left, exit_status);
-				exit(EXIT_SUCCESS);
-			}
-			curr = curr->right;
-			i++;
-		}
-		close_pipes(pipe_fds, num_pipes);
-		i = 0;
-		while (i <= num_pipes)
-		{
-			waitpid(pid, &status, 0);
-			if(WIFEXITED(status))
-				*exit_status = WEXITSTATUS(status);
-			i++;
-		}
-		free(pipe_fds);
-	}
-	else
-	{
-		handle_redirection(node);
-		execute_simple_command(node, exit_status);
-	}
-}
-
-int	execute_ast(t_ast *ast, int *exit_status)
+void	execute_ast(t_ast *ast, int *exit_status)
 {
 	int	saved_stdin;
 	int	saved_stdout;
 
+	if (syntax_check(ast, exit_status))
+		return ;
 	if (ast->type == AST_SIMPLE_COMMAND)
 	{
 		saved_stdin = dup(STDIN_FILENO);
@@ -239,12 +136,12 @@ int	execute_ast(t_ast *ast, int *exit_status)
 		dup2(saved_stdout, STDOUT_FILENO);
 		close(saved_stdin);
 		close(saved_stdout);
-		return (0);
+		return ;
 	}
 	else if (ast->type == AST_PIPELINE)
 	{
 		execute_pipeline(ast, exit_status);
-		return (0);
+		return ;
 	}
-	return (1);
+	return ;
 }

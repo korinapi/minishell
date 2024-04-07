@@ -6,7 +6,7 @@
 /*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/03 19:04:21 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/03 20:26:59 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/04/07 02:51:16 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,16 +55,16 @@ int	ft_strtoi(const char *str, char **end)
 	result = 0;
 	alarm = 1;
 	signcheck(str, &i, &alarm);
-	while(str[i] != '\0')
+	while (str[i] != '\0')
 	{
 		if (str[i] >= '0' && str[i] <= '9')
 			result = result * 10 + ft_calc(str[i]);
 		else
-			break;
+			break ;
 		i++;
 	}
 	if (end)
-		*end = (char*) &str[i];
+		*end = (char *)&str[i];
 	return (alarm * result);
 }
 
