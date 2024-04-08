@@ -6,7 +6,7 @@
 /*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/29 00:22:57 by marvinleibe       #+#    #+#             */
-/*   Updated: 2024/04/03 17:53:26 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/04/08 03:17:18 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,9 +17,9 @@ void	ft_free_env(char **env)
 {
 	int	i;
 
+	i = 0;
 	if (!env)
 		return ;
-	i = 0;
 	while (env[i])
 	{
 		free(env[i]);
@@ -27,6 +27,17 @@ void	ft_free_env(char **env)
 	}
 	free(env);
 }
+
+// void	ft_free_env_split(char **new_env, int i)
+// {
+// 	int	j;
+
+// 	j = 0;
+// 	while (j < i)
+// 		free(new_env[j++]);
+// 	free(new_env);
+// 	return ;
+// }
 
 void	ft_free_split(char **split)
 {

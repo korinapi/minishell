@@ -6,7 +6,7 @@
 /*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/07 05:09:17 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/07 22:14:35 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/04/08 03:42:07 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,8 @@
 #include "redirection.h"
 #include "utilities.h"
 
-void	execute_command_in_child(int i, int num_pipes, t_pipehelper p_help, int *exit_status)
+void	execute_command_in_child(int i, int num_pipes, t_pipehelper p_help,
+		int *exit_status)
 {
 	if (i > 0)
 	{
@@ -40,9 +41,9 @@ void	execute_command_in_child(int i, int num_pipes, t_pipehelper p_help, int *ex
 void	fork_and_execute_commands_in_pipeline(t_ast *node, int num_pipes,
 		int *pipe_fds, int *exit_status)
 {
-	int		i;
-	pid_t	pid;
-	t_pipehelper p_helper;
+	int				i;
+	pid_t			pid;
+	t_pipehelper	p_helper;
 
 	i = 0;
 	p_helper.curr = node;

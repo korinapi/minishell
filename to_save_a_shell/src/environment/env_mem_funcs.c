@@ -6,7 +6,7 @@
 /*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/07 08:49:41 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/08 00:15:57 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/04/08 03:43:12 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,27 +14,15 @@
 #include "minishell.h"
 #include "utilities.h"
 
-void	ft_free_env_split(char **new_env, int i)
-{
-	int	j;
-
-	j = 0;
-	while (j < i)
-		free(new_env[j++]);
-	free(new_env);
-	return ;
-}
-
 char	**ft_realloc_env(char **environ, char *new_var)
 {
 	char	**new_env;
 	int		i;
-	int		size;
 
-	size = 0;
-	while (environ[size])
-		size++;
-	new_env = malloc(sizeof(char *) * (size + 2));
+	i = 0;
+	while (environ[i])
+		i++;
+	new_env = malloc(sizeof(char *) * (i + 2));
 	if (!new_env)
 		return (NULL);
 	i = -1;
@@ -42,14 +30,14 @@ char	**ft_realloc_env(char **environ, char *new_var)
 	{
 		new_env[i] = malloc(ft_strlen(environ[i]) + 1);
 		if (!new_env[i])
-			return (ft_free_env_split(new_env, i), NULL);
+			return (ft_free_env(new_env), NULL);
 		ft_strcpy(new_env[i], environ[i]);
 		free(environ[i]);
 	}
 	free(environ);
 	new_env[i] = malloc(ft_strlen(new_var) + 1);
 	if (!new_env[i])
-		return (ft_free_env_split(new_env, i), NULL);
+		return (ft_free_env(new_env), NULL);
 	ft_strcpy(new_env[i], new_var);
 	new_env[i + 1] = NULL;
 	return (new_env);

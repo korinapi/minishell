@@ -6,7 +6,7 @@
 /*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 04:34:52 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/07 10:36:56 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/04/08 03:27:25 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,23 +72,21 @@ int	add_env_var(char *name, char *value)
 	int		count;
 	int		len;
 	char	*new_str;
+	char	**new_env;
 
 	count = 0;
 	while (environ[count])
 		count++;
 	len = ft_strlen(name) + ft_strlen(value) + 2;
-	new_str = (char *)malloc(len);
+	new_str = malloc(len);
 	if (!new_str)
 		return (-1);
 	ft_snprintf(new_str, len, "%s=%s", name, value);
-	environ = ft_realloc_env(environ, new_str);
+	new_env = ft_realloc_env(environ, new_str);
+	free(new_str);
 	if (!environ)
-	{
-		free(new_str);
 		return (-1);
-	}
-	environ[count] = new_str;
-	environ[count + 1] = NULL;
+	environ = new_env;
 	return (0);
 }
 
