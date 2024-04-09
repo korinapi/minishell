@@ -6,7 +6,7 @@
 /*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/07 05:31:42 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/07 10:37:50 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/04/09 17:13:26 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -129,7 +129,7 @@ void	handle_single_quote_segment(char **input, t_ast **parent, t_ast **prev)
 
 	data_len = 0;
 	word = parse_quotes(input, '\'');
-	if (prev && ((*prev)->type == AST_SINGLEQUOTED_WORD
+	if (*prev && ((*prev)->type == AST_SINGLEQUOTED_WORD
 			|| (*prev)->type == AST_WORD) && !(*prev)->right)
 	{
 		data_len = ft_strlen((*prev)->data);
@@ -153,7 +153,7 @@ void	handle_double_quote_segment(char **input, t_ast **parent, t_ast **prev)
 
 	word = parse_quotes(input, '"');
 	word = handle_variable_expansion(word);
-	if (prev && ((*prev)->type == AST_DOUBLEQUOTED_WORD
+	if (*prev && ((*prev)->type == AST_DOUBLEQUOTED_WORD
 			|| (*prev)->type == AST_WORD) && !(*prev)->right)
 	{
 		data_len = ft_strlen((*prev)->data);
