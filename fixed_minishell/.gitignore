@@ -1,0 +1,6 @@
+
+.vscode/launch.json
+*.a
+/test_files
+*.o
+minishell
