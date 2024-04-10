@@ -6,7 +6,7 @@
 /*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/07 05:31:42 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/10 00:25:48 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/04/10 04:42:15 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -129,8 +129,11 @@ void	handle_single_quote_segment(char **input, t_ast **parent, t_ast **prev)
 
 	data_len = 0;
 	word = parse_quotes(input, '\'');
-	if (*prev && ((*prev)->type == AST_SINGLEQUOTED_WORD
-			|| (*prev)->type == AST_WORD) && !(*prev)->right)
+	if(!word)
+		return;
+	if (*prev && ((*prev)->type == AST_DOUBLEQUOTED_WORD
+			|| (*prev)->type == AST_WORD
+			|| (*prev)->type == AST_SINGLEQUOTED_WORD) && !(*prev)->right)
 	{
 		data_len = ft_strlen((*prev)->data);
 		(*prev)->data = ft_append_str((*prev)->data, &data_len, word);
@@ -152,9 +155,12 @@ void	handle_double_quote_segment(char **input, t_ast **parent, t_ast **prev)
 	t_ast	*node;
 
 	word = parse_quotes(input, '"');
+	if(!word)
+		return;
 	word = handle_variable_expansion(word);
 	if (*prev && ((*prev)->type == AST_DOUBLEQUOTED_WORD
-			|| (*prev)->type == AST_WORD) && !(*prev)->right)
+			|| (*prev)->type == AST_WORD
+			|| (*prev)->type == AST_SINGLEQUOTED_WORD) && !(*prev)->right)
 	{
 		data_len = ft_strlen((*prev)->data);
 		(*prev)->data = ft_append_str((*prev)->data, &data_len, word);

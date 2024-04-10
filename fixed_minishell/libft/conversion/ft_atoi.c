@@ -6,13 +6,13 @@
 /*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/06 14:49:17 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/03 19:26:20 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/04/10 03:31:25 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../libft.h"
 
-int	ft_whitespace_checker(const char *str)
+int	ft_space_checker(const char *str)
 {
 	int	i;
 
@@ -24,7 +24,7 @@ int	ft_whitespace_checker(const char *str)
 	return (i);
 }
 
-int	ft_calc(char c)
+int	ft_calcs(char c)
 {
 	int	number;
 
@@ -40,7 +40,7 @@ int	ft_atoi(const char *str)
 
 	if (!str)
 		return (0);
-	i = ft_whitespace_checker(str);
+	i = ft_space_checker(str);
 	result = 0;
 	alarm = 1;
 	if (str[i] == '+')
@@ -53,7 +53,7 @@ int	ft_atoi(const char *str)
 	while (str[i] != '\0')
 	{
 		if (str[i] >= '0' && str[i] <= '9')
-			result = result * 10 + ft_calc(str[i]);
+			result = result * 10 + ft_calcs(str[i]);
 		else if (str[i] < '0' || str[i] > '9')
 			return (alarm * result);
 		i++;

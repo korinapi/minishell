@@ -6,7 +6,7 @@
 /*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/30 05:30:21 by marvinleibe       #+#    #+#             */
-/*   Updated: 2024/04/07 22:50:34 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/04/10 03:48:56 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,6 +84,24 @@ int	handle_pwd(char *cwd)
 	}
 }
 
+void	set_pwd(void)
+{
+	char	*pwd;
+	char	*cwd;
+
+	pwd = getenv("PWD");
+	if (pwd == NULL || !*pwd)
+	{
+		cwd = getcwd(NULL, 0);
+		if (cwd != NULL)
+		{
+			if (ft_setenv("PWD", cwd, 1))
+				perror("setting pwd error");
+			free(cwd);
+		}
+	}
+}
+
 int	execute_cd(t_ast *args)
 {
 	t_ast	*arg;
@@ -91,6 +109,7 @@ int	execute_cd(t_ast *args)
 	char	cwd[PATH_MAX];
 
 	path = NULL;
+	set_pwd();
 	if (args->right && args->right->type == AST_WHITESPACE)
 		arg = args->right->right;
 	else

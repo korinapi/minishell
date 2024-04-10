@@ -6,7 +6,7 @@
 /*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/07 05:32:29 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/09 21:23:42 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/04/10 04:40:03 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,16 +47,35 @@ void	handle_nested(char **input, char **word, int *word_len, int *in_quote)
 	if (*in_quote)
 	{
 		if (**input == '\'' || **input == '"')
-			*word = ft_append_str(*word, word_len, parse_n(input, **input));
+		{
+			if (*word)
+				*word = ft_append_str(*word, word_len, parse_n(input, **input));
+			else
+				*word = parse_n(input, **input);
+		}
 		else
 		{
-			*word = ft_append_char(*word, word_len, **input);
+			if (*word)
+				*word = ft_append_char(*word, word_len, **input);
+			else
+			{
+				*word = malloc(sizeof(char));
+				**word = **input;
+				*word_len = 1;
+			}
 			(*input)++;
 		}
 	}
 	else
 	{
-		*word = ft_append_char(*word, word_len, **input);
+		if (*word)
+			*word = ft_append_char(*word, word_len, **input);
+		else
+		{
+			*word = malloc(sizeof(char));
+			**word = **input;
+			*word_len = 1;
+		}
 		(*input)++;
 	}
 }
@@ -92,24 +111,28 @@ char	*parse_quotes_two(char **input, char quote_char)
 
 char	*parse_quotes(char **input, char quote_char)
 {
-	char *word;
-	int word_len;
-	int in_quote;
+	char	*word;
+	int		word_len;
+	int		in_quote;
 
 	word = NULL;
 	word_len = 0;
 	in_quote = 0;
 	(*input)++;
-	while (**input)
+	while (**input && in_quote != 1)
 	{
 		if (**input == quote_char)
 		{
+			if (*(*input + 1) == quote_char)
+				(*input) += 2;
+			else
+				(*input)++;
 			in_quote = !in_quote;
-			(*input)++;
 		}
 		else
 			handle_nested(input, &word, &word_len, &in_quote);
 	}
-	word = ft_append_char(word, &word_len, '\0');
+	if (word)
+		word = ft_append_char(word, &word_len, '\0');
 	return (word);
 }

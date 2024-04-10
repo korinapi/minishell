@@ -6,7 +6,7 @@
 /*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 05:00:31 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/09 23:52:25 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/04/10 03:03:39 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ int	numeric_check(char **args, char *end, int *exit_status)
 	if (*end != '\0')
 	{
 		printf("exit\n");
-		ft_error2("minishell", "exit", args[1], "numeric arguments required");
+		ft_error2("minishell", "exit", args[1], "numeric argument required");
 		*exit_status = 255;
 		return (1);
 	}
