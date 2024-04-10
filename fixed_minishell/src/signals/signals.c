@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   signals.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: puiucorina <puiucorina@student.42.fr>      +#+  +:+       +#+        */
+/*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 04:35:06 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/09 19:36:45 by puiucorina       ###   ########.fr       */
+/*   Updated: 2024/04/09 21:25:37 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ void	signal_handler(int signo)
 	{
 		rl_on_new_line();
 		return_value = write(STDERR_FILENO, "\n", 1);
-		//rl_replace_line("", 0);
+		rl_replace_line("", 0);
 		rl_redisplay();
 		rl_point = 0;
 		g_sigint_received = 1;

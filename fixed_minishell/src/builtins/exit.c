@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exit.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: puiucorina <puiucorina@student.42.fr>      +#+  +:+       +#+        */
+/*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 05:00:31 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/09 19:36:32 by puiucorina       ###   ########.fr       */
+/*   Updated: 2024/04/09 23:52:25 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ void	exit_shell(t_ast *ast, char **args, int exit_status)
 		ft_free_split(args);
 	free_ast(ast);
 	ft_free_env(environ);
-	//rl_clear_history();
+	rl_clear_history();
 	exit(exit_status);
 }
 

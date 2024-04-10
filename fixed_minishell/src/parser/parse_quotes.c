@@ -6,7 +6,7 @@
 /*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/07 05:32:29 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/07 09:39:36 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/04/09 21:23:42 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,30 +61,55 @@ void	handle_nested(char **input, char **word, int *word_len, int *in_quote)
 	}
 }
 
-char	*parse_quotes(char **input, char quote_char)
+char	*parse_quotes_two(char **input, char quote_char)
 {
-	char	*word = NULL;
-	int		word_len = 0;
-	char    *startingQuote = NULL;
-	char	*endingQuote = NULL;
+	char	*word;
+	int		word_len;
+	char	*startingQuote;
+	char	*endingQuote;
 
-
+	word = NULL;
+	word_len = 0;
+	startingQuote = NULL;
+	endingQuote = NULL;
 	while (**input && !endingQuote)
 	{
 		if (**input == quote_char)
 		{
-			if(NULL == startingQuote)
+			if (NULL == startingQuote)
 				startingQuote = (*input + 1);
-			else if(*(*input + 1) == quote_char)
-				(*input)++; // skip the next quote
+			else if (*(*input + 1) == quote_char)
+				(*input)++;
 			else
 				endingQuote = *input;
 		}
 		else
 			word = ft_append_char(word, &word_len, **input);
-
 		(*input)++;
 	}
+	return (word);
+}
 
+char	*parse_quotes(char **input, char quote_char)
+{
+	char *word;
+	int word_len;
+	int in_quote;
+
+	word = NULL;
+	word_len = 0;
+	in_quote = 0;
+	(*input)++;
+	while (**input)
+	{
+		if (**input == quote_char)
+		{
+			in_quote = !in_quote;
+			(*input)++;
+		}
+		else
+			handle_nested(input, &word, &word_len, &in_quote);
+	}
+	word = ft_append_char(word, &word_len, '\0');
 	return (word);
 }

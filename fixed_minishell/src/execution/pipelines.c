@@ -6,7 +6,7 @@
 /*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/07 05:09:17 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/08 03:42:07 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/04/10 02:34:29 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@
 #include "redirection.h"
 #include "utilities.h"
 
-void	execute_command_in_child(int i, int num_pipes, t_pipehelper p_help,
+int	execute_command_in_child(int i, int num_pipes, t_pipehelper p_help,
 		int *exit_status)
 {
 	if (i > 0)
@@ -33,9 +33,9 @@ void	execute_command_in_child(int i, int num_pipes, t_pipehelper p_help,
 		close(p_help.pipe_fds[2 * i + 1]);
 	}
 	close_pipes(p_help.pipe_fds, num_pipes);
-	handle_redirection(p_help.curr->left);
+	handle_redirection(p_help.curr->left, exit_status);
 	execute_simple_command(p_help.curr->left, exit_status);
-	exit(EXIT_SUCCESS);
+	return(*exit_status);
 }
 
 void	fork_and_execute_commands_in_pipeline(t_ast *node, int num_pipes,
@@ -57,7 +57,10 @@ void	fork_and_execute_commands_in_pipeline(t_ast *node, int num_pipes,
 			exit(EXIT_FAILURE);
 		}
 		else if (pid == 0)
-			execute_command_in_child(i, num_pipes, p_helper, exit_status);
+		{
+			*exit_status = execute_command_in_child(i, num_pipes, p_helper, exit_status);
+			exit(*exit_status);
+		}
 		p_helper.curr = p_helper.curr->right;
 		i++;
 	}
@@ -116,14 +119,14 @@ void	execute_pipeline(t_ast *node, int *exit_status)
 		i = 0;
 		while (i <= num_pipes)
 		{
-			wait_and_update_status(-1, exit_status);
+			*exit_status = wait_and_update_status(-1);
 			i++;
 		}
 		free(pipe_fds);
 	}
 	else
 	{
-		handle_redirection(node);
+		handle_redirection(node, exit_status);
 		execute_simple_command(node, exit_status);
 	}
 }

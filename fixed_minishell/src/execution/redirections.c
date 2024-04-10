@@ -6,7 +6,7 @@
 /*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 04:34:31 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/07 04:32:42 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/04/10 02:32:50 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ static char	*generate_tmp_file_name(void)
 	return (tmp_file);
 }
 
-void	execute_redirection(t_ast *node)
+int	execute_redirection(t_ast *node)
 {
 	int		mode;
 	int		fd;
@@ -51,6 +51,12 @@ void	execute_redirection(t_ast *node)
 	{
 		tmp_file = generate_tmp_file_name();
 		fd = open(tmp_file, O_CREAT | O_WRONLY | O_TRUNC, 0644);
+		if (fd == -1)
+		{
+			// ft_error("minishell", tmp_file, strerror(errno));
+			free(tmp_file);
+			return (errno);
+		}
 		line = NULL;
 		while (1)
 		{
@@ -63,6 +69,12 @@ void	execute_redirection(t_ast *node)
 		free(line);
 		close(fd);
 		fd = open(tmp_file, O_RDONLY);
+		if (fd == -1)
+		{
+			// ft_error("minishell", tmp_file, strerror(errno));
+			free(tmp_file);
+			return (errno);
+		}
 		dup2(fd, STDIN_FILENO);
 		close(fd);
 		free(tmp_file);
@@ -78,8 +90,8 @@ void	execute_redirection(t_ast *node)
 		fd = open(node->redirection_file, flags, 0644);
 		if (fd == -1)
 		{
-			ft_error("minishell", node->redirection_file, strerror(errno));
-			return ;
+			// ft_error("minishell", node->redirection_file, strerror(errno));
+			return (errno);
 		}
 		if (mode == REDIR_OUT || mode == REDIR_OUT_APPEND)
 			dup2(fd, STDOUT_FILENO);
@@ -87,18 +99,30 @@ void	execute_redirection(t_ast *node)
 			dup2(fd, STDIN_FILENO);
 		close(fd);
 	}
+	return (0);
 }
 
-int	handle_redirection(t_ast *node)
+int	handle_redirection(t_ast *node, int *exit_status)
 {
+	int	val;
+
 	if (node == NULL)
 		return (0);
 	if (node->type == AST_REDIRECTION)
-		execute_redirection(node);
+	{
+		val = execute_redirection(node);
+		if (val != 0)
+		{
+			*exit_status = val;
+			return (1);
+		}
+	}
 	else
 	{
-		handle_redirection(node->left);
-		handle_redirection(node->right);
+		if (handle_redirection(node->left, exit_status))
+			return (1);
+		if (handle_redirection(node->right, exit_status))
+			return (1);
 	}
 	return (0);
 }

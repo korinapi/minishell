@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: puiucorina <puiucorina@student.42.fr>      +#+  +:+       +#+        */
+/*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/01 19:59:44 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/09 19:36:25 by puiucorina       ###   ########.fr       */
+/*   Updated: 2024/04/10 00:46:57 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ int	startup_check(int argc, char **argv)
 void	close_main(void)
 {
 	ft_free_env(environ);
-	//rl_clear_history();
+	rl_clear_history();
 	printf("exit\n");
 }
 
@@ -57,6 +57,7 @@ int	main(int argc, char **argv)
 		ast = parse_input(input);
 		if (ast)
 		{
+			// print_ast(ast, 0, "Root");
 			execute_ast(ast, &exit_status);
 			free_ast(ast);
 		}

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse_pipes.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cpuiu <cpuiu@student.42.fr>                +#+  +:+       +#+        */
+/*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/07 05:31:22 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/08 12:12:40 by cpuiu            ###   ########.fr       */
+/*   Updated: 2024/04/10 01:57:43 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ int	handle_pipeline_continuation_or_redirection(char **input, t_ast **node)
 	}
 	else if (**input == '>' || **input == '<')
 	{
-		parse_redirection(*input, &(*node)->left);
+		parse_redirection(input, &(*node)->left);
 		return (1);
 	}
 	else

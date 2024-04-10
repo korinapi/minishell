@@ -6,7 +6,7 @@
 /*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 04:29:03 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/07 23:16:40 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/04/09 21:16:31 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,9 +55,7 @@ t_ast	*parse_input(char *input)
 	if (has_pipes(input))
 		parse_pipeline(&input, &ast);
 	else
-	{
 		parse_simple_command(&input, &ast);
-	}
 	return (ast);
 }
 

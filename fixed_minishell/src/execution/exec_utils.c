@@ -6,7 +6,7 @@
 /*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/05 19:42:46 by cpuiu             #+#    #+#             */
-/*   Updated: 2024/04/07 23:37:27 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/04/10 02:37:46 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,12 +44,22 @@ char	*find_command_path(char *command, char **paths)
 	return (NULL);
 }
 
-void	execute_command_from_path(char **args)
+void	execute_command_from_path(char **args, int *exit_status)
 {
 	char	*path_env;
 	char	**paths;
 	char	*command_path;
 
+	if(*exit_status == ENOENT || *exit_status == ENOTDIR)
+	{
+		ft_fprintf(STDERR_FILENO, " %s\n", strerror(*exit_status));
+		exit (1);
+	}
+	else if (*exit_status == EACCES)
+	{
+		ft_fprintf(STDERR_FILENO, " %s\n", strerror(*exit_status));
+		exit(1);
+	}
 	path_env = getenv("PATH");
 	paths = ft_split(path_env, ':');
 	command_path = find_command_path(args[0], paths);
@@ -60,21 +70,27 @@ void	execute_command_from_path(char **args)
 		ft_putchar_fd('\n', STDERR_FILENO);
 		exit(127);
 	}
-	execve(command_path, args, NULL);
+	if (execve(command_path, args, NULL) == -1)
+	{
+		ft_fprintf(STDERR_FILENO, "execve failed: %s\n", strerror(errno));
+		free(command_path);
+		exit(126);
+	}
 	free(command_path);
-	ft_fprintf(STDERR_FILENO, "execve failed: %s\n", strerror(errno));
 	exit(1);
 }
 
-void	wait_and_update_status(pid_t pid, int *exit_status)
+int	wait_and_update_status(pid_t pid)
 {
 	int	status;
 
 	waitpid(pid, &status, 0);
 	if (WIFEXITED(status))
-		*exit_status = WEXITSTATUS(status);
+		return (WEXITSTATUS(status));
+	else if (WIFSIGNALED(status))
+		return (128 + WTERMSIG(status));
 	else
-		*exit_status = 1;
+		return (1);
 }
 
 void	close_pipes(int *pipe_fds, int num_pipes)
