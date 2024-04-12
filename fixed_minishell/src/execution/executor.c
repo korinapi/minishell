@@ -6,7 +6,7 @@
 /*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 04:29:28 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/12 06:58:31 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/04/12 13:36:11 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ void	execute_simple_command(t_ast *node, int *exit_status)
 	int		i;
 	t_ast	*current_node;
 
-	handle_redirection(node->left, exit_status);
+	handle_redirection(node, exit_status);
 	args = ft_calloc(ast_count_nodes(node->left) + 1, sizeof(char *));
 	i = 0;
 	current_node = node->left;

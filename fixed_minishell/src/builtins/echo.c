@@ -6,7 +6,7 @@
 /*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 05:16:28 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/12 06:43:47 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/04/12 10:05:58 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,23 +96,30 @@ int	execute_echo(t_ast *args, int *exit_status)
 	t_ast	*arg;
 	char	*exit_stat;
 	int		print_newline;
+	int		first_arg;
 
+	first_arg = 1;
 	print_newline = 1;
 	exit_stat = ft_itoa(*exit_status);
 	arg = args->right;
-	while (arg && (arg->type == AST_WHITESPACE || arg->type == AST_REDIRECTION))
+	while (arg && arg->type == AST_WHITESPACE)
 		arg = arg->right;
 	if (arg && is_option(arg))
 		check_flag_echo(&arg, &print_newline);
 	while (arg)
 	{
-		print_ast_arguments(arg, exit_stat);
-		arg = arg->right;
-		if (arg && arg->type == AST_WHITESPACE)
+		if (arg->type == AST_SPECIAL_PARAM)
 		{
-			ft_putchar_fd(' ', STDOUT_FILENO);
-			arg = arg->right;
+			ft_printf("%d", *exit_status);
 		}
+		else if (arg->type != AST_WHITESPACE && arg->type != AST_REDIRECTION)
+		{
+			if (!first_arg)
+				ft_putchar_fd(' ', STDOUT_FILENO);
+			print_ast_arguments(arg, exit_stat);
+			first_arg = 0;
+		}
+		arg = arg->right;
 	}
 	if (print_newline)
 		ft_putendl_fd("", STDOUT_FILENO);

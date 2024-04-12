@@ -6,7 +6,7 @@
 /*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/01 19:59:44 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/12 08:12:42 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/04/12 14:01:27 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ void	set_man_environ(void)
 	ft_setenv("PWD", cwd, 1);
 	sh_level = getenv("SHLVL");
 	if (sh_level == NULL || ft_atoi(sh_level) == 0)
-		level = 0;
+		level = 1;
 	else
 		level = ft_atoi(sh_level) + 1;
 	sh_level_str = (char *)malloc(16 * sizeof(char));

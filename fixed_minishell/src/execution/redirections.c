@@ -6,7 +6,7 @@
 /*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 04:34:31 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/12 06:52:52 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/04/12 13:46:42 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,14 +14,16 @@
 #include "executor.h"
 #include "minishell.h"
 
-static char	*generate_tmp_file_name(void)
+static char *generate_tmp_file_name(void)
 {
-	static const char	tmp_dir[] = "/tmp/minishell_";
-	char				*tmp_file;
-	int					read_result;
-	int					fd;
+	static const char tmp_dir[] = "/tmp/minishell_";
+	char *tmp_file;
+	unsigned char random_bytes[12];
+	int read_result;
+	int fd;
+	unsigned int i;
 
-	tmp_file = malloc(sizeof(tmp_dir) + 12);
+	tmp_file = malloc(sizeof(tmp_dir) + 24 + 1);
 	if (!tmp_file)
 		return (NULL);
 	ft_strcpy(tmp_file, tmp_dir);
@@ -31,20 +33,25 @@ static char	*generate_tmp_file_name(void)
 		free(tmp_file);
 		return (NULL);
 	}
-	read_result = read(fd, tmp_file + ft_strlen(tmp_dir), 12);
-	(void)read_result;
+	read_result = read(fd, random_bytes, sizeof(random_bytes));
 	close(fd);
-	tmp_file[ft_strlen(tmp_file)] = '\0';
+	if (read_result != sizeof(random_bytes))
+	{
+		free(tmp_file);
+		return (NULL);
+	}
+	for (i = 0; i < sizeof(random_bytes); i++)
+		sprintf(tmp_file + strlen(tmp_file), "%02x", random_bytes[i]);
 	return (tmp_file);
 }
 
 int	execute_redirection(t_ast *node)
 {
-	int		mode;
-	int		fd;
-	int		flags;
-	char	*line;
-	char	*tmp_file;
+	int mode;
+	int fd;
+	int flags;
+	char *line;
+	char *tmp_file;
 
 	mode = node->redirection_mode;
 	if (mode == REDIR_HEREDOC)
@@ -53,15 +60,21 @@ int	execute_redirection(t_ast *node)
 		fd = open(tmp_file, O_CREAT | O_WRONLY | O_TRUNC, 0644);
 		if (fd == -1)
 		{
-			// ft_error("minishell", tmp_file, strerror(errno));
+			ft_error("minishell", tmp_file, strerror(errno));
 			free(tmp_file);
-			return (errno);
+			return (1);
 		}
+		printf("Starting heredoc input. Type '%s' to end.\n", node->redirection_file);
 		line = NULL;
 		while (1)
 		{
-			line = readline("> ");
-			if (!ft_strcmp(line, node->heredoc_delimiter))
+			line = readline("heredoc> ");
+			if (line == NULL)
+			{
+				printf("EOF or error encountered. Exiting heredoc.\n");
+				break ;
+			}
+			if (!ft_strcmp(line, node->redirection_file))
 				break ;
 			ft_putendl_fd(line, fd);
 			free(line);
@@ -69,12 +82,6 @@ int	execute_redirection(t_ast *node)
 		free(line);
 		close(fd);
 		fd = open(tmp_file, O_RDONLY);
-		if (fd == -1)
-		{
-			// ft_error("minishell", tmp_file, strerror(errno));
-			free(tmp_file);
-			return (errno);
-		}
 		dup2(fd, STDIN_FILENO);
 		close(fd);
 		free(tmp_file);
