@@ -6,7 +6,7 @@
 /*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 04:29:28 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/12 06:45:52 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/04/12 06:58:31 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,6 @@ void	execute_simple_command(t_ast *node, int *exit_status)
 		*exit_status = execute_builtin(node, exit_status);
 	else
 		*exit_status = execute_external(args, exit_status);
-
 	free(args);
 }
 

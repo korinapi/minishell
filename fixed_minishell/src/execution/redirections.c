@@ -6,7 +6,7 @@
 /*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 04:34:31 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/10 02:32:50 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/04/12 06:52:52 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,4 +125,20 @@ int	handle_redirection(t_ast *node, int *exit_status)
 			return (1);
 	}
 	return (0);
+}
+
+bool	has_redirection_nodes(t_ast *node)
+{
+	if (node == NULL)
+	{
+		return (false);
+	}
+
+	if (node->type == AST_REDIRECTION)
+	{
+		return (true);
+	}
+
+	return (has_redirection_nodes(node->left)
+		|| has_redirection_nodes(node->right));
 }

@@ -6,7 +6,7 @@
 /*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/07 05:09:17 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/12 06:46:34 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/04/12 06:56:53 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,6 @@ int	execute_command_in_child(int i, int num_pipes, t_pipehelper p_help,
 		close(p_help.pipe_fds[2 * i + 1]);
 	}
 	close_pipes(p_help.pipe_fds, num_pipes);
-	handle_redirection(p_help.curr->left, exit_status);
 	execute_simple_command(p_help.curr->left, exit_status);
 	return(*exit_status);
 }
