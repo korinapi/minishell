@@ -6,7 +6,7 @@
 /*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 05:16:28 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/10 01:10:22 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/04/12 06:43:47 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,9 +88,7 @@ void	print_ast_arguments(t_ast *arg, char *exit_stat)
 			ft_putstr_fd(var_name, STDOUT_FILENO);
 	}
 	else if (arg->type == AST_SPECIAL_PARAM)
-	{
 		ft_putstr_fd(exit_stat, STDOUT_FILENO);
-	}
 }
 
 int	execute_echo(t_ast *args, int *exit_status)
@@ -105,9 +103,7 @@ int	execute_echo(t_ast *args, int *exit_status)
 	while (arg && (arg->type == AST_WHITESPACE || arg->type == AST_REDIRECTION))
 		arg = arg->right;
 	if (arg && is_option(arg))
-	{
 		check_flag_echo(&arg, &print_newline);
-	}
 	while (arg)
 	{
 		print_ast_arguments(arg, exit_stat);
@@ -119,9 +115,7 @@ int	execute_echo(t_ast *args, int *exit_status)
 		}
 	}
 	if (print_newline)
-	{
 		ft_putendl_fd("", STDOUT_FILENO);
-	}
 	free(exit_stat);
 	return (0);
 }

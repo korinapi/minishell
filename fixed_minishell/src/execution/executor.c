@@ -6,7 +6,7 @@
 /*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 04:29:28 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/10 02:34:06 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/04/12 06:45:52 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,11 +41,7 @@ void	execute_simple_command(t_ast *node, int *exit_status)
 	char	**args;
 	int		i;
 	t_ast	*current_node;
-	int		saved_stdin;
-	int		saved_stdout;
 
-	saved_stdin = dup(STDIN_FILENO);
-	saved_stdout = dup(STDOUT_FILENO);
 	handle_redirection(node->left, exit_status);
 	args = ft_calloc(ast_count_nodes(node->left) + 1, sizeof(char *));
 	i = 0;
@@ -62,10 +58,7 @@ void	execute_simple_command(t_ast *node, int *exit_status)
 		*exit_status = execute_builtin(node, exit_status);
 	else
 		*exit_status = execute_external(args, exit_status);
-	dup2(saved_stdin, STDIN_FILENO);
-	dup2(saved_stdout, STDOUT_FILENO);
-	close(saved_stdin);
-	close(saved_stdout);
+
 	free(args);
 }
 
@@ -83,18 +76,17 @@ int	syntax_check(t_ast *ast, int *exit_status)
 
 void	execute_ast(t_ast *ast, int *exit_status)
 {
+	int		saved_stdin;
+	int		saved_stdout;
+
 	if (syntax_check(ast, exit_status))
 		return ;
-
-	if (ast->type == AST_SIMPLE_COMMAND)
-	{
-		execute_simple_command(ast, exit_status);
-		return ;
-	}
-	else if (ast->type == AST_PIPELINE)
-	{
-		execute_pipeline(ast, exit_status);
-		return ;
-	}
+	saved_stdin = dup(STDIN_FILENO);
+	saved_stdout = dup(STDOUT_FILENO);
+	execute_pipeline(ast, exit_status);
+	dup2(saved_stdin, STDIN_FILENO);
+	dup2(saved_stdout, STDOUT_FILENO);
+	close(saved_stdin);
+	close(saved_stdout);
 	return ;
 }

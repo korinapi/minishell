@@ -6,7 +6,7 @@
 /*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/07 05:09:17 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/10 02:34:29 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/04/12 06:46:34 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,8 +125,5 @@ void	execute_pipeline(t_ast *node, int *exit_status)
 		free(pipe_fds);
 	}
 	else
-	{
-		handle_redirection(node, exit_status);
 		execute_simple_command(node, exit_status);
-	}
 }
