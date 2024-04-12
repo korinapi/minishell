@@ -6,7 +6,7 @@
 /*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/30 05:16:03 by marvinleibe       #+#    #+#             */
-/*   Updated: 2024/04/12 17:25:27 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/04/12 18:31:44 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,12 @@ int	process_export_arg(t_ast *arg)
 			var_name = arg->data;
 			if (valid_check(arg, var_name))
 				return (1);
+			if(!*value && arg->right && arg->right->type == AST_VARIABLE)
+			{
+				value = getenv(arg->right->data + 1);
+				*value = '\0';
+				value++;
+			}
 			ft_setenv(var_name, value, 1);
 		}
 		else
