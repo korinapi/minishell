@@ -6,7 +6,7 @@
 /*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/03 17:32:21 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/07 05:24:01 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/04/12 17:21:08 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,12 +70,12 @@ int	is_valid(const char *str)
 {
 	if (!*str)
 		return (0);
-	if (!ft_isalpha(*str) && *str != '_')
+	if (!ft_isalpha(*str) && *str != '_' && *str != '/')
 		return (0);
 	str++;
 	while (*str)
 	{
-		if (!ft_isalnum(*str) && *str != '_')
+		if (!ft_isalnum(*str) && *str != '_' && *str != '/')
 			return (0);
 		str++;
 	}
