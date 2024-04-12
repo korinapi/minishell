@@ -6,7 +6,7 @@
 /*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/30 05:30:21 by marvinleibe       #+#    #+#             */
-/*   Updated: 2024/04/10 03:48:56 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/04/12 06:35:01 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ int	handle_home(t_ast *arg, char **path)
 
 int	handle_old(t_ast *arg, char **path)
 {
-	if (!ft_strcmp(arg->data, "-") && !*(arg->data + 1))
+	if (arg && !ft_strcmp(arg->data, "-") && !*(arg->data + 1))
 	{
 		*path = getenv("OLDPWD");
 		if (!*path)
@@ -66,7 +66,7 @@ int	handle_var(t_ast *arg, char **path)
 			*path = arg->data;
 		return (0);
 	}
-	return (1);
+	return (0);
 }
 
 int	handle_pwd(char *cwd)
