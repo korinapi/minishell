@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redirections.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cpuiu <cpuiu@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 04:34:31 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/12 13:46:42 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/04/18 20:33:16 by cpuiu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,14 +14,14 @@
 #include "executor.h"
 #include "minishell.h"
 
-static char *generate_tmp_file_name(void)
+static char	*generate_tmp_file_name(void)
 {
-	static const char tmp_dir[] = "/tmp/minishell_";
-	char *tmp_file;
-	unsigned char random_bytes[12];
-	int read_result;
-	int fd;
-	unsigned int i;
+	static const char	tmp_dir[] = "/tmp/minishell_";
+	char				*tmp_file;
+	unsigned char		random_bytes[12];
+	int					read_result;
+	int					fd;
+	unsigned int		i;
 
 	tmp_file = malloc(sizeof(tmp_dir) + 24 + 1);
 	if (!tmp_file)
@@ -45,46 +45,116 @@ static char *generate_tmp_file_name(void)
 	return (tmp_file);
 }
 
+int	create_temp_file(char **tmp_file)
+{
+	int	fd;
+
+	*tmp_file = generate_tmp_file_name();
+	fd = open(*tmp_file, O_CREAT | O_WRONLY | O_TRUNC, 0644);
+	if (fd == -1)
+	{
+		ft_error("minishell", *tmp_file, strerror(errno));
+		free(*tmp_file);
+		*tmp_file = NULL;
+		return (-1);
+	}
+	return (fd);
+}
+void	read_heredoc_input(int fd, const char *end_marker)
+{
+	char	*line;
+
+	line = NULL;
+	while (1)
+	{
+		line = readline("heredoc> ");
+		if (line == NULL || !ft_strcmp(line, end_marker))
+		{
+			printf(line == NULL ? "EOF or error encountered. Exiting heredoc.\n" : "");
+			free(line);
+			break ;
+		}
+		ft_putendl_fd(line, fd);
+		free(line);
+	}
+}
+int	redirect_stdin_from_file(const char *filename)
+{
+	int	fd;
+
+	fd = open(filename, O_RDONLY);
+	if (fd == -1)
+	{
+		perror("Error reopening heredoc temp file");
+		return (1);
+	}
+	dup2(fd, STDIN_FILENO);
+	close(fd);
+	return (0);
+}
+
+int	execute_heredoc(t_ast *node)
+{
+	char	*tmp_file;
+	int		fd;
+
+	fd = create_temp_file(&tmp_file);
+	if (fd == -1)
+		return (1);
+	read_heredoc_input(fd, node->redirection_file);
+	close(fd);
+	if (redirect_stdin_from_file(tmp_file) != 0)
+	{
+		free(tmp_file);
+		return (1);
+	}
+	free(tmp_file);
+	return (0);
+}
+
+int	execute_redirections_fds(t_ast *node)
+{
+	t_redirection	*redir;
+	int				fd;
+	int				flags;
+
+	for (int i = 0; i < node->num_redirections; i++)
+	{
+		redir = &node->redirections[i];
+		if (redir->mode == REDIR_OUT)
+			flags = O_CREAT | O_WRONLY | O_TRUNC;
+		else if (redir->mode == REDIR_OUT_APPEND)
+			flags = O_CREAT | O_WRONLY | O_APPEND;
+		else if (redir->mode == REDIR_IN)
+			flags = O_RDONLY;
+		else
+			continue ;
+		fd = open(redir->filename, flags, 0644);
+		if (fd == -1)
+		{
+			perror("Error opening file");
+			return (errno);
+		}
+		if (redir->mode == REDIR_OUT || redir->mode == REDIR_OUT_APPEND)
+			dup2(fd, STDOUT_FILENO);
+		else if (redir->mode == REDIR_IN)
+			dup2(fd, STDIN_FILENO);
+		close(fd);
+	}
+	return (0);
+}
+
 int	execute_redirection(t_ast *node)
 {
-	int mode;
-	int fd;
-	int flags;
-	char *line;
-	char *tmp_file;
+	int	mode;
 
+	int	fd;
+	int	flags;
 	mode = node->redirection_mode;
 	if (mode == REDIR_HEREDOC)
 	{
-		tmp_file = generate_tmp_file_name();
-		fd = open(tmp_file, O_CREAT | O_WRONLY | O_TRUNC, 0644);
-		if (fd == -1)
-		{
-			ft_error("minishell", tmp_file, strerror(errno));
-			free(tmp_file);
+		if (execute_heredoc(node) != 0)
 			return (1);
-		}
-		printf("Starting heredoc input. Type '%s' to end.\n", node->redirection_file);
-		line = NULL;
-		while (1)
-		{
-			line = readline("heredoc> ");
-			if (line == NULL)
-			{
-				printf("EOF or error encountered. Exiting heredoc.\n");
-				break ;
-			}
-			if (!ft_strcmp(line, node->redirection_file))
-				break ;
-			ft_putendl_fd(line, fd);
-			free(line);
-		}
-		free(line);
-		close(fd);
-		fd = open(tmp_file, O_RDONLY);
-		dup2(fd, STDIN_FILENO);
-		close(fd);
-		free(tmp_file);
 	}
 	else
 	{
@@ -96,15 +166,13 @@ int	execute_redirection(t_ast *node)
 			flags = O_RDONLY;
 		fd = open(node->redirection_file, flags, 0644);
 		if (fd == -1)
-		{
-			// ft_error("minishell", node->redirection_file, strerror(errno));
 			return (errno);
-		}
 		if (mode == REDIR_OUT || mode == REDIR_OUT_APPEND)
 			dup2(fd, STDOUT_FILENO);
 		else
 			dup2(fd, STDIN_FILENO);
 		close(fd);
+		//execute_redirections_fds(node);
 	}
 	return (0);
 }
@@ -140,12 +208,10 @@ bool	has_redirection_nodes(t_ast *node)
 	{
 		return (false);
 	}
-
 	if (node->type == AST_REDIRECTION)
 	{
 		return (true);
 	}
-
 	return (has_redirection_nodes(node->left)
 		|| has_redirection_nodes(node->right));
 }

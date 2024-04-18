@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cpuiu <cpuiu@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/01 19:59:44 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/12 17:25:54 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/04/18 20:43:26 by cpuiu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,8 +42,9 @@ void	set_man_environ(void)
 	char	*cwd;
 	int		level;
 	char	*sh_level;
-	char	*sh_level_str = NULL;
+	char	*sh_level_str;
 
+	sh_level_str = NULL;
 	cwd = getcwd(NULL, 0);
 	ft_setenv("PWD", cwd, 1);
 	sh_level = getenv("SHLVL");
@@ -78,7 +79,6 @@ int	main(int argc, char **argv)
 		ast = parse_input(input);
 		if (ast)
 		{
-			// print_ast(ast, 0, "Root");
 			execute_ast(ast, &exit_status);
 			free_ast(ast);
 		}

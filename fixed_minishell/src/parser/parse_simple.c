@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse_simple.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cpuiu <cpuiu@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/07 05:31:42 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/12 17:25:36 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/04/18 20:24:35 by cpuiu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -129,8 +129,8 @@ void	handle_single_quote_segment(char **input, t_ast **parent, t_ast **prev)
 
 	data_len = 0;
 	word = parse_quotes(input, '\'');
-	if(!word)
-		return;
+	if (!word)
+		return ;
 	if (*prev && ((*prev)->type == AST_DOUBLEQUOTED_WORD
 			|| (*prev)->type == AST_WORD
 			|| (*prev)->type == AST_SINGLEQUOTED_WORD) && !(*prev)->right)
@@ -155,8 +155,8 @@ void	handle_double_quote_segment(char **input, t_ast **parent, t_ast **prev)
 	t_ast	*node;
 
 	word = parse_quotes(input, '"');
-	if(!word)
-		return;
+	if (!word)
+		return ;
 	word = handle_variable_expansion(word);
 	if (*prev && ((*prev)->type == AST_DOUBLEQUOTED_WORD
 			|| (*prev)->type == AST_WORD

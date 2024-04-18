@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse_quotes.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cpuiu <cpuiu@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/07 05:32:29 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/12 08:10:39 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/04/18 20:46:04 by cpuiu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,23 +84,23 @@ char	*parse_quotes_two(char **input, char quote_char)
 {
 	char	*word;
 	int		word_len;
-	char	*startingQuote;
-	char	*endingQuote;
+	char	*starting_quote;
+	char	*ending_quote;
 
 	word = NULL;
 	word_len = 0;
-	startingQuote = NULL;
-	endingQuote = NULL;
-	while (**input && !endingQuote)
+	starting_quote = NULL;
+	ending_quote = NULL;
+	while (**input && !ending_quote)
 	{
 		if (**input == quote_char)
 		{
-			if (NULL == startingQuote)
-				startingQuote = (*input + 1);
+			if (NULL == starting_quote)
+				starting_quote = (*input + 1);
 			else if (*(*input + 1) == quote_char)
 				(*input)++;
 			else
-				endingQuote = *input;
+				ending_quote = *input;
 		}
 		else
 			word = ft_append_char(word, &word_len, **input);

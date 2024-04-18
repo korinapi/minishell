@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cpuiu <cpuiu@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 04:29:28 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/12 13:36:11 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/04/18 20:41:16 by cpuiu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,4 +88,16 @@ void	execute_ast(t_ast *ast, int *exit_status)
 	close(saved_stdin);
 	close(saved_stdout);
 	return ;
+}
+
+void	close_pipes(int *pipe_fds, int num_pipes)
+{
+	int	i;
+
+	i = 0;
+	while (i < 2 * num_pipes)
+	{
+		close(pipe_fds[i]);
+		i++;
+	}
 }

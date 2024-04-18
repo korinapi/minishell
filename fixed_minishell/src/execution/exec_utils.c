@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_utils.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cpuiu <cpuiu@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/05 19:42:46 by cpuiu             #+#    #+#             */
-/*   Updated: 2024/04/10 02:37:46 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/04/18 20:41:33 by cpuiu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,40 +44,88 @@ char	*find_command_path(char *command, char **paths)
 	return (NULL);
 }
 
-void	execute_command_from_path(char **args, int *exit_status)
+// void	execute_command_from_path(char **args, int *exit_status)
+// {
+// 	char	*path_env;
+// 	char	**paths;
+// 	char	*command_path;
+
+// 	if (*exit_status == ENOENT || *exit_status == ENOTDIR)
+// 	{
+// 		ft_fprintf(STDERR_FILENO, " %s\n", strerror(*exit_status));
+// 		exit(1);
+// 	}
+// 	else if (*exit_status == EACCES)
+// 	{
+// 		ft_fprintf(STDERR_FILENO, " %s\n", strerror(*exit_status));
+// 		exit(1);
+// 	}
+// 	path_env = getenv("PATH");
+// 	paths = ft_split(path_env, ':');
+// 	command_path = find_command_path(args[0], paths);
+// 	if (command_path == NULL)
+// 	{
+// 		ft_putstr_fd("Command not found: ", STDERR_FILENO);
+// 		ft_putstr_fd(args[0], STDERR_FILENO);
+// 		ft_putchar_fd('\n', STDERR_FILENO);
+// 		exit(127);
+// 	}
+// 	if (execve(command_path, args, NULL) == -1)
+// 	{
+// 		ft_fprintf(STDERR_FILENO, "execve failed: %s\n", strerror(errno));
+// 		free(command_path);
+// 		exit(126);
+// 	}
+// 	free(command_path);
+// 	exit(1);
+// }
+
+void	handle_specific_error(int *exit_status)
+{
+	if (*exit_status == ENOENT || *exit_status == ENOTDIR
+		|| *exit_status == EACCES)
+	{
+		ft_fprintf(STDERR_FILENO, " %s\n", strerror(*exit_status));
+		exit(1);
+	}
+}
+
+char	*get_command_path(char *command)
 {
 	char	*path_env;
 	char	**paths;
 	char	*command_path;
 
-	if(*exit_status == ENOENT || *exit_status == ENOTDIR)
-	{
-		ft_fprintf(STDERR_FILENO, " %s\n", strerror(*exit_status));
-		exit (1);
-	}
-	else if (*exit_status == EACCES)
-	{
-		ft_fprintf(STDERR_FILENO, " %s\n", strerror(*exit_status));
-		exit(1);
-	}
 	path_env = getenv("PATH");
+	if (!path_env)
+	{
+		return (NULL);
+	}
 	paths = ft_split(path_env, ':');
-	command_path = find_command_path(args[0], paths);
-	if (command_path == NULL)
+	command_path = find_command_path(command, paths);
+	free(paths);
+	return (command_path);
+}
+
+void	execute_command_from_path(char **args, int *exit_status)
+{
+	char	*command_path;
+
+	handle_specific_error(exit_status);
+	command_path = get_command_path(args[0]);
+	if (!command_path)
 	{
 		ft_putstr_fd("Command not found: ", STDERR_FILENO);
 		ft_putstr_fd(args[0], STDERR_FILENO);
 		ft_putchar_fd('\n', STDERR_FILENO);
 		exit(127);
 	}
-	if (execve(command_path, args, NULL) == -1)
+	if (execve(command_path, args, environ) == -1)
 	{
 		ft_fprintf(STDERR_FILENO, "execve failed: %s\n", strerror(errno));
-		free(command_path);
 		exit(126);
 	}
 	free(command_path);
-	exit(1);
 }
 
 int	wait_and_update_status(pid_t pid)
@@ -91,16 +139,4 @@ int	wait_and_update_status(pid_t pid)
 		return (128 + WTERMSIG(status));
 	else
 		return (1);
-}
-
-void	close_pipes(int *pipe_fds, int num_pipes)
-{
-	int	i;
-
-	i = 0;
-	while (i < 2 * num_pipes)
-	{
-		close(pipe_fds[i]);
-		i++;
-	}
 }

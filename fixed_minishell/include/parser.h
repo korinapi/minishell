@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cpuiu <cpuiu@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 04:26:02 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/12 08:11:44 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/04/18 19:57:09 by cpuiu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,12 @@
 # define REDIR_OUT_APPEND 2
 # define REDIR_IN 3
 # define REDIR_HEREDOC 4
+
+typedef struct s_redirection
+{
+	int		mode;
+	char	*filename;
+}			t_redirection;
 
 typedef enum e_ast_type
 {
@@ -40,6 +46,8 @@ typedef struct s_ast
 	char			*heredoc_delimiter;
 	struct s_ast	*left;
 	struct s_ast	*right;
+	t_redirection *redirections; // An array of redirection structures
+	int				num_redirections;
 }					t_ast;
 
 t_ast				*create_ast_node(t_ast_type type, char *data);
