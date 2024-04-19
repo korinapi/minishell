@@ -6,7 +6,7 @@
 /*   By: cpuiu <cpuiu@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/07 05:31:38 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/19 10:58:22 by cpuiu            ###   ########.fr       */
+/*   Updated: 2024/04/19 12:27:57 by cpuiu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,7 +87,6 @@ void	handle_input_redirection(char **input, t_ast **ast)
 	char	*file;
 	t_ast	*node;
 
-	mode = determine_redirection_mode(input);
 	if ((*input)[1] == '<')
 	{
 		(*input)++;

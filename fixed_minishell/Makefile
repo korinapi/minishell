@@ -51,5 +51,7 @@ fclean: clean
 	@echo "$(COLOR_GREEN)Full-Clean completed.$(COLOR_RESET)"
 
 re: fclean all
+test:
+	@cd tests && bash tester.sh a
 
 .PHONY: all clean fclean re
