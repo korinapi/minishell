@@ -3,16 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   cd.c                                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cpuiu <cpuiu@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/30 05:30:21 by marvinleibe       #+#    #+#             */
-/*   Updated: 2024/04/12 06:35:01 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/04/19 10:05:54 by cpuiu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "environment.h"
 #include "minishell.h"
 #include "parser.h"
+#include "builtins.h"
 
 int	handle_home(t_ast *arg, char **path)
 {
@@ -81,24 +82,6 @@ int	handle_pwd(char *cwd)
 	{
 		ft_putendl_fd("cd: getcwd error", STDERR_FILENO);
 		return (1);
-	}
-}
-
-void	set_pwd(void)
-{
-	char	*pwd;
-	char	*cwd;
-
-	pwd = getenv("PWD");
-	if (pwd == NULL || !*pwd)
-	{
-		cwd = getcwd(NULL, 0);
-		if (cwd != NULL)
-		{
-			if (ft_setenv("PWD", cwd, 1))
-				perror("setting pwd error");
-			free(cwd);
-		}
 	}
 }
 

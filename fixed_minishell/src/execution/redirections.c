@@ -6,7 +6,7 @@
 /*   By: cpuiu <cpuiu@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 04:34:31 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/18 20:33:16 by cpuiu            ###   ########.fr       */
+/*   Updated: 2024/04/19 09:37:42 by cpuiu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -166,7 +166,10 @@ int	execute_redirection(t_ast *node)
 			flags = O_RDONLY;
 		fd = open(node->redirection_file, flags, 0644);
 		if (fd == -1)
-			return (errno);
+		{
+			perror("Permission denied");
+			exit(1);
+		}
 		if (mode == REDIR_OUT || mode == REDIR_OUT_APPEND)
 			dup2(fd, STDOUT_FILENO);
 		else

@@ -3,32 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   echo.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cpuiu <cpuiu@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 05:16:28 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/12 10:05:58 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/04/19 10:13:35 by cpuiu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 #include "parser.h"
-
-void	process_double_quoted_str(const char *quoted_str, char *exit_stat)
-{
-	while (*quoted_str)
-	{
-		if (*quoted_str == '$' && *(quoted_str + 1) == '?')
-		{
-			ft_putstr_fd(exit_stat, STDOUT_FILENO);
-			quoted_str += 2;
-		}
-		else
-		{
-			ft_putchar_fd(*quoted_str, STDOUT_FILENO);
-			quoted_str++;
-		}
-	}
-}
+#include "builtins.h"
 
 int	is_option(t_ast *arg)
 {
@@ -73,13 +57,9 @@ void	print_ast_arguments(t_ast *arg, char *exit_stat)
 	char	*var_name;
 
 	if (arg->type == AST_WORD || arg->type == AST_SINGLEQUOTED_WORD)
-	{
 		ft_putstr_fd(arg->data, STDOUT_FILENO);
-	}
 	else if (arg->type == AST_DOUBLEQUOTED_WORD)
-	{
 		process_double_quoted_str(arg->data, exit_stat);
-	}
 	else if (arg->type == AST_VARIABLE)
 	{
 		var_name = arg->data + 1;
@@ -89,6 +69,21 @@ void	print_ast_arguments(t_ast *arg, char *exit_stat)
 	}
 	else if (arg->type == AST_SPECIAL_PARAM)
 		ft_putstr_fd(exit_stat, STDOUT_FILENO);
+}
+
+void	process_echo_argument(t_ast **arg, int *exit_status, char *exit_stat,
+		int *first_arg)
+{
+	if ((*arg)->type == AST_SPECIAL_PARAM)
+		ft_printf("%d", *exit_status);
+	else if ((*arg)->type != AST_WHITESPACE && (*arg)->type != AST_REDIRECTION)
+	{
+		if (!*first_arg)
+			ft_putchar_fd(' ', STDOUT_FILENO);
+		print_ast_arguments(*arg, exit_stat);
+		*first_arg = 0;
+	}
+	*arg = (*arg)->right;
 }
 
 int	execute_echo(t_ast *args, int *exit_status)
@@ -107,20 +102,7 @@ int	execute_echo(t_ast *args, int *exit_status)
 	if (arg && is_option(arg))
 		check_flag_echo(&arg, &print_newline);
 	while (arg)
-	{
-		if (arg->type == AST_SPECIAL_PARAM)
-		{
-			ft_printf("%d", *exit_status);
-		}
-		else if (arg->type != AST_WHITESPACE && arg->type != AST_REDIRECTION)
-		{
-			if (!first_arg)
-				ft_putchar_fd(' ', STDOUT_FILENO);
-			print_ast_arguments(arg, exit_stat);
-			first_arg = 0;
-		}
-		arg = arg->right;
-	}
+		process_echo_argument(&arg, exit_status, exit_stat, &first_arg);
 	if (print_newline)
 		ft_putendl_fd("", STDOUT_FILENO);
 	free(exit_stat);

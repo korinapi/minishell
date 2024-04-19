@@ -6,7 +6,7 @@
 /*   By: cpuiu <cpuiu@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 04:26:02 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/18 19:57:09 by cpuiu            ###   ########.fr       */
+/*   Updated: 2024/04/19 11:00:11 by cpuiu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,9 +20,9 @@
 
 typedef struct s_redirection
 {
-	int		mode;
-	char	*filename;
-}			t_redirection;
+	int				mode;
+	char			*filename;
+}					t_redirection;
 
 typedef enum e_ast_type
 {
@@ -46,7 +46,7 @@ typedef struct s_ast
 	char			*heredoc_delimiter;
 	struct s_ast	*left;
 	struct s_ast	*right;
-	t_redirection *redirections; // An array of redirection structures
+	t_redirection	*redirections;
 	int				num_redirections;
 }					t_ast;
 

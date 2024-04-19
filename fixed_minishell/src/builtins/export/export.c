@@ -6,7 +6,7 @@
 /*   By: cpuiu <cpuiu@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/30 05:16:03 by marvinleibe       #+#    #+#             */
-/*   Updated: 2024/04/18 20:45:02 by cpuiu            ###   ########.fr       */
+/*   Updated: 2024/04/19 10:17:23 by cpuiu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,10 +16,30 @@
 #include "parser.h"
 #include "utilities.h"
 
+int	set_environment_variable(t_ast *arg, char *value)
+{
+	char	*var_name;
+
+	var_name = arg->data;
+	if (valid_check(arg, var_name))
+		return (1);
+	if (!*value && arg->right && arg->right->type == AST_VARIABLE)
+	{
+		value = getenv(arg->right->data + 1);
+		if (value)
+			value++;
+		else
+			return (1);
+	}
+	ft_setenv(var_name, value, 1);
+	return (0);
+}
+
 int	process_export_arg(t_ast *arg)
 {
 	char	*value;
 	char	*var_name;
+	int		result;
 
 	if (arg->type == AST_WORD)
 	{
@@ -28,16 +48,9 @@ int	process_export_arg(t_ast *arg)
 		{
 			*value = '\0';
 			value++;
-			var_name = arg->data;
-			if (valid_check(arg, var_name))
-				return (1);
-			if (!*value && arg->right && arg->right->type == AST_VARIABLE)
-			{
-				value = getenv(arg->right->data + 1);
-				*value = '\0';
-				value++;
-			}
-			ft_setenv(var_name, value, 1);
+			result = set_environment_variable(arg, value);
+			if (result)
+				return (result);
 		}
 		else
 		{

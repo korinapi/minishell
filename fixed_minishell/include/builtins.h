@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtins.h                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cpuiu <cpuiu@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 04:30:40 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/07 08:41:08 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/04/19 10:12:56 by cpuiu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,5 +25,7 @@ int		execute_cd(t_ast *ast);
 int		execute_pwd(void);
 void	bubble_sort(int n);
 int		valid_check(t_ast *arg, char *var_name);
+void	set_pwd(void);
+void	process_double_quoted_str(const char *quoted_str, char *exit_stat);
 
 #endif

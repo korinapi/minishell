@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cpuiu <cpuiu@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/01 19:59:37 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/03 17:25:03 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/04/19 09:31:53 by cpuiu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@
 # define IDENTIFIER "is not a valid identifier"
 # define S_QUOTE '\''
 # define D_QUOTE '"'
-# define NO_PERM "No permission"
+# define NO_PERM "Permission denied"
 # define NOT_FOUND "Not found"
 # define DIR "is a directory"
 # define NO_DIR "no directory"

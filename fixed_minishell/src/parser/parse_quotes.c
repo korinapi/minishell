@@ -6,7 +6,7 @@
 /*   By: cpuiu <cpuiu@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/07 05:32:29 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/18 20:46:04 by cpuiu            ###   ########.fr       */
+/*   Updated: 2024/04/19 10:22:09 by cpuiu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,30 +42,33 @@ char	*parse_n(char **input, char quote_char)
 	return (word);
 }
 
+void	process_nested_input(char **input, char **word, int *word_len)
+{
+	if (**input == '\'' || **input == '"')
+	{
+		if (*word)
+			*word = ft_append_str(*word, word_len, parse_n(input, **input));
+		else
+			*word = parse_n(input, **input);
+	}
+	else
+	{
+		if (*word)
+			*word = ft_append_char(*word, word_len, **input);
+		else
+		{
+			*word = malloc(sizeof(char));
+			**word = **input;
+			*word_len = 1;
+		}
+		(*input)++;
+	}
+}
+
 void	handle_nested(char **input, char **word, int *word_len, int *in_quote)
 {
 	if (*in_quote)
-	{
-		if (**input == '\'' || **input == '"')
-		{
-			if (*word)
-				*word = ft_append_str(*word, word_len, parse_n(input, **input));
-			else
-				*word = parse_n(input, **input);
-		}
-		else
-		{
-			if (*word)
-				*word = ft_append_char(*word, word_len, **input);
-			else
-			{
-				*word = malloc(sizeof(char));
-				**word = **input;
-				*word_len = 1;
-			}
-			(*input)++;
-		}
-	}
+		process_nested_input(input, word, word_len);
 	else
 	{
 		if (*word)
