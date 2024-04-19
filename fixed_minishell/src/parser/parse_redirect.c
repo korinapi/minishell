@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse_redirect.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cpuiu <cpuiu@student.42.fr>                +#+  +:+       +#+        */
+/*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/07 05:31:38 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/19 12:27:57 by cpuiu            ###   ########.fr       */
+/*   Updated: 2024/04/19 18:42:13 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,6 +87,7 @@ void	handle_input_redirection(char **input, t_ast **ast)
 	char	*file;
 	t_ast	*node;
 
+	file = NULL;
 	if ((*input)[1] == '<')
 	{
 		(*input)++;
@@ -95,7 +96,8 @@ void	handle_input_redirection(char **input, t_ast **ast)
 	else
 		mode = REDIR_IN;
 	(*input)++;
-	file = parse_redirection_file(input);
+	while (!file)
+		file = parse_redirection_file(input);
 	if (mode == REDIR_IN)
 		perform_file_operations(file);
 	node = create_ast_node(AST_REDIRECTION, NULL);
