@@ -6,7 +6,7 @@
 /*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/06 14:49:36 by mleibeng          #+#    #+#             */
-/*   Updated: 2023/10/31 23:16:02 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/03/25 23:15:20 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 static void	ft_movedown(void *dest, const void *src, size_t size)
 {
-	size_t				i;
+	size_t	i;
 
 	i = size - 1;
 	while (i > 0)
@@ -27,7 +27,7 @@ static void	ft_movedown(void *dest, const void *src, size_t size)
 
 static void	ft_moveup(void *dest, const void *src, size_t size)
 {
-	size_t				i;
+	size_t	i;
 
 	i = 0;
 	while (i < size)

@@ -6,12 +6,15 @@
 /*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/06 14:35:47 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/02/16 21:48:46 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/04/07 04:14:57 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef LIBFT_H
 # define LIBFT_H
+
+# define OPERATORS "|&;()<>\\="
+
 # include <stdlib.h>
 # include <unistd.h>
 # include <stdio.h>
@@ -34,7 +37,8 @@ int		ft_isalnum(int c);
 int		ft_isascii(int c);
 int		ft_isprint(int c);
 int		ft_issign(int c);
-int		ft_iswhitespace(int c);
+int		ft_isspace(int c);
+int		ft_isquote(char c);
 size_t	ft_strlen(const char *s);
 void	*ft_memset(void *b, int c, size_t size);
 void	ft_bzero(void *b, size_t size);
@@ -58,14 +62,13 @@ char	*ft_strjoin(char const *s1, char const *s2);
 char	*ft_strtrim(char const *s1, char const *set);
 char	**ft_split(char const *s, char c);
 char	**ft_split_delims(char const *s, char *delimiters);
-char	**ft_split_quotes(const char *string, const char *delimiters);
 char	*ft_itoa(int n);
 char	*ft_strmapi(char const *s, char (*f)(unsigned int, char));
 void	ft_striteri(char *s, void (*f)(unsigned int, char*));
-void	ft_putchar_fd(char c, int fd);
-void	ft_putstr_fd(char *s, int fd);
+int		ft_putchar_fd(char c, int fd);
+int		ft_putstr_fd(char *s, int fd);
 void	ft_putendl_fd(char *s, int fd);
-void	ft_putnbr_fd(int n, int fd);
+int		ft_putnbr_fd(int n, int fd);
 t_list	*ft_lstnew(void *content);
 void	ft_lstadd_front(t_list **lst, t_list *new);
 int		ft_lstsize(t_list *lst);
@@ -80,5 +83,26 @@ char	*ft_strtok(char *in, const char *delimiters);
 size_t	ft_substr_len(const char *str, const char *c);
 size_t	split_arr_len(const char *s, const char *c);
 void	*ft_free(char **split_arr, size_t i);
+char	*ft_strncpy(char *dest, const char *src, size_t size);
+char	*ft_strncat(char *dest, const char *src, size_t size);
+char	*ft_strcpy(char *dest, const char *src);
+char	*ft_strcat(char *dest, const char *src);
+void	*ft_memalloc(size_t size);
+int		ft_strcmp(const char *s1, const char *s2);
+void	ft_strdel(char **as);
+char	*ft_strnew(size_t size);
+char	*ft_strsub(char const *s, unsigned int start, size_t len);
+char	*ft_strndup(const char *s1, int len);
+char	**ft_split_quotes(char *str);
+int		ft_isspecialchar(char c);
+size_t	ft_strspn(const char *str1, const char *str2);
+char	*ft_strpbrk(const char *str1, const char *str2);
+char	*ft_strtok_r(char *str, const char *delim, char **save_ptr);
+void	*ft_realloc(void *ptr, size_t size);
+int		ft_isoperator(char c);
+int		ft_fprintf(int fd, const char *format, ...);
+char	*ft_strjoin_free(char *new_var, char *value, int i);
+int		ft_snprintf(char *str, int size, const char *format, ...);
+int		ft_strtoi(const char *str, char **end);
 
 #endif

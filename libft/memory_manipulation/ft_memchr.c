@@ -6,7 +6,7 @@
 /*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/06 14:49:29 by mleibeng          #+#    #+#             */
-/*   Updated: 2023/10/31 23:15:51 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/03/25 23:15:14 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ void	*ft_memchr(const void *b, int c, size_t size)
 	unsigned char	cc;
 
 	i = 0;
-	cc = (unsigned char )c;
+	cc = (unsigned char)c;
 	while (i < size)
 	{
 		if (((unsigned char *)b)[i] == cc)

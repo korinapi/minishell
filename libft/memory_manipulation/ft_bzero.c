@@ -6,7 +6,7 @@
 /*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/06 14:49:20 by mleibeng          #+#    #+#             */
-/*   Updated: 2023/10/31 23:15:45 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/03/08 20:56:23 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,8 @@ void	ft_bzero(void *b, size_t size)
 	size_t	i;
 
 	i = 0;
+	if (!b)
+		return ;
 	while (i < size)
 	{
 		((char *)b)[i] = '\0';

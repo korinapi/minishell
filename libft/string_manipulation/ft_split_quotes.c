@@ -5,92 +5,103 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/10/06 14:49:51 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/02/16 21:31:03 by mleibeng         ###   ########.fr       */
+/*   Created: 2024/01/30 14:34:02 by cpuiu             #+#    #+#             */
+/*   Updated: 2024/02/29 14:18:38 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../libft.h"
 
-const char	*handle_quotes(const char *s, char *dest, size_t *j)
+int	ft_wordcount(char *str)
 {
-	char	quote_char;
+	int	count;
+	int	in_word;
 
-	quote_char = *s++;
-	dest[(*j)++] = quote_char;
-	while (*s)
+	count = 0;
+	in_word = 0;
+	while (*str)
 	{
-		if (*s == quote_char && *(s - 1) != '\\')
+		if (ft_isspace(*str))
+			in_word = 0;
+		else if (!in_word)
 		{
-			if (*(s + 1) == quote_char && *(s + 2) != '\\')
-			{
-				dest[(*j)++] = *s++;
-				dest[(*j)++] = *s++;
-				break ;
-			}
-			else
-				break ;
+			in_word = 1;
+			count++;
 		}
-		else if (*s == '\\' && (*(s + 1) == quote_char || *(s + 1) == '\\'))
-			dest[(*j)++] = *s++;
-		dest[(*j)++] = *s++;
+		str++;
 	}
-	return (s);
+	return (count);
 }
 
-const char	*fill_with_quotes(const char *s, char *dest, size_t *j)
+char	*word_dupe(char *str, int len)
 {
-	if ((*s == '"' || *s == '\'') && (*j == 0 || (*(s - 1) != '\\'
-				&& *(s - 2) != '\\')))
-		s = handle_quotes(s, dest, j);
-	else
-		dest[(*j)++] = *s;
-	return (s);
-}
-
-size_t	fill_split_array(const char *s, char **split_arr,
-		const char *delimiters, size_t string_count)
-{
-	size_t	i;
-	size_t	j;
-	size_t	s_len;
+	char	*word;
+	int		i;
 
 	i = 0;
-	while (i < string_count && *s)
+	word = malloc(sizeof(char) * (len + 1));
+	while (i < len)
 	{
-		split_arr[i] = malloc((s_len = ft_substr_len(s, delimiters)) + 1);
-		if (!split_arr[i])
-			return (i);
-		j = 0;
-		while (j < s_len)
-		{
-			s = fill_with_quotes(s, split_arr[i], &j);
-			if (*s)
-				s++;
-		}
-		split_arr[i][j] = '\0';
-		while (*s && ft_strchr(delimiters, *s))
-			s++;
+		word[i] = str[i];
 		i++;
 	}
-	return (i);
+	word[len] = '\0';
+	return (word);
 }
 
-char	**ft_split_quotes(const char *string, const char *delimiters)
+int	handle_quoted_substring(char *str, int *i, int *word_index, char **array)
 {
-	char	**split_arr;
-	size_t	string_count;
-	size_t	i;
+	char	quote;
+	int		start_index;
 
-	string_count = split_arr_len(string, delimiters);
-	split_arr = (char **)malloc((string_count + 1) * sizeof(char *));
-	if (split_arr == NULL)
-		return (NULL);
-	while (*string && ft_strchr(delimiters, *string))
+	quote = str[(*i)++];
+	start_index = *i;
+	while (str[*i] != '\0' && str[*i] != quote)
 	{
-		string++;
+		++(*i);
 	}
-	i = fill_split_array(string, split_arr, delimiters, string_count);
-	split_arr[i] = NULL;
-	return (split_arr);
+	while (start_index < *i && (str[start_index] == ' '
+			|| str[start_index] == '\t'))
+	{
+		++start_index;
+	}
+	while (*i > start_index && (str[*i - 1] == ' ' || str[*i - 1] == '\t'))
+	{
+		--(*i);
+	}
+	array[(*word_index)++] = word_dupe(&str[start_index], *i - start_index);
+	if (str[*i] != '\0')
+	{
+		++(*i);
+	}
+	return (*i);
+}
+
+char	**ft_split_quotes(char *str)
+{
+	int		i;
+	int		word_index;
+	char	**array;
+	int		start_index;
+
+	i = 0;
+	word_index = 0;
+	array = malloc(sizeof(char *) * (ft_wordcount(str) + 1));
+	while (str[i] != '\0')
+	{
+		while (str[i] == ' ' || str[i] == '\t' || str[i] == '\n')
+			++i;
+		if (ft_isquote(str[i]))
+			i = handle_quoted_substring(str, &i, &word_index, array);
+		else
+		{
+			start_index = i;
+			while (str[i] != '\0' && !ft_isquote(str[i]) && str[i] != ' '
+				&& str[i] != '\t' && str[i] != '\n')
+				++i;
+			array[word_index++] = word_dupe(&str[start_index], i - start_index);
+		}
+	}
+	array[word_index] = 0;
+	return (array);
 }

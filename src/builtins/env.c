@@ -1,28 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_memset.c                                        :+:      :+:    :+:   */
+/*   env.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cpuiu <cpuiu@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/10/06 14:49:39 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/03/25 23:15:22 by mleibeng         ###   ########.fr       */
+/*   Created: 2024/03/30 05:16:09 by marvinleibe       #+#    #+#             */
+/*   Updated: 2024/04/19 12:40:23 by cpuiu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../libft.h"
+#include "environment.h"
+#include "minishell.h"
 
-void	*ft_memset(void *b, int c, size_t size)
+int	execute_env(void)
 {
-	size_t			i;
-	unsigned char	cc;
+	int	i;
 
 	i = 0;
-	cc = (unsigned char)c;
-	while (i < size)
+	while (environ[i])
 	{
-		((unsigned char *)b)[i] = cc;
+		ft_putendl_fd(environ[i], 1);
 		i++;
 	}
-	return (b);
+	return (0);
 }

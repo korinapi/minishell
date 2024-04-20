@@ -6,7 +6,7 @@
 /*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/17 00:36:01 by mleibeng          #+#    #+#             */
-/*   Updated: 2023/12/03 02:54:48 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/03/25 23:15:46 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,8 +23,8 @@ typedef struct s_stash_data
 {
 	char	*content;
 	int		eof;
-}	t_stash_data;
+}			t_stash_data;
 
-char	*get_next_line(int fd);
+char		*get_next_line(int fd);
 
 #endif

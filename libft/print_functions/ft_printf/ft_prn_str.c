@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_p_str.c                                         :+:      :+:    :+:   */
+/*   ft_prn_str.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/14 20:58:39 by mleibeng          #+#    #+#             */
-/*   Updated: 2023/10/15 21:47:43 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/03/25 23:15:37 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,9 +29,9 @@ int	ft_test_str(const char *format)
 	if (format == NULL)
 	{
 		len = ft_prn_str("(null)");
-		return ((int) len);
+		return ((int)len);
 	}
 	else
 		len = ft_prn_str(format);
-	return ((int) len);
+	return ((int)len);
 }

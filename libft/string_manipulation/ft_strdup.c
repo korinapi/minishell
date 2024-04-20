@@ -6,7 +6,7 @@
 /*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/07 17:59:46 by mleibeng          #+#    #+#             */
-/*   Updated: 2023/10/31 23:17:28 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/03/25 23:16:48 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ char	*ft_strdup(const char *s)
 	char	*new_s;
 
 	s_len = ft_strlen(s);
-	new_s = (char *) malloc(s_len + 1);
+	new_s = (char *)malloc(s_len + 1);
 	if (new_s == NULL)
 		return (NULL);
 	ft_strlcpy(new_s, s, s_len + 1);

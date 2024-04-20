@@ -1,19 +1,19 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_p_nbr.c                                         :+:      :+:    :+:   */
+/*   ft_prn_nbr.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/14 22:54:59 by mleibeng          #+#    #+#             */
-/*   Updated: 2023/10/16 01:20:19 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/03/25 23:15:33 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
 
-//need to change all my standardized functions to int
-//so they return a value that i can give back to printf
+// need to change all my standardized functions to int
+// so they return a value that i can give back to printf
 
 int	ft_putnbr_calc(int n)
 {

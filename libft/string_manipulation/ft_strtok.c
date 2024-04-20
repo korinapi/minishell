@@ -6,7 +6,7 @@
 /*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/14 02:59:46 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/02/16 21:17:14 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/03/05 23:11:47 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,13 +29,11 @@ size_t	ft_token_len(char const *str, char const *c)
 
 char	*ft_strtok(char *in, const char *delimiters)
 {
-	int			i;
 	int			substr_len;
 	char		*out;
 	static char	*breakpoint;
 
-	i = 0;
-	if (breakpoint == NULL && in != NULL)
+	if (in != NULL)
 		breakpoint = in;
 	if (breakpoint == NULL || *breakpoint == '\0')
 		return (NULL);

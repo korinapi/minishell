@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_p_ptr.c                                         :+:      :+:    :+:   */
+/*   ft_prn_ptr.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/14 21:27:23 by mleibeng          #+#    #+#             */
-/*   Updated: 2023/10/16 01:12:09 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/03/25 23:15:36 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,10 +16,10 @@
 
 int	ft_prn_ptr(uintptr_t ptr)
 {
-	char		buf[BUF_SIZE];
-	int			len;
-	int			i;
-	int			result;
+	char	buf[BUF_SIZE];
+	int		len;
+	int		i;
+	int		result;
 
 	len = 0;
 	if (ptr == 0)

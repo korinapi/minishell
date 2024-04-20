@@ -6,7 +6,7 @@
 /*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/13 15:11:41 by mleibeng          #+#    #+#             */
-/*   Updated: 2023/10/23 17:32:26 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/03/25 23:15:28 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,9 +39,9 @@ int	ft_va_arg_con(va_list args, const char format)
 
 int	ft_print_string(const char *format, va_list args)
 {
-	size_t		i;
-	int			len;
-	int			result;
+	size_t	i;
+	int		len;
+	int		result;
 
 	i = 0;
 	len = 0;
@@ -68,8 +68,8 @@ int	ft_print_string(const char *format, va_list args)
 
 int	ft_printf(const char *format, ...)
 {
-	va_list		args;
-	int			len;
+	va_list	args;
+	int		len;
 
 	va_start(args, format);
 	if (format == NULL || *format == '\0')
@@ -86,6 +86,6 @@ int	ft_printf(const char *format, ...)
 //	(needs va_start/va_end and maybe va_copy for struct handling !
 //	Need to inform myself of how they work!!!!)
 // 	Each va_arg list node should have a corresponding function
-//	 to printf out the specified value
+//		to printf out the specified value
 //	i.e.: %d should use itoa.c or putnbr_fd
 // 	to convert and print

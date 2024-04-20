@@ -6,7 +6,7 @@
 /*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/06 14:50:14 by mleibeng          #+#    #+#             */
-/*   Updated: 2023/10/31 23:17:58 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/03/25 23:17:15 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ char	*ft_strrchr(const char *str, int c)
 	while (i >= 0)
 	{
 		if (str[i] == ch)
-			return ((char *) &str[i]);
+			return ((char *)&str[i]);
 		i--;
 	}
 	return (NULL);
@@ -33,6 +33,6 @@ char	*ft_strrchr(const char *str, int c)
 // int main(void)
 // {
 //     char s[ ] = "abcbc";
-//     printf( "this should return c so it is %s\n", ft_strrchr(s, 'c'));
-//     return 0;
+//     printf( "this should return (c so it is %s\n", ft_strrchr(s, 'c')));
+//     return (0);
 // }
