@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cpuiu <cpuiu@student.42.fr>                +#+  +:+       +#+        */
+/*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 04:29:28 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/20 20:23:24 by cpuiu            ###   ########.fr       */
+/*   Updated: 2024/04/21 00:07:22 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@
 int	execute_external(char **args, int *exit_status)
 {
 	pid_t	pid;
+	rl_catch_signals = 1;
 
 	pid = fork();
 	if (pid == -1)
@@ -33,6 +34,7 @@ int	execute_external(char **args, int *exit_status)
 	}
 	else
 		*exit_status = wait_and_update_status(pid);
+	rl_catch_signals = 0;
 	return (*exit_status);
 }
 

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cpuiu <cpuiu@student.42.fr>                +#+  +:+       +#+        */
+/*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/01 19:59:37 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/19 09:31:53 by cpuiu            ###   ########.fr       */
+/*   Updated: 2024/04/20 23:22:39 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,13 @@
 # define NOT_FOUND "Not found"
 # define DIR "is a directory"
 # define NO_DIR "no directory"
+
+typedef struct s_handmedown
+{
+	char	**alloc_env;
+	int		num_of_env;
+	int		*exitcode;
+}	t_handmedown;
 
 extern volatile sig_atomic_t	g_sigint_received;
 extern char						**environ;

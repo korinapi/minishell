@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_utils.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cpuiu <cpuiu@student.42.fr>                +#+  +:+       +#+        */
+/*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/05 19:42:46 by cpuiu             #+#    #+#             */
-/*   Updated: 2024/04/19 09:29:01 by cpuiu            ###   ########.fr       */
+/*   Updated: 2024/04/21 00:06:55 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -123,6 +123,7 @@ void	execute_command_from_path(char **args, int *exit_status)
 	if (execve(command_path, args, environ) == -1)
 	{
 		ft_fprintf(STDERR_FILENO, "execve failed: %s\n", strerror(errno));
+		free(command_path);
 		exit(126);
 	}
 	free(command_path);

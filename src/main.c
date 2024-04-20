@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cpuiu <cpuiu@student.42.fr>                +#+  +:+       +#+        */
+/*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/01 19:59:44 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/20 20:13:27 by cpuiu            ###   ########.fr       */
+/*   Updated: 2024/04/21 00:02:29 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,6 +56,7 @@ void	set_man_environ(void)
 	ft_snprintf(sh_level_str, sizeof(sh_level_str), "%d", level);
 	ft_setenv("SHLVL", sh_level_str, 1);
 	free(cwd);
+	free(sh_level_str);
 }
 
 int	main(int argc, char **argv)
@@ -63,6 +64,7 @@ int	main(int argc, char **argv)
 	char	*input;
 	t_ast	*ast;
 	int		exit_status;
+	rl_catch_signals = 0;
 
 	if (startup_check(argc, argv))
 		return (1);

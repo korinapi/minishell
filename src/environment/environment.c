@@ -6,7 +6,7 @@
 /*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 04:34:52 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/08 03:27:25 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/04/21 00:06:28 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,9 +83,11 @@ int	add_env_var(char *name, char *value)
 		return (-1);
 	ft_snprintf(new_str, len, "%s=%s", name, value);
 	new_env = ft_realloc_env(environ, new_str);
-	free(new_str);
 	if (!environ)
+	{
+		free(new_str);
 		return (-1);
+	}
 	environ = new_env;
 	return (0);
 }
