@@ -42,7 +42,8 @@ void	execute_simple_command(t_ast *node, int *exit_status)
 	int		i;
 	t_ast	*current_node;
 
-	handle_redirection(node->left, exit_status);
+	if (handle_redirection(node->left, exit_status))
+		return ;
 	args = ft_calloc(ast_count_nodes(node->left) + 1, sizeof(char *));
 	i = 0;
 	current_node = node->left;
