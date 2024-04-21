@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_utils.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cpuiu <cpuiu@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/05 19:42:46 by cpuiu             #+#    #+#             */
-/*   Updated: 2024/04/21 00:06:55 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/04/21 20:22:33 by cpuiu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,9 +98,7 @@ char	*get_command_path(char *command)
 
 	path_env = getenv("PATH");
 	if (!path_env)
-	{
 		return (NULL);
-	}
 	paths = ft_split(path_env, ':');
 	command_path = find_command_path(command, paths);
 	free(paths);

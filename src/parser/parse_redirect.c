@@ -6,7 +6,7 @@
 /*   By: cpuiu <cpuiu@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/07 05:31:38 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/20 20:14:27 by cpuiu            ###   ########.fr       */
+/*   Updated: 2024/04/21 19:51:53 by cpuiu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,7 @@ void	handle_output_redirection(char **input, t_ast **ast)
 	char	*file;
 	t_ast	*node;
 
+	file = NULL;
 	if ((*input)[1] == '>')
 	{
 		mode = REDIR_OUT_APPEND;
@@ -41,14 +42,8 @@ void	handle_output_redirection(char **input, t_ast **ast)
 	else
 		mode = REDIR_OUT;
 	(*input)++;
-	while (*input && ft_isspace(**input))
-		(*input)++;
-	if (**input == '\'')
-		file = parse_quotes_two(input, '\'');
-	else if (**input == '"')
-		file = parse_quotes_two(input, '"');
-	else
-		file = ft_get_word(input);
+	while (!file)
+		file = parse_redirection_file(input);
 	node = create_ast_node(AST_REDIRECTION, NULL);
 	node->redirection_file = file;
 	node->redirection_mode = mode;
@@ -59,6 +54,8 @@ void	handle_input_redirection(char **input, t_ast **ast)
 	int		mode;
 	char	*file;
 	t_ast	*node;
+	
+	file = NULL;
 	if ((*input)[1] == '<')
 	{
 		(*input)++;
@@ -67,14 +64,8 @@ void	handle_input_redirection(char **input, t_ast **ast)
 	else
 		mode = REDIR_IN;
 	(*input)++;
-	while (*input && ft_isspace(**input))
-		(*input)++;
-	if (**input == '\'')
-		file = parse_quotes_two(input, '\'');
-	else if (**input == '"')
-		file = parse_quotes_two(input, '"');
-	else
-		file = ft_get_word(input);	
+	while (!file)
+		file = parse_redirection_file(input);
 	node = create_ast_node(AST_REDIRECTION, NULL);
 	node->redirection_file = file;
 	node->redirection_mode = mode;

@@ -6,7 +6,7 @@
 /*   By: cpuiu <cpuiu@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 04:34:31 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/20 20:47:21 by cpuiu            ###   ########.fr       */
+/*   Updated: 2024/04/21 20:32:10 by cpuiu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,10 +67,9 @@ void	read_heredoc_input(int fd, const char *end_marker)
 	line = NULL;
 	while (1)
 	{
-		line = readline("heredoc> ");
+		line = readline("> ");
 		if (line == NULL || !ft_strcmp(line, end_marker))
 		{
-			printf(line == NULL ? "EOF or error encountered. Exiting heredoc.\n" : "");
 			free(line);
 			break ;
 		}
@@ -93,72 +92,90 @@ int	redirect_stdin_from_file(const char *filename)
 	return (0);
 }
 
-int	execute_heredoc(t_ast *node)
-{
-	char	*tmp_file;
-	int		fd;
+int execute_heredoc(t_ast *node) {
+    char *tmp_file;
+    int fd, save_stdin;
 
-	fd = create_temp_file(&tmp_file);
-	if (fd == -1)
-		return (1);
-	read_heredoc_input(fd, node->redirection_file);
-	close(fd);
-	if (redirect_stdin_from_file(tmp_file) != 0)
-	{
-		free(tmp_file);
-		return (1);
-	}
-	free(tmp_file);
-	return (0);
+    save_stdin = dup(STDIN_FILENO);
+
+    fd = create_temp_file(&tmp_file);
+    if (fd == -1)
+        return 1;
+
+    read_heredoc_input(fd, node->redirection_file);
+    close(fd);
+
+    if (redirect_stdin_from_file(tmp_file) != 0) {
+        close(save_stdin);
+        free(tmp_file);
+        return 1;
+    }
+    dup2(save_stdin, STDIN_FILENO);
+    close(save_stdin);
+
+    free(tmp_file);
+    return 0;
 }
 
+int execute_redirection(t_ast *node) {
+    int mode;
+    int fd;
+    int flags;
 
-int	execute_redirection(t_ast *node)
-{
-	int	mode;
-	int	fd;
-	int	flags;
+    while (node) {
+        if (node->type == AST_WHITESPACE) {
+            node = node->right;
+            continue;
+        }
 
-	while ((node && node->type == AST_WHITESPACE) || (node
-			&& node->type == AST_REDIRECTION))
-	{
-		mode = node->redirection_mode;
-		if (node->type == AST_WHITESPACE)
-		{
-			node = node->right;
-			continue ;
-		}
-		if (node->type == AST_REDIRECTION)
-		{
-			if (mode == REDIR_HEREDOC)
-			{
-				if (execute_heredoc(node))
-					return (1);
-			}
-			if (mode == REDIR_OUT)
-				flags = O_CREAT | O_WRONLY | O_TRUNC;
-			else if (mode == REDIR_OUT_APPEND)
-				flags = O_CREAT | O_WRONLY | O_APPEND;
-			else
-				flags = O_RDONLY;
-			fd = open(node->redirection_file, flags, 0644);
-			if (fd == -1)
-				return (1);
-			if (node->right == NULL || node->right->type != AST_REDIRECTION
-				|| (node->right->type == AST_REDIRECTION
-					&& node->right->redirection_mode != REDIR_IN))
-			{
-				if (mode == REDIR_OUT || mode == REDIR_OUT_APPEND)
-					dup2(fd, STDOUT_FILENO);
-				else if (mode == REDIR_IN)
-					dup2(fd, STDIN_FILENO);
-				close(fd);
-			}
-		}
-		node = node->right;
-	}
-	return (0);
+        if (node->type == AST_REDIRECTION) {
+            mode = node->redirection_mode;
+
+            /
+            if (mode == REDIR_HEREDOC) {
+                if (execute_heredoc(node))
+                    return (1); 
+            } else {
+                
+                if (mode == REDIR_OUT)
+                    flags = O_CREAT | O_WRONLY | O_TRUNC;
+                else if (mode == REDIR_OUT_APPEND)
+                    flags = O_CREAT | O_WRONLY | O_APPEND;
+                else
+                    flags = O_RDONLY;
+
+                fd = open(node->redirection_file, flags, 0644);
+                if (fd == -1) {
+                    perror("Failed to open the redirection file");
+                    return (1); 
+                }
+
+                
+                if (mode == REDIR_OUT || mode == REDIR_OUT_APPEND) {
+                    if (dup2(fd, STDOUT_FILENO) == -1) {
+                        perror("Failed to redirect stdout");
+                        close(fd);
+                        return (1);
+                    }
+                } else if (mode == REDIR_IN) {
+                    if (dup2(fd, STDIN_FILENO) == -1) {
+                        perror("Failed to redirect stdin");
+                        close(fd);
+                        return (1);
+                    }
+                }
+
+                
+                close(fd);
+            }
+        }
+
+        node = node->right;
+    }
+
+    return (0);
 }
+
 
 int	handle_redirection(t_ast *node, int *exit_status)
 {

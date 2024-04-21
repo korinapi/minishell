@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_split.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cpuiu <cpuiu@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/06 14:49:51 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/02/16 21:34:27 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/04/21 19:45:42 by cpuiu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ size_t	ft_ssubstr_len(char const *str, char c)
 	size_t	count_len;
 
 	count_len = 0;
-	while (str && *str != '\0' && !ft_strchr(&c, *str))
+	while (str && *str != '\0' && *str != c)
 	{
 		count_len++;
 		str++;
@@ -32,16 +32,14 @@ size_t	ssplit_arr_len(char const *s, char c)
 
 	string_count = 0;
 	alarm = 0;
-	while (ft_strchr(&c, *s) && *s)
-		s++;
 	while (*s)
 	{
-		if (!ft_strchr(&c, *s) && alarm == 0)
+		if (*s != c && alarm == 0)
 		{
 			alarm = 1;
 			string_count++;
 		}
-		if (ft_strchr(&c, *s) && alarm == 1)
+		if (*s == c && alarm == 1)
 			alarm = 0;
 		s++;
 	}
@@ -67,19 +65,20 @@ char	**ft_split(char const *s, char c)
 	i = 0;
 	string_count = ssplit_arr_len(s, c);
 	split_arr = (char **)malloc((string_count + 1) * sizeof(char *));
-	while (*s && ft_strchr(&c, *s))
-		s++;
 	while (i < string_count && *s)
 	{
+		while(*s == c && *s != '\0')
+			s++;
+		if (*s == '\0')
+			break ;
 		split_arr[i] = malloc((s_len = ft_ssubstr_len(s, c)) + 1);
 		if (!split_arr[i])
 			return (ft_free(split_arr, i));
 		j = 0;
 		while (j < s_len)
 			split_arr[i][j++] = *s++;
-		split_arr[i++][s_len] = '\0';
-		while (*s && ft_strchr(&c, *s))
-			s++;
+		split_arr[i][s_len] = '\0';
+		i++;
 	}
 	split_arr[i] = NULL;
 	return (split_arr);
