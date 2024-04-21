@@ -6,7 +6,7 @@
 /*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 04:34:31 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/21 21:28:57 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/04/21 23:49:47 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,11 +19,10 @@ static char	*generate_tmp_file_name(void)
 	static const char	tmp_dir[] = "/tmp/minishell_";
 	char				*tmp_file;
 	unsigned char		random_bytes[12];
-	int					read_result;
 	int					fd;
-	unsigned int		i;
+	size_t				i;
 
-	tmp_file = malloc(sizeof(tmp_dir) + 24 + 1);
+	tmp_file = malloc(sizeof(tmp_dir) + 25);
 	if (!tmp_file)
 		return (NULL);
 	ft_strcpy(tmp_file, tmp_dir);
@@ -33,15 +32,20 @@ static char	*generate_tmp_file_name(void)
 		free(tmp_file);
 		return (NULL);
 	}
-	read_result = read(fd, random_bytes, sizeof(random_bytes));
-	close(fd);
-	if (read_result != sizeof(random_bytes))
+	if (read(fd, random_bytes, sizeof(random_bytes)) != sizeof(random_bytes))
 	{
+		close(fd);
 		free(tmp_file);
 		return (NULL);
 	}
-	for (i = 0; i < sizeof(random_bytes); i++)
-		ft_snprintf(tmp_file, 30, "%02x", random_bytes[i]);
+	close(fd);
+	i = 0;
+	while (i < sizeof(random_bytes))
+	{
+		ft_snprintf(tmp_file + ft_strlen(tmp_file), 25, "%02x",
+			random_bytes[i]);
+		i++;
+	}
 	return (tmp_file);
 }
 
@@ -92,81 +96,192 @@ int	redirect_stdin_from_file(const char *filename)
 	return (0);
 }
 
-int	execute_heredoc(t_ast *node)
+int	execute_heredoc_list(t_ast *heredoc_node)
 {
+	int		result;
 	char	*tmp_file;
 	int		fd;
-	t_ast	*current_node;
 
-	current_node = node;
-	while (current_node && current_node->type == AST_REDIRECTION && current_node->redirection_mode == REDIR_HEREDOC)
+	result = 0;
+	tmp_file = NULL;
+	fd = -1;
+	while (heredoc_node && heredoc_node->redirection_file != NULL)
 	{
 		fd = create_temp_file(&tmp_file);
 		if (fd == -1)
 			return (1);
-		read_heredoc_input(fd, current_node->redirection_file);
-		if (current_node->right && current_node->right->type == AST_WHITESPACE)
-			current_node = current_node->right->right;
-		else
-			current_node = current_node->right;
-		close(fd);
+		read_heredoc_input(fd, heredoc_node->redirection_file);
+		heredoc_node = heredoc_node->right;
 	}
-	if (redirect_stdin_from_file(tmp_file) != 0)
+	if (fd != -1)
 	{
+		close(fd);
+		result = redirect_stdin_from_file(tmp_file);
 		free(tmp_file);
-		return (1);
 	}
-	free(tmp_file);
-	return (0);
+	return (result);
 }
 
-int	execute_redirection(t_ast *node)
+int	execute_file_redirection(t_ast *node)
 {
 	int	mode;
 	int	fd;
 	int	flags;
 
-	while ((node && node->type == AST_WHITESPACE) || (node
-			&& node->type == AST_REDIRECTION))
+	mode = node->redirection_mode;
+	if (mode == REDIR_OUT)
+		flags = O_CREAT | O_WRONLY | O_TRUNC;
+	else if (mode == REDIR_OUT_APPEND)
+		flags = O_CREAT | O_WRONLY | O_APPEND;
+	else
+		flags = O_RDONLY;
+	fd = open(node->redirection_file, flags, 0644);
+	if (fd == -1)
+		return (1);
+	if (mode == REDIR_OUT || mode == REDIR_OUT_APPEND)
+		dup2(fd, STDOUT_FILENO);
+	else if (mode == REDIR_IN)
+		dup2(fd, STDIN_FILENO);
+	close(fd);
+	return (0);
+}
+
+int	execute_file_redirection_list(t_ast **file_node_ptr)
+{
+	int		result;
+	t_ast	*current_node;
+
+	result = 0;
+	current_node = *file_node_ptr;
+	while (current_node && current_node->redirection_file != NULL)
 	{
-		mode = node->redirection_mode;
-		if (node->type == AST_WHITESPACE)
-		{
-			node = node->right;
-			continue ;
-		}
-		if (node->type == AST_REDIRECTION)
-		{
-			if (mode == REDIR_HEREDOC)
-			{
-				if (execute_heredoc(node))
-					return (1);
-				return (0);
-			}
-			if (mode == REDIR_OUT)
-				flags = O_CREAT | O_WRONLY | O_TRUNC;
-			else if (mode == REDIR_OUT_APPEND)
-				flags = O_CREAT | O_WRONLY | O_APPEND;
-			else
-				flags = O_RDONLY;
-			fd = open(node->redirection_file, flags, 0644);
-			if (fd == -1)
-				return (1);
-			if (node->right == NULL || node->right->type != AST_REDIRECTION
-				|| (node->right->type == AST_REDIRECTION
-					&& node->right->redirection_mode != REDIR_IN))
-			{
-				if (mode == REDIR_OUT || mode == REDIR_OUT_APPEND)
-					dup2(fd, STDOUT_FILENO);
-				else if (mode == REDIR_IN)
-					dup2(fd, STDIN_FILENO);
-				close(fd);
-			}
-		}
-		node = node->right;
+		result = execute_file_redirection(current_node);
+		if (result != 0)
+			return (result);
+		current_node = current_node->right;
 	}
 	return (0);
 }
+
+int	execute_redirection(t_ast *node)
+{
+	int		result;
+	t_ast	*heredoc_list_ptr;
+	t_ast	*file_list_ptr;
+	t_ast	**heredoc_tail;
+	t_ast	**file_tail;
+	int		mode;
+
+	result = 0;
+	heredoc_list_ptr = NULL;
+	file_list_ptr = NULL;
+	heredoc_tail = &heredoc_list_ptr;
+	file_tail = &file_list_ptr;
+	while (node && node->type != AST_REDIRECTION)
+		node = node->right;
+	while (node && node->type == AST_REDIRECTION)
+	{
+		mode = node->redirection_mode;
+		if (mode == REDIR_HEREDOC)
+		{
+			*heredoc_tail = node;
+			heredoc_tail = &(node->right);
+		}
+		else
+		{
+			*file_tail = node;
+			file_tail = &(node->right);
+		}
+		if (node->right && node->right->type == AST_WHITESPACE)
+			node = node->right->right;
+		else
+			node = node->right;
+	}
+	result = execute_heredoc_list(heredoc_list_ptr);
+	if (result != 0)
+		return (result);
+	result = execute_file_redirection_list(&file_list_ptr);
+	if (result != 0)
+		return (result);
+	return (0);
+}
+
+// int execute_file_redirection_list(file_node)
+// {
+
+// }
+
+// int	execute_redirection(t_ast *node)
+// {
+// 	int	mode;
+// 	int	fd;
+// 	int	flags;
+// 	t_ast *heredoc_list;
+// 	t_ast *file_list;
+
+// 	heredoc_list = NULL;
+// 	file_list = NULL;
+// 	while (node && (node->type == AST_WHITESPACE
+// || node->type == AST_REDIRECTION))
+// 	{
+//         mode = node->redirection_mode;
+//         if (node->type == AST_REDIRECTION)
+// 		{
+//             if (mode == REDIR_HEREDOC)
+// 			{
+//                 node->right = heredoc_list;
+//                 heredoc_list = node;
+//             }
+// 			else
+// 			{
+//                 node->right = file_list;
+//                 file_list = node;
+//             }
+//         }
+//         node = node->right;
+//     }
+
+// 	while ((node && node->type == AST_WHITESPACE) || (node
+// 			&& node->type == AST_REDIRECTION))
+// 	{
+// 		mode = node->redirection_mode;
+// 		if (node->type == AST_WHITESPACE)
+// 		{
+// 			node = node->right;
+// 			continue ;
+// 		}
+// 		if (node->type == AST_REDIRECTION)
+// 		{
+// 			if (mode == REDIR_HEREDOC)
+// 			{
+// 				if (execute_heredoc(node))
+// 					return (1);
+// 				return (0);
+// 			}
+// 			if (mode == REDIR_OUT)
+// 				flags = O_CREAT | O_WRONLY | O_TRUNC;
+// 			else if (mode == REDIR_OUT_APPEND)
+// 				flags = O_CREAT | O_WRONLY | O_APPEND;
+// 			else
+// 				flags = O_RDONLY;
+// 			fd = open(node->redirection_file, flags, 0644);
+// 			if (fd == -1)
+// 				return (1);
+// 			if (node->right == NULL || node->right->type != AST_REDIRECTION
+// 				|| (node->right->type == AST_REDIRECTION
+// 					&& node->right->redirection_mode != REDIR_IN))
+// 			{
+// 				if (mode == REDIR_OUT || mode == REDIR_OUT_APPEND)
+// 					dup2(fd, STDOUT_FILENO);
+// 				else if (mode == REDIR_IN)
+// 					dup2(fd, STDIN_FILENO);
+// 				close(fd);
+// 			}
+// 		}
+// 		node = node->right;
+// 	}
+// 	return (0);
+// }
 
 int	handle_redirection(t_ast *node, int *exit_status)
 {
