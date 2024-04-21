@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redirections.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cpuiu <cpuiu@student.42.fr>                +#+  +:+       +#+        */
+/*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 04:34:31 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/21 20:52:03 by cpuiu            ###   ########.fr       */
+/*   Updated: 2024/04/21 21:28:57 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ static char	*generate_tmp_file_name(void)
 		return (NULL);
 	}
 	for (i = 0; i < sizeof(random_bytes); i++)
-		sprintf(tmp_file + strlen(tmp_file), "%02x", random_bytes[i]);
+		ft_snprintf(tmp_file, 30, "%02x", random_bytes[i]);
 	return (tmp_file);
 }
 
@@ -92,32 +92,35 @@ int	redirect_stdin_from_file(const char *filename)
 	return (0);
 }
 
-int execute_heredoc(t_ast *node) {
-    char *tmp_file;
-    int fd, save_stdin;
+int	execute_heredoc(t_ast *node)
+{
+	char	*tmp_file;
+	int		fd;
+	t_ast	*current_node;
 
-    save_stdin = dup(STDIN_FILENO);
-
-    fd = create_temp_file(&tmp_file);
-    if (fd == -1)
-        return 1;
-
-    read_heredoc_input(fd, node->redirection_file);
-    close(fd);
-
-    if (redirect_stdin_from_file(tmp_file) != 0) {
-        close(save_stdin);
-        free(tmp_file);
-        return 1;
-    }
-    dup2(save_stdin, STDIN_FILENO);
-    close(save_stdin);
-
-    free(tmp_file);
-    return 0;
+	current_node = node;
+	while (current_node && current_node->type == AST_REDIRECTION && current_node->redirection_mode == REDIR_HEREDOC)
+	{
+		fd = create_temp_file(&tmp_file);
+		if (fd == -1)
+			return (1);
+		read_heredoc_input(fd, current_node->redirection_file);
+		if (current_node->right && current_node->right->type == AST_WHITESPACE)
+			current_node = current_node->right->right;
+		else
+			current_node = current_node->right;
+		close(fd);
+	}
+	if (redirect_stdin_from_file(tmp_file) != 0)
+	{
+		free(tmp_file);
+		return (1);
+	}
+	free(tmp_file);
+	return (0);
 }
 
-int execute_redirection(t_ast *node)
+int	execute_redirection(t_ast *node)
 {
 	int	mode;
 	int	fd;
@@ -164,7 +167,6 @@ int execute_redirection(t_ast *node)
 	}
 	return (0);
 }
-
 
 int	handle_redirection(t_ast *node, int *exit_status)
 {
