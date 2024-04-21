@@ -5,3 +5,5 @@
 *.o
 minishell
 /minishell_tester
+/tests
+minishell_test.log
