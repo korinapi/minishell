@@ -6,14 +6,13 @@
 /*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/30 05:15:55 by marvinleibe       #+#    #+#             */
-/*   Updated: 2024/04/22 02:10:58 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/04/22 02:16:19 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "environment.h"
 #include "parser.h"
-#include <stdlib.h>
-#include <string.h>
+#include "minishell.h"
 
 // int	execute_unset(t_ast *args)
 // {
@@ -43,9 +42,6 @@
 // 	return (1);
 // }
 
-#include <ctype.h>
-#include <string.h>
-
 int	is_valid_variable(char *var)
 {
 
@@ -62,8 +58,6 @@ int	is_valid_variable(char *var)
 	}
 	return (1);
 }
-
-#include <stdio.h>
 
 int	execute_unset(t_ast *args)
 {
@@ -82,7 +76,7 @@ int	execute_unset(t_ast *args)
 				unset_env_var(var_name);
 			else
 			{
-				fprintf(stderr, "minishell: unset: `%s': not a valid identifier\n",
+				ft_fprintf(STDERR_FILENO, "minishell: unset: `%s': not a valid identifier\n",
 					var_name);
 				has_invalid = 1;
 			}
@@ -91,7 +85,7 @@ int	execute_unset(t_ast *args)
 		{
 			if (!arg->right->right)
 			{
-				fprintf(stderr, "minishell: unset: `': not a valid identifier\n");
+				ft_fprintf(STDERR_FILENO, "minishell: unset: `': not a valid identifier\n");
 				has_invalid = 1;
 			}
 		}
