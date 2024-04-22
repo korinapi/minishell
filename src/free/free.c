@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   free.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cpuiu <cpuiu@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/29 00:22:57 by marvinleibe       #+#    #+#             */
-/*   Updated: 2024/04/20 23:58:25 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/04/22 11:04:55 by cpuiu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,14 +18,15 @@ void	ft_free_env(char **env)
 	int	i;
 
 	i = 0;
-	if (!env)
-		return ;
-	while (env[i])
+	if (env)
 	{
-		free(env[i]);
-		i++;
+		while (env[i] != NULL)
+		{
+			free(env[i]);
+			i++;
+		}
+		free(env);
 	}
-	free(env);
 }
 
 // void	ft_free_env_split(char **new_env, int i)

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   env_mem_funcs.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cpuiu <cpuiu@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/07 08:49:41 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/21 00:04:21 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/04/22 10:56:27 by cpuiu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,7 +80,8 @@ int	ft_setenv(const char *name, const char *value, int overwrite)
 		return (-1);
 	ft_snprintf(env_str, len, "%s=%s", name, value);
 	status = ft_putenv(env_str);
-	free(env_str);
+	if (status != 0)
+        free(env_str);
 	return (status);
 }
 
