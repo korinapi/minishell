@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   environment.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cpuiu <cpuiu@student.42.fr>                +#+  +:+       +#+        */
+/*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 04:34:52 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/22 11:03:56 by cpuiu            ###   ########.fr       */
+/*   Updated: 2024/04/21 00:06:28 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,11 +82,6 @@ int	add_env_var(char *name, char *value)
 	if (!new_str)
 		return (-1);
 	ft_snprintf(new_str, len, "%s=%s", name, value);
-	if (ft_putenv(new_str) != 0)
-	{
-		free(new_str);
-		return (-1);
-	}
 	new_env = ft_realloc_env(environ, new_str);
 	if (!environ)
 	{
@@ -97,44 +92,17 @@ int	add_env_var(char *name, char *value)
 	return (0);
 }
 
-// int	ft_putenv(char *string)
-// {
-// 	int		index;
-// 	char	*name;
-// 	char	*value;
-
-// 	if (parse_env_string(string, &name, &value) != 0)
-// 		return (-1);
-// 	index = find_env_var(name);
-// 	if (index == -1)
-// 		return (add_env_var(name, value));
-// 	else
-// 		return (update_env_var(name, value));
-// }
 int	ft_putenv(char *string)
 {
+	int		index;
 	char	*name;
 	char	*value;
-	char	*separator;
-	int		index;
 
-	separator = strchr(string, '=');
-	if (!separator)
+	if (parse_env_string(string, &name, &value) != 0)
 		return (-1);
-	*separator = '\0';
-	name = string;
-	value = separator + 1;
 	index = find_env_var(name);
-	*separator = '=';
-	if (index != -1)
-	{
-		if (update_env_var(name, value) != 0)
-			return (-1);
-	}
+	if (index == -1)
+		return (add_env_var(name, value));
 	else
-	{
-		if (add_env_var(name, value) != 0)
-			return (-1);
-	}
-	return (0);
+		return (update_env_var(name, value));
 }

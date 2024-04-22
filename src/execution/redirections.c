@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redirections.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cpuiu <cpuiu@student.42.fr>                +#+  +:+       +#+        */
+/*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 04:34:31 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/22 11:04:47 by cpuiu            ###   ########.fr       */
+/*   Updated: 2024/04/21 23:49:47 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,15 +21,11 @@ static char	*generate_tmp_file_name(void)
 	unsigned char		random_bytes[12];
 	int					fd;
 	size_t				i;
-	int					offset;
-	size_t				tmp_dir_len;
 
-	tmp_dir_len = sizeof(tmp_dir) - 1;
-	tmp_file = malloc(tmp_dir_len + 24 * 2 + 1);
+	tmp_file = malloc(sizeof(tmp_dir) + 25);
 	if (!tmp_file)
 		return (NULL);
 	ft_strcpy(tmp_file, tmp_dir);
-	offset = tmp_dir_len;
 	fd = open("/dev/urandom", O_RDONLY);
 	if (fd == -1)
 	{
@@ -43,12 +39,13 @@ static char	*generate_tmp_file_name(void)
 		return (NULL);
 	}
 	close(fd);
-	for (i = 0; i < sizeof(random_bytes); i++)
+	i = 0;
+	while (i < sizeof(random_bytes))
 	{
-		snprintf(tmp_file + offset, 3, "%02x", random_bytes[i]);
-		offset += 2;
+		ft_snprintf(tmp_file + ft_strlen(tmp_file), 25, "%02x",
+			random_bytes[i]);
+		i++;
 	}
-	tmp_file[offset] = '\0';
 	return (tmp_file);
 }
 

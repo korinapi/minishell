@@ -6,7 +6,7 @@
 /*   By: cpuiu <cpuiu@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/05 19:42:46 by cpuiu             #+#    #+#             */
-/*   Updated: 2024/04/22 10:15:43 by cpuiu            ###   ########.fr       */
+/*   Updated: 2024/04/21 20:22:33 by cpuiu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,8 +24,6 @@ char	*find_command_path(char *command, char **paths)
 	char	*full_path;
 	int		i;
 
-	if (command == NULL)
-		return (NULL);
 	if (ft_strchr(command, '/') != NULL)
 	{
 		if (!access(command, X_OK))
@@ -34,7 +32,7 @@ char	*find_command_path(char *command, char **paths)
 			return (NULL);
 	}
 	i = 0;
-	while (paths && paths[i])
+	while (paths[i])
 	{
 		full_path = ft_strjoin(paths[i], "/");
 		full_path = ft_strjoin_free(full_path, command, 1);
@@ -113,11 +111,6 @@ void	execute_command_from_path(char **args, int *exit_status)
 
 	handle_specific_error(exit_status);
 	command_path = get_command_path(args[0]);
-	if (!args || !args[0])
-	{
-		ft_fprintf(STDERR_FILENO, "Invalid command input.\n");
-		exit(127);
-	}
 	if (!command_path)
 	{
 		ft_putstr_fd("Command not found: ", STDERR_FILENO);
