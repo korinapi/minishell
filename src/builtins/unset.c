@@ -6,7 +6,7 @@
 /*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/30 05:15:55 by marvinleibe       #+#    #+#             */
-/*   Updated: 2024/04/22 02:18:21 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/04/22 02:19:11 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,16 +47,14 @@ int	is_valid_variable(char *var)
 	char *p;
 
 	p = var + 1;
-	if (var == NULL || *var == '\0' || strcmp(var, "\"=\"") == 0 || strcmp(var, "?") == 0 || strcmp(var, "$") == 0)
+	if (var == NULL || *var == '\0' || ft_strcmp(var, "\"=\"") == 0 || ft_strcmp(var, "?") == 0 || ft_strcmp(var, "$") == 0)
 		return 0;
-	if (!isalpha(var[0]) && var[0] != '_')
+	if (!ft_isalpha(var[0]) && var[0] != '_')
 		return (0);
 	while (*p)
 	{
-		if (!isalnum(*p) && *p != '_')
-		{
+		if (!ft_isalnum(*p) && *p != '_')
 			return (0);
-		}
 		p++;
 	}
 	return (1);
