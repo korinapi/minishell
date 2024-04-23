@@ -6,13 +6,14 @@
 /*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/07 08:49:41 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/21 00:04:21 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/04/23 18:14:02 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "environment.h"
 #include "minishell.h"
 #include "utilities.h"
+#include "free.h"
 
 char	**ft_realloc_env(char **environ, char *new_var)
 {

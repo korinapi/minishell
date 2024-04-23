@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_utils.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cpuiu <cpuiu@student.42.fr>                +#+  +:+       +#+        */
+/*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/05 19:42:46 by cpuiu             #+#    #+#             */
-/*   Updated: 2024/04/21 20:22:33 by cpuiu            ###   ########.fr       */
+/*   Updated: 2024/04/23 18:23:56 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,23 +101,13 @@ char	*get_command_path(char *command)
 		return (NULL);
 	paths = ft_split(path_env, ':');
 	command_path = find_command_path(command, paths);
-	free(paths);
+	ft_free_split(paths);
 	return (command_path);
 }
 
-void	execute_command_from_path(char **args, int *exit_status)
+void	execute_command_from_path(char **args, char *command_path, int *exit_status)
 {
-	char	*command_path;
-
 	handle_specific_error(exit_status);
-	command_path = get_command_path(args[0]);
-	if (!command_path)
-	{
-		ft_putstr_fd("Command not found: ", STDERR_FILENO);
-		ft_putstr_fd(args[0], STDERR_FILENO);
-		ft_putchar_fd('\n', STDERR_FILENO);
-		exit(127);
-	}
 	if (execve(command_path, args, environ) == -1)
 	{
 		ft_fprintf(STDERR_FILENO, "execve failed: %s\n", strerror(errno));

@@ -6,7 +6,7 @@
 /*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/01 19:59:44 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/22 01:40:19 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/04/23 18:56:33 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,8 @@
 #include "parser.h"
 #include "signals.h"
 #include "utilities.h"
+
+// static t_environ_pointers	g_environ_pointers = {0, NULL};
 
 int	startup_check(int argc, char **argv)
 {
@@ -53,7 +55,7 @@ void	set_man_environ(void)
 	else
 		level = ft_atoi(sh_level) + 1;
 	sh_level_str = (char *)malloc(16 * sizeof(char));
-	ft_snprintf(sh_level_str, sizeof(sh_level_str), "%d", level);
+	ft_snprintf(sh_level_str, 16, "%d", level);
 	ft_setenv("SHLVL", sh_level_str, 1);
 	free(cwd);
 	free(sh_level_str);
@@ -64,8 +66,8 @@ int	main(int argc, char **argv)
 	char	*input;
 	t_ast	*ast;
 	int		exit_status;
-	rl_catch_signals = 0;
 
+	rl_catch_signals = 0;
 	if (startup_check(argc, argv))
 		return (1);
 	setup_signals();
@@ -74,14 +76,13 @@ int	main(int argc, char **argv)
 	set_man_environ();
 	while (1)
 	{
-		g_sigint_received = 0;
 		input = get_input();
 		if (!input)
 			break ;
 		ast = parse_input(input);
 		if (ast)
 		{
-			// print_ast(ast, 0, "Root");
+			print_ast(ast, 0, "Root");
 			execute_ast(ast, &exit_status);
 			free_ast(ast);
 		}

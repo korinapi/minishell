@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse_simple.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cpuiu <cpuiu@student.42.fr>                +#+  +:+       +#+        */
+/*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/07 05:31:42 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/18 20:24:35 by cpuiu            ###   ########.fr       */
+/*   Updated: 2024/04/23 17:06:35 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -197,6 +197,7 @@ void	handle_variable_parsing(char **input, t_ast **parent, t_ast **prev)
 	else
 	{
 		word = ft_get_variable(input);
+		word = handle_variable_expansion(word);
 		node = create_ast_node(AST_VARIABLE, word);
 		ast_append(*parent, node);
 		*prev = node;

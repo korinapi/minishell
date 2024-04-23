@@ -3,17 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   cd.c                                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cpuiu <cpuiu@student.42.fr>                +#+  +:+       +#+        */
+/*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/30 05:30:21 by marvinleibe       #+#    #+#             */
-/*   Updated: 2024/04/19 10:05:54 by cpuiu            ###   ########.fr       */
+/*   Updated: 2024/04/23 17:17:09 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "builtins.h"
 #include "environment.h"
 #include "minishell.h"
 #include "parser.h"
-#include "builtins.h"
 
 int	handle_home(t_ast *arg, char **path)
 {
@@ -49,7 +49,9 @@ int	handle_var(t_ast *arg, char **path)
 {
 	char	*var_name;
 
-	if (arg && (arg->type == AST_WORD || arg->type == AST_VARIABLE))
+	if (arg && (arg->type == AST_WORD || arg->type == AST_VARIABLE
+			|| arg->type == AST_DOUBLEQUOTED_WORD
+			|| arg->type == AST_SINGLEQUOTED_WORD))
 	{
 		if (arg->type == AST_VARIABLE)
 		{

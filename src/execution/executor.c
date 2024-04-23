@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cpuiu <cpuiu@student.42.fr>                +#+  +:+       +#+        */
+/*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 04:29:28 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/23 15:25:33 by cpuiu            ###   ########.fr       */
+/*   Updated: 2024/04/23 19:04:21 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,19 +22,31 @@
 int	execute_external(char **args, int *exit_status)
 {
 	pid_t	pid;
+	char	*command_path;
 
 	rl_catch_signals = 1;
+	if (!*args)
+		return (0);
+	command_path = get_command_path(args[0]);
+	if (!command_path)
+	{
+		ft_error("minishell", "Command not found", args[0]);
+		*exit_status = 127;
+		free(command_path);
+		return (*exit_status);
+	}
 	pid = fork();
 	if (pid == -1)
 		return (perror("fork"), 1);
 	else if (pid == 0)
 	{
-		execute_command_from_path(args, exit_status);
+		execute_command_from_path(args, command_path, exit_status);
 		return (1);
 	}
 	else
 		*exit_status = wait_and_update_status(pid);
 	rl_catch_signals = 0;
+	free(command_path);
 	return (*exit_status);
 }
 
@@ -66,8 +78,13 @@ void	execute_simple_command(t_ast *node, int *exit_status)
 
 int	syntax_check(t_ast *ast, int *exit_status)
 {
-	if (!ast)
+	static char *symbol;
+
+	if (!ast->left)
+	{
+		*exit_status = 127;
 		return (1);
+	}
 	if (ast->type == AST_PIPELINE && !ast->left->left)
 	{
 		ft_fprintf(STDERR_FILENO,
@@ -75,23 +92,23 @@ int	syntax_check(t_ast *ast, int *exit_status)
 		*exit_status = 258;
 		return (1);
 	}
-	// if (ast->type == AST_SIMPLE_COMMAND)
-	// {
-	// 	if ((ast->left->redirection_mode == REDIR_IN
-	// 			|| ast->left->redirection_mode == REDIR_OUT
-	// 			|| ast->left->redirection_mode == REDIR_OUT_APPEND
-	// 			|| ast->left->redirection_mode == REDIR_HEREDOC))
-	// 	{
-	// 		if (ft_strcmp(ast->left->redirection_file, "\0") == 0)
-	// 		{
-	// 				symbol = "newline";
-	// 				ft_fprintf(STDERR_FILENO,
-	// 					"minishell: syntax error near unexpected token `%s'\n",symbol);
-	// 				*exit_status = 258;
-	// 				return (1);
-	// 		}
-	// 	}
-	// }
+	if (ast->type == AST_SIMPLE_COMMAND)
+	{
+		if ((ast->left->redirection_mode == REDIR_IN
+				|| ast->left->redirection_mode == REDIR_OUT
+				|| ast->left->redirection_mode == REDIR_OUT_APPEND
+				|| ast->left->redirection_mode == REDIR_HEREDOC))
+		{
+			if (ft_strcmp(ast->left->redirection_file, "\0") == 0)
+			{
+					symbol = "newline";
+					ft_fprintf(STDERR_FILENO,
+						"minishell: syntax error near unexpected token `%s'\n",symbol);
+					*exit_status = 258;
+					return (1);
+			}
+		}
+	}
 	return (0);
 }
 

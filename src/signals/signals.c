@@ -6,7 +6,7 @@
 /*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 04:35:06 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/20 23:51:12 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/04/23 18:56:43 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,6 @@ void	signal_handler(int signo)
 		rl_replace_line("", 0);
 		rl_redisplay();
 		rl_point = 0;
-		g_sigint_received = 1;
 	}
 	(void)return_value;
 }
