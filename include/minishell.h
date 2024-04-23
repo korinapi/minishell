@@ -6,7 +6,7 @@
 /*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/01 19:59:37 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/23 19:10:35 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/04/23 20:14:28 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,17 +41,17 @@
 
 typedef struct s_handmedown
 {
-	char						**alloc_env;
-	int							num_of_env;
-	int							*exitcode;
-}								t_handmedown;
+	char	**alloc_env;
+	int		num_of_env;
+	int		*exitcode;
+}			t_handmedown;
 
 typedef struct s_environ_pointers
 {
-	int size;
-	char **environ_pointers;
-}								t_environ_pointers;
+	int		size;
+	char	**environ_pointers;
+}			t_environ_pointers;
 
-extern char						**environ;
+extern char	**environ;
 
 #endif

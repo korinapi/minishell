@@ -6,7 +6,7 @@
 /*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/05 19:42:46 by cpuiu             #+#    #+#             */
-/*   Updated: 2024/04/23 18:23:56 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/04/23 20:03:42 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,42 +44,6 @@ char	*find_command_path(char *command, char **paths)
 	return (NULL);
 }
 
-// void	execute_command_from_path(char **args, int *exit_status)
-// {
-// 	char	*path_env;
-// 	char	**paths;
-// 	char	*command_path;
-
-// 	if (*exit_status == ENOENT || *exit_status == ENOTDIR)
-// 	{
-// 		ft_fprintf(STDERR_FILENO, " %s\n", strerror(*exit_status));
-// 		exit(1);
-// 	}
-// 	else if (*exit_status == EACCES)
-// 	{
-// 		ft_fprintf(STDERR_FILENO, " %s\n", strerror(*exit_status));
-// 		exit(1);
-// 	}
-// 	path_env = getenv("PATH");
-// 	paths = ft_split(path_env, ':');
-// 	command_path = find_command_path(args[0], paths);
-// 	if (command_path == NULL)
-// 	{
-// 		ft_putstr_fd("Command not found: ", STDERR_FILENO);
-// 		ft_putstr_fd(args[0], STDERR_FILENO);
-// 		ft_putchar_fd('\n', STDERR_FILENO);
-// 		exit(127);
-// 	}
-// 	if (execve(command_path, args, NULL) == -1)
-// 	{
-// 		ft_fprintf(STDERR_FILENO, "execve failed: %s\n", strerror(errno));
-// 		free(command_path);
-// 		exit(126);
-// 	}
-// 	free(command_path);
-// 	exit(1);
-// }
-
 void	handle_specific_error(int *exit_status)
 {
 	if (*exit_status == ENOENT || *exit_status == ENOTDIR
@@ -105,7 +69,8 @@ char	*get_command_path(char *command)
 	return (command_path);
 }
 
-void	execute_command_from_path(char **args, char *command_path, int *exit_status)
+void	execute_command_from_path(char **args, char *command_path,
+		int *exit_status)
 {
 	handle_specific_error(exit_status);
 	if (execve(command_path, args, environ) == -1)

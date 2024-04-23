@@ -6,7 +6,7 @@
 /*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 04:29:28 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/23 19:04:21 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/04/23 20:04:49 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,8 +32,7 @@ int	execute_external(char **args, int *exit_status)
 	{
 		ft_error("minishell", "Command not found", args[0]);
 		*exit_status = 127;
-		free(command_path);
-		return (*exit_status);
+		return (free(command_path), *exit_status);
 	}
 	pid = fork();
 	if (pid == -1)
@@ -46,8 +45,7 @@ int	execute_external(char **args, int *exit_status)
 	else
 		*exit_status = wait_and_update_status(pid);
 	rl_catch_signals = 0;
-	free(command_path);
-	return (*exit_status);
+	return (free(command_path), *exit_status);
 }
 
 void	execute_simple_command(t_ast *node, int *exit_status)
@@ -78,7 +76,7 @@ void	execute_simple_command(t_ast *node, int *exit_status)
 
 int	syntax_check(t_ast *ast, int *exit_status)
 {
-	static char *symbol;
+	static char	*symbol;
 
 	if (!ast->left)
 	{
@@ -101,11 +99,12 @@ int	syntax_check(t_ast *ast, int *exit_status)
 		{
 			if (ft_strcmp(ast->left->redirection_file, "\0") == 0)
 			{
-					symbol = "newline";
-					ft_fprintf(STDERR_FILENO,
-						"minishell: syntax error near unexpected token `%s'\n",symbol);
-					*exit_status = 258;
-					return (1);
+				symbol = "newline";
+				ft_fprintf(STDERR_FILENO,
+					"minishell: syntax error near unexpected token `%s'\n",
+					symbol);
+				*exit_status = 258;
+				return (1);
 			}
 		}
 	}

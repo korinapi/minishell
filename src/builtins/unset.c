@@ -6,7 +6,7 @@
 /*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/30 05:15:55 by marvinleibe       #+#    #+#             */
-/*   Updated: 2024/04/23 19:14:49 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/04/23 20:02:39 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,7 @@ int	is_valid_variable(char *var)
 	}
 	return (1);
 }
+
 void	conditionals(t_ast *arg, int *has_invalid)
 {
 	char	*var_name;

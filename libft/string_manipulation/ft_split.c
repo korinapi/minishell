@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_split.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cpuiu <cpuiu@student.42.fr>                +#+  +:+       +#+        */
+/*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/06 14:49:51 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/21 19:45:42 by cpuiu            ###   ########.fr       */
+/*   Updated: 2024/04/23 20:16:22 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,7 @@ char	**ft_split(char const *s, char c)
 	split_arr = (char **)malloc((string_count + 1) * sizeof(char *));
 	while (i < string_count && *s)
 	{
-		while(*s == c && *s != '\0')
+		while (*s == c && *s != '\0')
 			s++;
 		if (*s == '\0')
 			break ;
@@ -77,8 +77,7 @@ char	**ft_split(char const *s, char c)
 		j = 0;
 		while (j < s_len)
 			split_arr[i][j++] = *s++;
-		split_arr[i][s_len] = '\0';
-		i++;
+		split_arr[i++][s_len] = '\0';
 	}
 	split_arr[i] = NULL;
 	return (split_arr);
