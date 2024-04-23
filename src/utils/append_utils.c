@@ -6,7 +6,7 @@
 /*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/07 05:22:37 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/23 19:55:53 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/04/23 21:56:58 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,6 +77,8 @@ t_ast	*create_ast_node(t_ast_type type, char *data)
 	t_ast	*node;
 
 	node = malloc(sizeof(t_ast));
+	if (!node)
+		return NULL;
 	node->type = type;
 	node->data = data;
 	node->redirection_file = NULL;

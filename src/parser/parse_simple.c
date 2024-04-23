@@ -6,7 +6,7 @@
 /*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/07 05:31:42 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/23 21:38:00 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/04/23 21:58:04 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,7 +99,8 @@ void	parse_command_segment(char **input, t_ast **parent, t_ast **prev)
 	while (**input && ft_isspace(**input))
 	{
 		node = create_ast_node(AST_WHITESPACE, NULL);
-		ast_append(*parent, node);
+		if (node)
+			ast_append(*parent, node);
 		(*input)++;
 	}
 	if (!**input || **input == '|')

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redirection_utils.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cpuiu <cpuiu@student.42.fr>                +#+  +:+       +#+        */
+/*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/23 20:59:43 by cpuiu             #+#    #+#             */
-/*   Updated: 2024/04/23 21:14:03 by cpuiu            ###   ########.fr       */
+/*   Updated: 2024/04/23 21:53:58 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,8 @@
 #include "executor.h"
 #include "minishell.h"
 #include "redirection.h"
+
+#define RANDOM_BYTES 12
 
 static int	read_random_bytes(unsigned char *buffer, size_t size)
 {
@@ -37,10 +39,10 @@ static void	append_hex_string(char *dest, unsigned char *bytes,
 	size_t	i;
 
 	i = 0;
-	offset = strlen(dest);
+	offset = ft_strlen(dest);
 	while (i < num_bytes)
 	{
-		snprintf(dest + offset, 3, "%02x", bytes[i]);
+		ft_snprintf(dest + offset, 3, "%02x", bytes[i]);
 		offset += 2;
 		i++;
 	}
@@ -51,21 +53,20 @@ static char	*generate_tmp_file_name(void)
 {
 	static const char	tmp_dir[] = "/tmp/minishell_";
 	const size_t		tmp_dir_len = sizeof(tmp_dir) - 1;
-	const size_t		num_random_bytes = 12;
-	const size_t		filename_buffer_size = tmp_dir_len + num_random_bytes * 2 + 1;
+	const size_t		filename_buffer_size = tmp_dir_len + 12 * 2 + 1;
 	char				*tmp_file;
-	unsigned char		random_bytes[num_random_bytes];
+	unsigned char		random_bytes[RANDOM_BYTES];
 
 	tmp_file = malloc(filename_buffer_size);
 	if (!tmp_file)
 		return (NULL);
-	strcpy(tmp_file, tmp_dir);
-	if (read_random_bytes(random_bytes, num_random_bytes) != 0)
+	ft_strcpy(tmp_file, tmp_dir);
+	if (read_random_bytes(random_bytes, RANDOM_BYTES) != 0)
 	{
 		free(tmp_file);
 		return (NULL);
 	}
-	append_hex_string(tmp_file, random_bytes, num_random_bytes);
+	append_hex_string(tmp_file, random_bytes, RANDOM_BYTES);
 	return (tmp_file);
 }
 
