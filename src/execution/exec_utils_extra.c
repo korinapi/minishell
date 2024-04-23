@@ -1,23 +1,32 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   redirection.h                                      :+:      :+:    :+:   */
+/*   exec_utils_extra.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: cpuiu <cpuiu@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/03/22 04:31:42 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/23 21:15:59 by cpuiu            ###   ########.fr       */
+/*   Created: 2024/04/23 20:43:53 by cpuiu             #+#    #+#             */
+/*   Updated: 2024/04/23 20:45:10 by cpuiu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef REDIRECTION_H
-# define REDIRECTION_H
+#include "builtins.h"
+#include "environment.h"
+#include "errors.h"
+#include "executor.h"
+#include "free.h"
+#include "minishell.h"
+#include "redirection.h"
+#include "utilities.h"
 
-int		handle_redirection(t_ast *node, int *exit_status);
-int		execute_redirection(t_ast *node);
-bool	has_redirection_nodes(t_ast *node);
-int		create_temp_file(char **tmp_file);
-int		execute_heredoc_list(t_ast *heredoc_node);
-int		execute_file_redirection_list(t_ast **file_node_ptr);
-int		execute_file_redirection(t_ast *node);
-#endif
+void	close_pipes(int *pipe_fds, int num_pipes)
+{
+	int	i;
+
+	i = 0;
+	while (i < 2 * num_pipes)
+	{
+		close(pipe_fds[i]);
+		i++;
+	}
+}
