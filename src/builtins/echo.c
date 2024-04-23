@@ -6,7 +6,7 @@
 /*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 05:16:28 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/23 19:12:05 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/04/23 21:40:45 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,9 +45,7 @@ void	check_flag_echo(t_ast **arg, int *print_newline)
 	{
 		*print_newline = 0;
 		while ((*arg)->right && (*arg)->right->type == AST_WHITESPACE)
-		{
 			*arg = (*arg)->right;
-		}
 		*arg = (*arg)->right;
 	}
 }

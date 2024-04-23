@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse_simple.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cpuiu <cpuiu@student.42.fr>                +#+  +:+       +#+        */
+/*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/07 05:31:42 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/23 20:09:50 by cpuiu            ###   ########.fr       */
+/*   Updated: 2024/04/23 21:38:00 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,15 +94,11 @@ void	handle_unquoted_word(char **input, t_ast **parent, t_ast **prev)
 
 void	parse_command_segment(char **input, t_ast **parent, t_ast **prev)
 {
-	char	*word;
 	t_ast	*node;
 
 	while (**input && ft_isspace(**input))
 	{
-		word = ft_calloc(2, sizeof(char));
-		word[0] = **input;
-		word[1] = '\0';
-		node = create_ast_node(AST_WHITESPACE, word);
+		node = create_ast_node(AST_WHITESPACE, NULL);
 		ast_append(*parent, node);
 		(*input)++;
 	}

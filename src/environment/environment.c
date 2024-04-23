@@ -6,7 +6,7 @@
 /*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 04:34:52 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/21 00:06:28 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/04/23 21:34:22 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,6 +88,7 @@ int	add_env_var(char *name, char *value)
 		free(new_str);
 		return (-1);
 	}
+	free(new_str);
 	environ = new_env;
 	return (0);
 }
