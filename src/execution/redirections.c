@@ -3,16 +3,51 @@
 /*                                                        :::      ::::::::   */
 /*   redirections.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cpuiu <cpuiu@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 04:34:31 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/21 23:49:47 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/04/23 15:17:10 by cpuiu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "errors.h"
 #include "executor.h"
 #include "minishell.h"
+
+// static char	*generate_tmp_file_name(void)
+// {
+// 	static const char	tmp_dir[] = "/tmp/minishell_";
+// 	char				*tmp_file;
+// 	unsigned char		random_bytes[12];
+// 	int					fd;
+// 	size_t				i;
+
+// 	tmp_file = malloc(sizeof(tmp_dir) + 25);
+// 	if (!tmp_file)
+// 		return (NULL);
+// 	ft_strcpy(tmp_file, tmp_dir);
+// 	fd = open("/dev/urandom", O_RDONLY);
+// 	if (fd == -1)
+// 	{
+// 		free(tmp_file);
+// 		return (NULL);
+// 	}
+// 	if (read(fd, random_bytes, sizeof(random_bytes)) != sizeof(random_bytes))
+// 	{
+// 		close(fd);
+// 		free(tmp_file);
+// 		return (NULL);
+// 	}
+// 	close(fd);
+// 	i = 0;
+// 	while (i < sizeof(random_bytes))
+// 	{
+// 		ft_snprintf(tmp_file + ft_strlen(tmp_file), 25, "%02x",
+// 			random_bytes[i]);
+// 		i++;
+// 	}
+// 	return (tmp_file);
+// }
 
 static char	*generate_tmp_file_name(void)
 {
@@ -21,11 +56,15 @@ static char	*generate_tmp_file_name(void)
 	unsigned char		random_bytes[12];
 	int					fd;
 	size_t				i;
+	int					offset;
+	size_t				tmp_dir_len;
 
-	tmp_file = malloc(sizeof(tmp_dir) + 25);
+	tmp_dir_len = sizeof(tmp_dir) - 1;
+	tmp_file = malloc(tmp_dir_len + 24 * 2 + 1);
 	if (!tmp_file)
 		return (NULL);
 	ft_strcpy(tmp_file, tmp_dir);
+	offset = tmp_dir_len;
 	fd = open("/dev/urandom", O_RDONLY);
 	if (fd == -1)
 	{
@@ -39,13 +78,12 @@ static char	*generate_tmp_file_name(void)
 		return (NULL);
 	}
 	close(fd);
-	i = 0;
-	while (i < sizeof(random_bytes))
+	for (i = 0; i < sizeof(random_bytes); i++)
 	{
-		ft_snprintf(tmp_file + ft_strlen(tmp_file), 25, "%02x",
-			random_bytes[i]);
-		i++;
+		ft_snprintf(tmp_file + offset, 3, "%02x", random_bytes[i]);
+		offset += 2;
 	}
+	tmp_file[offset] = '\0';
 	return (tmp_file);
 }
 
@@ -137,7 +175,10 @@ int	execute_file_redirection(t_ast *node)
 		flags = O_RDONLY;
 	fd = open(node->redirection_file, flags, 0644);
 	if (fd == -1)
+	{
+		ft_error("minishell", node->redirection_file, "No such file or directory");
 		return (1);
+	}
 	if (mode == REDIR_OUT || mode == REDIR_OUT_APPEND)
 		dup2(fd, STDOUT_FILENO);
 	else if (mode == REDIR_IN)
