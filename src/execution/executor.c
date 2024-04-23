@@ -6,7 +6,7 @@
 /*   By: cpuiu <cpuiu@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 04:29:28 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/21 19:22:02 by cpuiu            ###   ########.fr       */
+/*   Updated: 2024/04/23 15:25:33 by cpuiu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,8 +22,8 @@
 int	execute_external(char **args, int *exit_status)
 {
 	pid_t	pid;
-	rl_catch_signals = 1;
 
+	rl_catch_signals = 1;
 	pid = fork();
 	if (pid == -1)
 		return (perror("fork"), 1);
@@ -66,6 +66,8 @@ void	execute_simple_command(t_ast *node, int *exit_status)
 
 int	syntax_check(t_ast *ast, int *exit_status)
 {
+	if (!ast)
+		return (1);
 	if (ast->type == AST_PIPELINE && !ast->left->left)
 	{
 		ft_fprintf(STDERR_FILENO,
@@ -73,13 +75,30 @@ int	syntax_check(t_ast *ast, int *exit_status)
 		*exit_status = 258;
 		return (1);
 	}
+	// if (ast->type == AST_SIMPLE_COMMAND)
+	// {
+	// 	if ((ast->left->redirection_mode == REDIR_IN
+	// 			|| ast->left->redirection_mode == REDIR_OUT
+	// 			|| ast->left->redirection_mode == REDIR_OUT_APPEND
+	// 			|| ast->left->redirection_mode == REDIR_HEREDOC))
+	// 	{
+	// 		if (ft_strcmp(ast->left->redirection_file, "\0") == 0)
+	// 		{
+	// 				symbol = "newline";
+	// 				ft_fprintf(STDERR_FILENO,
+	// 					"minishell: syntax error near unexpected token `%s'\n",symbol);
+	// 				*exit_status = 258;
+	// 				return (1);
+	// 		}
+	// 	}
+	// }
 	return (0);
 }
 
 void	execute_ast(t_ast *ast, int *exit_status)
 {
-	int		saved_stdin;
-	int		saved_stdout;
+	int	saved_stdin;
+	int	saved_stdout;
 
 	if (syntax_check(ast, exit_status))
 		return ;
