@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cpuiu <cpuiu@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 04:26:02 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/23 19:49:45 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/04/23 20:10:39 by cpuiu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,11 +18,11 @@
 # define REDIR_IN 3
 # define REDIR_HEREDOC 4
 
-typedef struct s_redirection {
-    int mode;
-    char *filename;
-} t_redirection;
-
+typedef struct s_redirection
+{
+	int				mode;
+	char			*filename;
+}					t_redirection;
 
 typedef enum e_ast_type
 {
@@ -50,9 +50,9 @@ typedef struct s_ast
 
 typedef struct s_newhelper
 {
-	char *word;
-	t_ast *node;
-} t_newhelper;
+	char			*word;
+	t_ast			*node;
+}					t_newhelper;
 
 t_ast				*create_ast_node(t_ast_type type, char *data);
 int					ast_count_nodes(t_ast *ast);
@@ -76,6 +76,7 @@ void				handle_input_redirection(char **input, t_ast **ast);
 void				parse_pipeline(char **input, t_ast **ast);
 void				parse_command_segment(char **input, t_ast **parent,
 						t_ast **prev);
-void apply_redirections(t_ast *node);
+void				handle_variable_parsing(char **input, t_ast **parent,
+						t_ast **prev);
 
 #endif

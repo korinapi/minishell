@@ -6,7 +6,7 @@
 /*   By: cpuiu <cpuiu@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/07 05:31:38 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/21 19:51:53 by cpuiu            ###   ########.fr       */
+/*   Updated: 2024/04/23 20:12:07 by cpuiu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@ char	*parse_redirection_file(char **input)
 	else
 		return (ft_get_word(input));
 }
+
 void	handle_output_redirection(char **input, t_ast **ast)
 {
 	int		mode;
@@ -49,12 +50,13 @@ void	handle_output_redirection(char **input, t_ast **ast)
 	node->redirection_mode = mode;
 	ast_append(*ast, node);
 }
+
 void	handle_input_redirection(char **input, t_ast **ast)
 {
 	int		mode;
 	char	*file;
 	t_ast	*node;
-	
+
 	file = NULL;
 	if ((*input)[1] == '<')
 	{
@@ -95,7 +97,6 @@ void	handle_input_redirection(char **input, t_ast **ast)
 // 	node->num_redirections++;
 // }
 
-
 void	perform_file_operations(char *file)
 {
 	char	buf[BUFSIZ];
@@ -120,7 +121,6 @@ void	perform_file_operations(char *file)
 		close(fd_in);
 	}
 }
-
 
 void	parse_redirection(char **input, t_ast **ast)
 {
