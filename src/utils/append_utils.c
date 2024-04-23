@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   append_utils.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cpuiu <cpuiu@student.42.fr>                +#+  +:+       +#+        */
+/*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/07 05:22:37 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/20 12:17:09 by cpuiu            ###   ########.fr       */
+/*   Updated: 2024/04/23 19:55:53 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,6 +84,5 @@ t_ast	*create_ast_node(t_ast_type type, char *data)
 	node->left = NULL;
 	node->right = NULL;
 	node->redirections = NULL;
-	node->num_redirections = 0;
 	return (node);
 }

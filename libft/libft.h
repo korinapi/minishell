@@ -6,7 +6,7 @@
 /*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/06 14:35:47 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/07 04:14:57 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/04/23 19:21:58 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,5 +104,6 @@ int		ft_fprintf(int fd, const char *format, ...);
 char	*ft_strjoin_free(char *new_var, char *value, int i);
 int		ft_snprintf(char *str, int size, const char *format, ...);
 int		ft_strtoi(const char *str, char **end);
+const char *ft_strtolower(char *str);
 
 #endif

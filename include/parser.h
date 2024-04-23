@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cpuiu <cpuiu@student.42.fr>                +#+  +:+       +#+        */
+/*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 04:26:02 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/20 10:15:50 by cpuiu            ###   ########.fr       */
+/*   Updated: 2024/04/23 19:49:45 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,12 +43,16 @@ typedef struct s_ast
 	char			*data;
 	char			*redirection_file;
 	int				redirection_mode;
-	char			*heredoc_delimiter;
 	struct s_ast	*left;
 	struct s_ast	*right;
 	t_redirection	*redirections;
-	int				num_redirections;
 }					t_ast;
+
+typedef struct s_newhelper
+{
+	char *word;
+	t_ast *node;
+} t_newhelper;
 
 t_ast				*create_ast_node(t_ast_type type, char *data);
 int					ast_count_nodes(t_ast *ast);
@@ -73,4 +77,5 @@ void				parse_pipeline(char **input, t_ast **ast);
 void				parse_command_segment(char **input, t_ast **parent,
 						t_ast **prev);
 void apply_redirections(t_ast *node);
+
 #endif

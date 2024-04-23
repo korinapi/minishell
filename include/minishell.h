@@ -6,7 +6,7 @@
 /*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/01 19:59:37 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/23 18:51:27 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/04/23 19:10:35 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,6 @@ typedef struct s_environ_pointers
 	char **environ_pointers;
 }								t_environ_pointers;
 
-extern volatile sig_atomic_t	g_sigint_received;
 extern char						**environ;
 
 #endif

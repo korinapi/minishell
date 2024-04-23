@@ -6,7 +6,7 @@
 /*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/07 05:31:42 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/23 17:06:35 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/04/23 19:57:34 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -179,6 +179,7 @@ void	handle_variable_parsing(char **input, t_ast **parent, t_ast **prev)
 {
 	char	*word;
 	t_ast	*node;
+	int		data_len;
 
 	if (*(*input + 1) == '?')
 	{
@@ -198,9 +199,20 @@ void	handle_variable_parsing(char **input, t_ast **parent, t_ast **prev)
 	{
 		word = ft_get_variable(input);
 		word = handle_variable_expansion(word);
-		node = create_ast_node(AST_VARIABLE, word);
-		ast_append(*parent, node);
-		*prev = node;
+		if (*prev && ((*prev)->type == AST_WORD
+				|| (*prev)->type == AST_DOUBLEQUOTED_WORD
+				|| (*prev)->type == AST_SINGLEQUOTED_WORD) && !(*prev)->right)
+		{
+			data_len = ft_strlen((*prev)->data);
+			(*prev)->data = ft_append_str((*prev)->data, &data_len, word);
+			free(word);
+		}
+		else
+		{
+			node = create_ast_node(AST_WORD, word);
+			ast_append(*parent, node);
+			*prev = node;
+		}
 	}
 }
 
