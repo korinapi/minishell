@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cpuiu <cpuiu@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 04:29:03 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/24 00:45:24 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/04/24 21:03:01 by cpuiu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,7 @@ void	parse_simple_command(char **input, t_ast **ast, char **envp)
 
 	parent = create_ast_node(AST_SIMPLE_COMMAND, NULL);
 	*ast = parent;
-	prev = NULL;
+	prev = parent;
 	while (**input)
 	{
 		parse_command_segment(input, &parent, &prev, envp);

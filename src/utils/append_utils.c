@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   append_utils.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cpuiu <cpuiu@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/07 05:22:37 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/23 23:06:53 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/04/24 21:02:24 by cpuiu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,9 @@ void	ast_append(t_ast *parent, t_ast *child)
 	}
 	current = parent->left;
 	while (current->right)
+	{
 		current = current->right;
+	}
 	current->right = child;
 }
 
@@ -78,7 +80,7 @@ t_ast	*create_ast_node(t_ast_type type, char *data)
 
 	node = malloc(sizeof(t_ast));
 	if (!node)
-		return NULL;
+		return (NULL);
 	node->type = type;
 	node->data = data;
 	node->redirection_file = NULL;

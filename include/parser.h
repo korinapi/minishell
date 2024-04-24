@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cpuiu <cpuiu@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 04:26:02 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/24 00:46:08 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/04/24 08:55:22 by cpuiu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,8 @@ char				*ft_get_word(char **input);
 char				*handle_variable_expansion(char *word, char **envp);
 char				*ft_get_variable(char **input);
 /*Parse functions*/
-void				parse_simple_command(char **input, t_ast **ast, char **envp);
+void				parse_simple_command(char **input, t_ast **ast,
+						char **envp);
 char				*parse_quotes(char **input, char quote_char);
 char				*parse_quotes_two(char **input, char quote_char);
 void				parse_redirection(char **input, t_ast **ast);

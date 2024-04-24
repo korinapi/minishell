@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cpuiu <cpuiu@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 04:29:28 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/24 03:10:55 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/04/24 21:03:58 by cpuiu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,6 +60,8 @@ void	execute_simple_command(t_ast *node, int *exit_status, char ***envp)
 	if (handle_redirection(current_node, exit_status))
 		return ;
 	args = ft_calloc(ast_count_nodes(current_node) + 1, sizeof(char *));
+	if (!args)
+		return ;
 	i = 0;
 	while (current_node)
 	{
@@ -80,6 +82,25 @@ void	execute_simple_command(t_ast *node, int *exit_status, char ***envp)
 	free(args);
 }
 
+// int	syntax_check(t_ast *last, int *exit_status)
+// {
+// 	//printf("Node: %s     node type: %u\n", last->data, last->type);
+// 	if (last->type == 0 && !last->left->left)
+// 	{
+// 		ft_fprintf(STDERR_FILENO,
+// 					"minishell: syntax error near unexpected token `|'\n");
+// 				*exit_status = 258;
+// 				return (1);
+// 	}
+// 	else if ((last->type == 1) && !last->left->left && !last->redirection_file)
+// 	{
+// 		ft_fprintf(STDERR_FILENO,
+// 					"minishell: syntax error near unexpected token `newline'\n");
+// 				*exit_status = 258;
+// 				return (1);
+// 	}
+// 	return (0);
+// }
 int	syntax_check_extra(t_ast *ast, int *exit_status)
 {
 	static char	*symbol;
@@ -122,12 +143,25 @@ int	syntax_check(t_ast *ast, int *exit_status)
 	}
 	return (0);
 }
+// t_ast	*get_last_node(t_ast *node)
+// {
+// 	if (!node)
+// 		return (NULL);
+// 	get_last_node(node->left);
+// 	get_last_node(node->right);
+// 	//printf("Node: %s     node type: %u       redir_mode: %d\n", node->data,
+		// node->type, node->redirection_mode);
+// 	return (node);
+// }
 
 void	execute_ast(t_ast *ast, int *exit_status, char ***envp)
 {
 	int	saved_stdin;
 	int	saved_stdout;
 
+	// t_ast *last;
+	// last = get_last_node(ast);
+	// printf("Last Node: %s     node type: %u\n", last->data, last->type);
 	if (syntax_check(ast, exit_status))
 		return ;
 	saved_stdin = dup(STDIN_FILENO);

@@ -23,6 +23,7 @@ COLOR_GREEN			=	\033[32m
 COLOR_RED			=	\033[31m
 
 all: $(LIBFT) $(NAME)
+
 $(PIPEX):
 	@$(MAKE) -C $(PIPEX_DIR)
 

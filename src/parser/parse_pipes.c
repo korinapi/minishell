@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse_pipes.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cpuiu <cpuiu@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/07 05:31:22 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/24 00:38:46 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/04/24 21:02:43 by cpuiu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,20 +46,13 @@ void	parse_pipeline(char **input, t_ast **ast, char **envp)
 {
 	t_ast	*node;
 	char	*start;
-	t_ast	*command_node;
 
 	start = *input;
 	node = create_ast_node(AST_PIPELINE, NULL);
 	*ast = node;
-	command_node = NULL;
 	while (**input)
 	{
 		parse_simple_command(input, &node->left, envp);
-		if (node->left->type == AST_SIMPLE_COMMAND)
-		{
-			command_node = node->left;
-			trim_whitespace_from_command_node(&command_node);
-		}
 		if (handle_pipeline_continuation_or_redirection(input, &node))
 			break ;
 	}

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse_simple.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cpuiu <cpuiu@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/07 05:31:42 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/24 00:46:10 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/04/24 21:08:11 by cpuiu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,8 @@ void	handle_single_quote_segment(char **input, t_ast **parent, t_ast **prev)
 	}
 }
 
-void	handle_double_quote_segment(char **input, t_ast **parent, t_ast **prev, char **envp)
+void	handle_double_quote_segment(char **input, t_ast **parent, t_ast **prev,
+		char **envp)
 {
 	char	*word;
 	int		data_len;
@@ -92,7 +93,8 @@ void	handle_unquoted_word(char **input, t_ast **parent, t_ast **prev)
 	}
 }
 
-void	parse_command_segment(char **input, t_ast **parent, t_ast **prev, char **envp)
+void	parse_command_segment(char **input, t_ast **parent, t_ast **prev,
+		char **envp)
 {
 	t_ast	*node;
 
@@ -101,11 +103,15 @@ void	parse_command_segment(char **input, t_ast **parent, t_ast **prev, char **en
 		node = create_ast_node(AST_WHITESPACE, NULL);
 		if (node)
 			ast_append(*parent, node);
+		else
+			return ;
 		*prev = node;
 		(*input)++;
 	}
 	if (!**input || **input == '|')
+	{
 		return ;
+	}
 	else if (**input == '>' || **input == '<')
 		parse_redirection(input, parent);
 	else if (**input == '\'')

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cpuiu <cpuiu@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/01 19:59:44 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/24 03:51:55 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/04/24 21:07:27 by cpuiu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,10 @@ void	set_man_environ(char ***envp)
 	{
 		*envp = ft_calloc(3, sizeof(char *));
 		if (!*envp)
+		{
+			free(cwd);
 			return ;
+		}
 		(*envp)[0] = ft_strjoin("PWD=", cwd);
 		(*envp)[1] = ft_strjoin("SHLVL=1", "");
 		(*envp)[2] = NULL;
@@ -72,8 +75,6 @@ void	set_man_environ(char ***envp)
 	}
 	free(cwd);
 }
-
-
 
 int	main(int argc, char **argv, char **envp)
 {
@@ -105,3 +106,24 @@ int	main(int argc, char **argv, char **envp)
 }
 
 // print_ast(ast, 0, "Root");
+// ast = create_ast_node(AST_PIPELINE, ft_strdup("hello2"));
+// t_ast *ast2 = create_ast_node(AST_PIPELINE, ft_strdup("hello2"));
+// t_ast *ast_simple_command = create_ast_node(AST_SIMPLE_COMMAND, NULL);
+// t_ast *ast_simple_command2 = create_ast_node(AST_SIMPLE_COMMAND, NULL);
+// t_ast *ast_word = create_ast_node(AST_WORD, ft_strdup("echo"));
+// t_ast *ast_word2 = create_ast_node(AST_WORD, ft_strdup("wc"));
+// t_ast *ast_word3 = create_ast_node(AST_WORD, ft_strdup("a"));
+// t_ast *whitespace = create_ast_node(AST_WHITESPACE, NULL);
+// t_ast *whitespace2 = create_ast_node(AST_WHITESPACE, NULL);
+// t_ast *whitespace3 = create_ast_node(AST_WHITESPACE, NULL);
+// whitespace3 = create_ast_node(AST_WHITESPACE, NULL);
+// ast_append(ast, ast_simple_command);
+// ast_append(ast_simple_command, ast_word);
+// ast_append(ast_word, whitespace);
+// ast_append(whitespace, ast_word3);
+// ast_append(ast_word3, whitespace2);
+// ast_append(ast, ast2);
+// ast_append(ast2, ast_simple_command2);
+// ast_append(ast_simple_command2, ast_word2);
+// ast_append(ast_word2, whitespace3);
+// print_ast(ast, 0, "ROOT");

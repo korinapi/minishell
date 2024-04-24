@@ -3,17 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   variables.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cpuiu <cpuiu@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/07 05:27:01 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/24 01:12:42 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/04/24 21:03:34 by cpuiu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "environment.h"
 #include "minishell.h"
 #include "parser.h"
 #include "utilities.h"
-#include "environment.h"
 
 char	*ft_get_variable(char **input)
 {
@@ -37,7 +37,8 @@ char	*ft_get_variable(char **input)
 	return (var);
 }
 
-char	*expand_variable(char *word, char **new_word, int *word_len, char **envp)
+char	*expand_variable(char *word, char **new_word, int *word_len,
+		char **envp)
 {
 	char	*var_end;
 	char	*var_name;
@@ -93,6 +94,8 @@ char	*ft_get_word(char **input)
 		&& (*input)[len] != '>' && (*input)[len] != '<')
 		len++;
 	word = ft_calloc(len + 1, sizeof(char));
+	if (!word)
+		return (NULL);
 	i = 0;
 	while (i < len)
 	{

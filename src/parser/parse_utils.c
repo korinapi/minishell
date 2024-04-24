@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse_utils.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cpuiu <cpuiu@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/23 20:08:51 by cpuiu             #+#    #+#             */
-/*   Updated: 2024/04/24 00:44:03 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/04/24 08:56:12 by cpuiu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,8 @@ void	merge_or_create_node(char *word, t_ast **prev, t_ast **parent,
 	}
 }
 
-void	handle_variable_parsing(char **input, t_ast **parent, t_ast **prev, char **envp)
+void	handle_variable_parsing(char **input, t_ast **parent, t_ast **prev,
+		char **envp)
 {
 	char	*word;
 	t_ast	*node;

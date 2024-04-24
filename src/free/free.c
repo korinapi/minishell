@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   free.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cpuiu <cpuiu@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/29 00:22:57 by marvinleibe       #+#    #+#             */
-/*   Updated: 2024/04/24 03:54:49 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/04/24 13:26:37 by cpuiu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ void	ft_free_env(char **env)
 	i = 0;
 	if (!env)
 		return ;
-	while (env[i])
+	while (env[i] != NULL)
 	{
 		free(env[i]);
 		i++;
@@ -47,13 +47,23 @@ void	free_ast(t_ast *ast)
 {
 	if (!ast)
 		return ;
+	if (ast->data)
+	{
+		free(ast->data);
+		ast->data = NULL;
+	}
+	if (ast->redirection_file)
+	{
+		free(ast->redirection_file);
+		ast->redirection_file = NULL;
+	}
+	if (ast->redirections)
+	{
+		free(ast->redirections);
+		ast->redirections = NULL;
+	}
 	free_ast(ast->left);
 	free_ast(ast->right);
-	if (ast->data)
-		free(ast->data);
-	if (ast->redirection_file)
-		free(ast->redirection_file);
-	if (ast->redirections)
-		free(ast->redirections);
 	free(ast);
+	ast = NULL;
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redirection_utils.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cpuiu <cpuiu@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/23 20:59:43 by cpuiu             #+#    #+#             */
-/*   Updated: 2024/04/23 22:58:50 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/04/24 21:08:33 by cpuiu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 #include "minishell.h"
 #include "redirection.h"
 
-#define RANDOM_BYTES 12
+#define RANDOM_BYTES 10
 
 static int	read_random_bytes(unsigned char *buffer, size_t size)
 {
@@ -37,12 +37,16 @@ static void	append_hex_string(char *dest, unsigned char *bytes,
 {
 	size_t	offset;
 	size_t	i;
+	size_t	max_offset;
 
 	i = 0;
 	offset = ft_strlen(dest);
+	max_offset = offset + num_bytes * 2;
 	while (i < num_bytes)
 	{
-		ft_snprintf(dest + offset, 3, "%d", bytes[i]);
+		if (offset + 2 > max_offset)
+			break ;
+		ft_snprintf(dest + offset, 3, "%02x", bytes[i]);
 		offset += 2;
 		i++;
 	}
@@ -52,8 +56,9 @@ static void	append_hex_string(char *dest, unsigned char *bytes,
 static char	*generate_tmp_file_name(void)
 {
 	static const char	tmp_dir[] = "/tmp/minishell_";
-	const size_t		tmp_dir_len = sizeof(tmp_dir) - 1;
-	const size_t		filename_buffer_size = tmp_dir_len + 25;
+	const size_t		tmp_dir_len = ft_strlen(tmp_dir);
+	const size_t		filename_buffer_size = tmp_dir_len + RANDOM_BYTES * 2
+			+ 1;
 	char				*tmp_file;
 	unsigned char		random_bytes[RANDOM_BYTES];
 
@@ -61,6 +66,7 @@ static char	*generate_tmp_file_name(void)
 	if (!tmp_file)
 		return (NULL);
 	ft_strcpy(tmp_file, tmp_dir);
+	tmp_file[tmp_dir_len] = '\0';
 	if (read_random_bytes(random_bytes, RANDOM_BYTES) != 0)
 	{
 		free(tmp_file);
@@ -75,6 +81,8 @@ int	create_temp_file(char **tmp_file)
 	int	fd;
 
 	*tmp_file = generate_tmp_file_name();
+	if (!*tmp_file)
+		return (-1);
 	fd = open(*tmp_file, O_CREAT | O_WRONLY | O_TRUNC, 0644);
 	if (fd == -1)
 	{

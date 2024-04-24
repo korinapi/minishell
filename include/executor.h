@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor.h                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cpuiu <cpuiu@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 04:27:11 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/24 03:09:13 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/04/24 08:55:17 by cpuiu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,8 @@ typedef struct s_pipehelper
 }			t_pipehelper;
 
 void		execute_ast(t_ast *ast, int *exit_status, char ***envp);
-int			execute_builtin(t_ast *ast, t_ast *root, int *exit_status, char ***envp);
+int			execute_builtin(t_ast *ast, t_ast *root, int *exit_status,
+				char ***envp);
 void		execute_pipeline(t_ast *node, int *exit_status, char ***envp);
 void		execute_simple_command(t_ast *node, int *exit_status, char ***envp);
 int			wait_and_update_status(pid_t pid);

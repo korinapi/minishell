@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   pwd.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cpuiu <cpuiu@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/30 05:29:21 by marvinleibe       #+#    #+#             */
-/*   Updated: 2024/04/24 01:01:21 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/04/24 21:07:38 by cpuiu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	execute_pwd()
+int	execute_pwd(void)
 {
 	char	*cwd;
 
