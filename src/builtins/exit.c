@@ -6,7 +6,7 @@
 /*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 05:00:31 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/23 18:13:23 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/04/24 03:31:20 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,12 +18,12 @@
 #include "signals.h"
 #include "utilities.h"
 
-void	exit_shell(t_ast *ast, char **args, int exit_status)
+void	exit_shell(t_ast *ast, char **args, int exit_status, char ***envp)
 {
 	if (args)
 		ft_free_split(args);
 	free_ast(ast);
-	ft_free_env(environ);
+	ft_free_env(*envp);
 	rl_clear_history();
 	exit(exit_status);
 }
@@ -40,7 +40,7 @@ int	numeric_check(char **args, char *end, int *exit_status)
 	return (0);
 }
 
-int	execute_exit(t_ast *ast, int *exit_status)
+int	execute_exit(t_ast *ast, t_ast *root, int *exit_status, char ***envp)
 {
 	char	**args;
 	char	*end;
@@ -50,11 +50,11 @@ int	execute_exit(t_ast *ast, int *exit_status)
 	if (!args[1])
 	{
 		printf("exit\n");
-		exit_shell(ast, args, *exit_status);
+		exit_shell(root, args, *exit_status, envp);
 	}
 	exit_value = ft_strtoi(args[1], &end);
 	if (numeric_check(args, end, exit_status))
-		exit_shell(ast, args, *exit_status);
+		exit_shell(root, args, *exit_status, envp);
 	if (args[2])
 	{
 		printf("exit\n");
@@ -64,6 +64,6 @@ int	execute_exit(t_ast *ast, int *exit_status)
 	}
 	*exit_status = exit_value % 256;
 	printf("exit\n");
-	exit_shell(ast, args, *exit_status);
+	exit_shell(root, args, *exit_status, envp);
 	return (0);
 }

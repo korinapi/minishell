@@ -6,7 +6,7 @@
 /*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/01 19:59:44 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/23 21:47:54 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/04/24 03:51:55 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,14 +32,14 @@ int	startup_check(int argc, char **argv)
 	return (0);
 }
 
-void	close_main(void)
+void	close_main(char **envp)
 {
-	ft_free_env(environ);
+	ft_free_env(envp);
 	rl_clear_history();
 	printf("exit\n");
 }
 
-void	set_man_environ(void)
+void	set_man_environ(char ***envp)
 {
 	char	*cwd;
 	int		level;
@@ -48,23 +48,38 @@ void	set_man_environ(void)
 
 	sh_level_str = NULL;
 	cwd = getcwd(NULL, 0);
-	ft_setenv("PWD", cwd, 1);
-	sh_level = getenv("SHLVL");
-	if (sh_level == NULL || ft_atoi(sh_level) == 0)
-		level = 1;
+	if (!*envp)
+	{
+		*envp = ft_calloc(3, sizeof(char *));
+		if (!*envp)
+			return ;
+		(*envp)[0] = ft_strjoin("PWD=", cwd);
+		(*envp)[1] = ft_strjoin("SHLVL=1", "");
+		(*envp)[2] = NULL;
+	}
 	else
-		level = ft_atoi(sh_level) + 1;
-	sh_level_str = (char *)malloc(16 * sizeof(char));
-	ft_snprintf(sh_level_str, 16, "%d", level);
-	ft_setenv("SHLVL", sh_level_str, 1);
+	{
+		ft_setenv("PWD", cwd, 1, envp);
+		sh_level = getenv("SHLVL");
+		if (sh_level == NULL || ft_atoi(sh_level) == 0)
+			level = 1;
+		else
+			level = ft_atoi(sh_level) + 1;
+		sh_level_str = (char *)malloc(16 * sizeof(char));
+		ft_snprintf(sh_level_str, 16, "%d", level);
+		ft_setenv("SHLVL", sh_level_str, 1, envp);
+		free(sh_level_str);
+	}
 	free(cwd);
-	free(sh_level_str);
 }
 
-int	main(int argc, char **argv)
+
+
+int	main(int argc, char **argv, char **envp)
 {
 	char	*input;
 	t_ast	*ast;
+	char	**my_envp;
 	int		exit_status;
 
 	rl_catch_signals = 0;
@@ -72,21 +87,21 @@ int	main(int argc, char **argv)
 		return (1);
 	setup_signals();
 	exit_status = 0;
-	environ = ft_copy_env();
-	set_man_environ();
+	my_envp = ft_copy_env(envp);
+	set_man_environ(&my_envp);
 	while (1)
 	{
 		input = get_input();
 		if (!input)
 			break ;
-		ast = parse_input(input);
+		ast = parse_input(input, my_envp);
 		if (ast)
 		{
-			execute_ast(ast, &exit_status);
+			execute_ast(ast, &exit_status, &my_envp);
 			free_ast(ast);
 		}
 	}
-	return (close_main(), exit_status);
+	return (close_main(my_envp), exit_status);
 }
 
 // print_ast(ast, 0, "Root");

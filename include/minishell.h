@@ -6,7 +6,7 @@
 /*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/01 19:59:37 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/23 20:14:28 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/04/24 00:34:45 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,6 @@ typedef struct s_environ_pointers
 	char	**environ_pointers;
 }			t_environ_pointers;
 
-extern char	**environ;
+// extern char	**environ;
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/23 20:59:43 by cpuiu             #+#    #+#             */
-/*   Updated: 2024/04/23 21:53:58 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/04/23 22:58:50 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ static void	append_hex_string(char *dest, unsigned char *bytes,
 	offset = ft_strlen(dest);
 	while (i < num_bytes)
 	{
-		ft_snprintf(dest + offset, 3, "%02x", bytes[i]);
+		ft_snprintf(dest + offset, 3, "%d", bytes[i]);
 		offset += 2;
 		i++;
 	}
@@ -53,7 +53,7 @@ static char	*generate_tmp_file_name(void)
 {
 	static const char	tmp_dir[] = "/tmp/minishell_";
 	const size_t		tmp_dir_len = sizeof(tmp_dir) - 1;
-	const size_t		filename_buffer_size = tmp_dir_len + 12 * 2 + 1;
+	const size_t		filename_buffer_size = tmp_dir_len + 25;
 	char				*tmp_file;
 	unsigned char		random_bytes[RANDOM_BYTES];
 

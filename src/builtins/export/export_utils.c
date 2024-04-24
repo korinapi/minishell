@@ -6,7 +6,7 @@
 /*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/07 08:39:00 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/07 08:45:05 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/04/24 01:06:00 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ void	swap_strings(char **a, char **b)
 	*b = temp;
 }
 
-void	bubble_sort(int n)
+void	bubble_sort(char **envp, int n)
 {
 	int	i;
 	int	j;
@@ -40,8 +40,8 @@ void	bubble_sort(int n)
 		j = 0;
 		while (j < n - i - 1)
 		{
-			if (compare_strings(environ[j], environ[j + 1]) > 0)
-				swap_strings(&environ[j], &environ[j + 1]);
+			if (compare_strings(envp[j], envp[j + 1]) > 0)
+				swap_strings(&envp[j], &envp[j + 1]);
 			j++;
 		}
 		i++;

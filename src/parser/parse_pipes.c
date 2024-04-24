@@ -6,7 +6,7 @@
 /*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/07 05:31:22 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/10 01:57:43 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/04/24 00:38:46 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ int	handle_pipeline_continuation_or_redirection(char **input, t_ast **node)
 	return (0);
 }
 
-void	parse_pipeline(char **input, t_ast **ast)
+void	parse_pipeline(char **input, t_ast **ast, char **envp)
 {
 	t_ast	*node;
 	char	*start;
@@ -54,7 +54,7 @@ void	parse_pipeline(char **input, t_ast **ast)
 	command_node = NULL;
 	while (**input)
 	{
-		parse_simple_command(input, &node->left);
+		parse_simple_command(input, &node->left, envp);
 		if (node->left->type == AST_SIMPLE_COMMAND)
 		{
 			command_node = node->left;

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cpuiu <cpuiu@student.42.fr>                +#+  +:+       +#+        */
+/*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 04:26:02 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/23 20:10:39 by cpuiu            ###   ########.fr       */
+/*   Updated: 2024/04/24 00:46:08 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,17 +46,13 @@ typedef struct s_ast
 	struct s_ast	*left;
 	struct s_ast	*right;
 	t_redirection	*redirections;
+	struct s_ast	*rootnode;
+	char			*my_envp;
 }					t_ast;
-
-typedef struct s_newhelper
-{
-	char			*word;
-	t_ast			*node;
-}					t_newhelper;
 
 t_ast				*create_ast_node(t_ast_type type, char *data);
 int					ast_count_nodes(t_ast *ast);
-t_ast				*parse_input(char *input);
+t_ast				*parse_input(char *input, char **envp);
 void				free_ast(t_ast *ast);
 void				print_ast(t_ast *node, int level, char *node_type);
 char				*ft_append_char(char *str, int *len, char c);
@@ -64,19 +60,19 @@ char				*ft_append_str(char *str1, int *len1, const char *str2);
 void				ast_append(t_ast *parent, t_ast *child);
 /*get vars and expand*/
 char				*ft_get_word(char **input);
-char				*handle_variable_expansion(char *word);
+char				*handle_variable_expansion(char *word, char **envp);
 char				*ft_get_variable(char **input);
 /*Parse functions*/
-void				parse_simple_command(char **input, t_ast **ast);
+void				parse_simple_command(char **input, t_ast **ast, char **envp);
 char				*parse_quotes(char **input, char quote_char);
 char				*parse_quotes_two(char **input, char quote_char);
 void				parse_redirection(char **input, t_ast **ast);
 void				handle_output_redirection(char **input, t_ast **ast);
 void				handle_input_redirection(char **input, t_ast **ast);
-void				parse_pipeline(char **input, t_ast **ast);
+void				parse_pipeline(char **input, t_ast **ast, char **envp);
 void				parse_command_segment(char **input, t_ast **parent,
-						t_ast **prev);
+						t_ast **prev, char **envp);
 void				handle_variable_parsing(char **input, t_ast **parent,
-						t_ast **prev);
+						t_ast **prev, char **envp);
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/30 05:15:55 by marvinleibe       #+#    #+#             */
-/*   Updated: 2024/04/23 20:02:39 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/04/24 03:23:26 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ int	is_valid_variable(char *var)
 	return (1);
 }
 
-void	conditionals(t_ast *arg, int *has_invalid)
+void	conditionals(t_ast *arg, int *has_invalid, char ***envp)
 {
 	char	*var_name;
 
@@ -43,7 +43,7 @@ void	conditionals(t_ast *arg, int *has_invalid)
 	{
 		var_name = arg->data + (arg->type == AST_VARIABLE);
 		if (is_valid_variable(var_name))
-			unset_env_var(var_name);
+			unset_env_var(var_name, envp);
 		else
 		{
 			ft_fprintf(STDERR_FILENO,
@@ -53,7 +53,7 @@ void	conditionals(t_ast *arg, int *has_invalid)
 	}
 }
 
-int	execute_unset(t_ast *args)
+int	execute_unset(t_ast *args, char ***envp)
 {
 	t_ast	*arg;
 	int		has_invalid;
@@ -62,7 +62,7 @@ int	execute_unset(t_ast *args)
 	arg = args;
 	while (arg)
 	{
-		conditionals(arg, &has_invalid);
+		conditionals(arg, &has_invalid, envp);
 		if (arg->right && arg->right->type == AST_WHITESPACE)
 		{
 			if (!arg->right->right)

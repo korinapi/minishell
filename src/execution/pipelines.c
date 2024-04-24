@@ -6,7 +6,7 @@
 /*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/07 05:09:17 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/23 17:04:48 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/04/24 03:08:21 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@
 #include "utilities.h"
 
 int	execute_command_in_child(int i, int num_pipes, t_pipehelper p_help,
-		int *exit_status)
+		int *exit_status, char ***envp)
 {
 	if (i > 0)
 	{
@@ -33,12 +33,12 @@ int	execute_command_in_child(int i, int num_pipes, t_pipehelper p_help,
 		close(p_help.pipe_fds[2 * i + 1]);
 	}
 	close_pipes(p_help.pipe_fds, num_pipes);
-	execute_simple_command(p_help.curr->left, exit_status);
+	execute_simple_command(p_help.curr->left, exit_status, envp);
 	return (*exit_status);
 }
 
 void	fork_and_execute_commands_in_pipeline(t_ast *node, int num_pipes,
-		int *pipe_fds, int *exit_status)
+		int *pipe_fds, int *exit_status, char ***envp)
 {
 	int				i;
 	pid_t			pid;
@@ -58,7 +58,7 @@ void	fork_and_execute_commands_in_pipeline(t_ast *node, int num_pipes,
 		else if (pid == 0)
 		{
 			*exit_status = execute_command_in_child(i, num_pipes, p_helper,
-					exit_status);
+					exit_status, envp);
 			exit(*exit_status);
 		}
 		p_helper.curr = p_helper.curr->right;
@@ -103,7 +103,7 @@ int	*prepare_pipeline_fds(t_ast *node, int *num_pipes)
 	return (pipe_fds);
 }
 
-void	execute_pipeline(t_ast *node, int *exit_status)
+void	execute_pipeline(t_ast *node, int *exit_status, char ***envp)
 {
 	int	num_pipes;
 	int	*pipe_fds;
@@ -114,7 +114,7 @@ void	execute_pipeline(t_ast *node, int *exit_status)
 		pipe_fds = prepare_pipeline_fds(node, &num_pipes);
 		initialize_pipeline_pipes(num_pipes, pipe_fds);
 		fork_and_execute_commands_in_pipeline(node, num_pipes, pipe_fds,
-			exit_status);
+			exit_status, envp);
 		close_pipes(pipe_fds, num_pipes);
 		i = 0;
 		while (i <= num_pipes)
@@ -125,5 +125,5 @@ void	execute_pipeline(t_ast *node, int *exit_status)
 		free(pipe_fds);
 	}
 	else
-		execute_simple_command(node, exit_status);
+		execute_simple_command(node, exit_status, envp);
 }

@@ -6,7 +6,7 @@
 /*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/05 19:42:46 by cpuiu             #+#    #+#             */
-/*   Updated: 2024/04/23 20:03:42 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/04/24 00:35:44 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,13 +54,13 @@ void	handle_specific_error(int *exit_status)
 	}
 }
 
-char	*get_command_path(char *command)
+char	*get_command_path(char *command, char **envp)
 {
 	char	*path_env;
 	char	**paths;
 	char	*command_path;
 
-	path_env = getenv("PATH");
+	path_env = ft_getenv("PATH", envp);
 	if (!path_env)
 		return (NULL);
 	paths = ft_split(path_env, ':');
@@ -70,10 +70,10 @@ char	*get_command_path(char *command)
 }
 
 void	execute_command_from_path(char **args, char *command_path,
-		int *exit_status)
+		int *exit_status, char **envp)
 {
 	handle_specific_error(exit_status);
-	if (execve(command_path, args, environ) == -1)
+	if (execve(command_path, args, envp) == -1)
 	{
 		ft_fprintf(STDERR_FILENO, "execve failed: %s\n", strerror(errno));
 		free(command_path);

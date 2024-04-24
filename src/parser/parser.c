@@ -6,7 +6,7 @@
 /*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 04:29:03 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/12 07:57:56 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/04/24 00:45:24 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ static int	has_pipes(char *input)
 	return (0);
 }
 
-t_ast	*parse_input(char *input)
+t_ast	*parse_input(char *input, char **envp)
 {
 	t_ast	*ast;
 
@@ -53,13 +53,13 @@ t_ast	*parse_input(char *input)
 	}
 	ast = NULL;
 	if (has_pipes(input))
-		parse_pipeline(&input, &ast);
+		parse_pipeline(&input, &ast, envp);
 	else
-		parse_simple_command(&input, &ast);
+		parse_simple_command(&input, &ast, envp);
 	return (ast);
 }
 
-void	parse_simple_command(char **input, t_ast **ast)
+void	parse_simple_command(char **input, t_ast **ast, char **envp)
 {
 	t_ast	*parent;
 	t_ast	*prev;
@@ -69,7 +69,7 @@ void	parse_simple_command(char **input, t_ast **ast)
 	prev = NULL;
 	while (**input)
 	{
-		parse_command_segment(input, &parent, &prev);
+		parse_command_segment(input, &parent, &prev, envp);
 		if (!**input || **input == '|')
 			break ;
 	}

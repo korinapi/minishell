@@ -6,13 +6,14 @@
 /*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/07 05:27:01 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/07 09:53:40 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/04/24 01:12:42 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 #include "parser.h"
 #include "utilities.h"
+#include "environment.h"
 
 char	*ft_get_variable(char **input)
 {
@@ -36,7 +37,7 @@ char	*ft_get_variable(char **input)
 	return (var);
 }
 
-char	*expand_variable(char *word, char **new_word, int *word_len)
+char	*expand_variable(char *word, char **new_word, int *word_len, char **envp)
 {
 	char	*var_end;
 	char	*var_name;
@@ -50,7 +51,7 @@ char	*expand_variable(char *word, char **new_word, int *word_len)
 	else
 	{
 		var_name = ft_substr(word + 1, 0, var_end - word - 1);
-		var_value = getenv(var_name);
+		var_value = ft_getenv(var_name, envp);
 		free(var_name);
 		if (var_value)
 			*new_word = ft_append_str(*new_word, word_len, var_value);
@@ -58,7 +59,7 @@ char	*expand_variable(char *word, char **new_word, int *word_len)
 	return (var_end);
 }
 
-char	*handle_variable_expansion(char *word)
+char	*handle_variable_expansion(char *word, char **envp)
 {
 	char	*new_word;
 	int		word_len;
@@ -68,7 +69,7 @@ char	*handle_variable_expansion(char *word)
 	while (*word)
 	{
 		if (*word == '$' && *(word + 1) != '?' && !ft_isspace(*(word + 1)))
-			word = expand_variable(word, &new_word, &word_len);
+			word = expand_variable(word, &new_word, &word_len, envp);
 		else
 		{
 			new_word = ft_append_char(new_word, &word_len, *word);

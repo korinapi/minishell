@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse_redirect.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cpuiu <cpuiu@student.42.fr>                +#+  +:+       +#+        */
+/*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/07 05:31:38 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/23 20:12:07 by cpuiu            ###   ########.fr       */
+/*   Updated: 2024/04/24 00:45:03 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,30 +97,30 @@ void	handle_input_redirection(char **input, t_ast **ast)
 // 	node->num_redirections++;
 // }
 
-void	perform_file_operations(char *file)
-{
-	char	buf[BUFSIZ];
-	ssize_t	bytes_read;
-	int		fd_in;
-	int		fd_out;
+// void	perform_file_operations(char *file)
+// {
+// 	char	buf[BUFSIZ];
+// 	ssize_t	bytes_read;
+// 	int		fd_in;
+// 	int		fd_out;
 
-	fd_in = open(file, O_RDONLY);
-	if (fd_in != -1)
-	{
-		fd_out = open(file, O_CREAT | O_WRONLY | O_TRUNC, 0644);
-		if (fd_out != -1)
-		{
-			bytes_read = read(fd_in, buf, BUFSIZ);
-			while (bytes_read != 0)
-			{
-				bytes_read = read(fd_in, buf, BUFSIZ);
-				write(fd_out, buf, bytes_read);
-			}
-			close(fd_out);
-		}
-		close(fd_in);
-	}
-}
+// 	fd_in = open(file, O_RDONLY);
+// 	if (fd_in != -1)
+// 	{
+// 		fd_out = open(file, O_CREAT | O_WRONLY | O_TRUNC, 0644);
+// 		if (fd_out != -1)
+// 		{
+// 			bytes_read = read(fd_in, buf, BUFSIZ);
+// 			while (bytes_read != 0)
+// 			{
+// 				bytes_read = read(fd_in, buf, BUFSIZ);
+// 				write(fd_out, buf, bytes_read);
+// 			}
+// 			close(fd_out);
+// 		}
+// 		close(fd_in);
+// 	}
+// }
 
 void	parse_redirection(char **input, t_ast **ast)
 {

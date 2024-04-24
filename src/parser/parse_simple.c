@@ -6,7 +6,7 @@
 /*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/07 05:31:42 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/23 21:58:04 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/04/24 00:46:10 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ void	handle_single_quote_segment(char **input, t_ast **parent, t_ast **prev)
 	}
 }
 
-void	handle_double_quote_segment(char **input, t_ast **parent, t_ast **prev)
+void	handle_double_quote_segment(char **input, t_ast **parent, t_ast **prev, char **envp)
 {
 	char	*word;
 	int		data_len;
@@ -50,7 +50,7 @@ void	handle_double_quote_segment(char **input, t_ast **parent, t_ast **prev)
 	word = parse_quotes(input, '"');
 	if (!word)
 		return ;
-	word = handle_variable_expansion(word);
+	word = handle_variable_expansion(word, envp);
 	if (*prev && ((*prev)->type == AST_DOUBLEQUOTED_WORD
 			|| (*prev)->type == AST_WORD
 			|| (*prev)->type == AST_SINGLEQUOTED_WORD) && !(*prev)->right)
@@ -92,7 +92,7 @@ void	handle_unquoted_word(char **input, t_ast **parent, t_ast **prev)
 	}
 }
 
-void	parse_command_segment(char **input, t_ast **parent, t_ast **prev)
+void	parse_command_segment(char **input, t_ast **parent, t_ast **prev, char **envp)
 {
 	t_ast	*node;
 
@@ -101,6 +101,7 @@ void	parse_command_segment(char **input, t_ast **parent, t_ast **prev)
 		node = create_ast_node(AST_WHITESPACE, NULL);
 		if (node)
 			ast_append(*parent, node);
+		*prev = node;
 		(*input)++;
 	}
 	if (!**input || **input == '|')
@@ -110,9 +111,9 @@ void	parse_command_segment(char **input, t_ast **parent, t_ast **prev)
 	else if (**input == '\'')
 		handle_single_quote_segment(input, parent, prev);
 	else if (**input == '"')
-		handle_double_quote_segment(input, parent, prev);
+		handle_double_quote_segment(input, parent, prev, envp);
 	else if (**input == '$')
-		handle_variable_parsing(input, parent, prev);
+		handle_variable_parsing(input, parent, prev, envp);
 	else
 		handle_unquoted_word(input, parent, prev);
 }

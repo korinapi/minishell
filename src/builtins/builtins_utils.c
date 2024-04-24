@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtins_utils.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cpuiu <cpuiu@student.42.fr>                +#+  +:+       +#+        */
+/*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/19 10:03:08 by cpuiu             #+#    #+#             */
-/*   Updated: 2024/04/19 10:12:41 by cpuiu            ###   ########.fr       */
+/*   Updated: 2024/04/24 03:29:03 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,23 +14,24 @@
 #include "minishell.h"
 #include "parser.h"
 
-void	set_pwd(void)
+void	set_pwd(char ***envp)
 {
 	char	*pwd;
 	char	*cwd;
 
-	pwd = getenv("PWD");
+	pwd = ft_getenv("PWD", *envp);
 	if (pwd == NULL || !*pwd)
 	{
 		cwd = getcwd(NULL, 0);
 		if (cwd != NULL)
 		{
-			if (ft_setenv("PWD", cwd, 1))
+			if (ft_setenv("PWD", cwd, 1, envp))
 				perror("setting pwd error");
 			free(cwd);
 		}
 	}
 }
+
 
 void	process_double_quoted_str(const char *quoted_str, char *exit_stat)
 {

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse_utils.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cpuiu <cpuiu@student.42.fr>                +#+  +:+       +#+        */
+/*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/23 20:08:51 by cpuiu             #+#    #+#             */
-/*   Updated: 2024/04/23 20:09:55 by cpuiu            ###   ########.fr       */
+/*   Updated: 2024/04/24 00:44:03 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,12 +14,12 @@
 #include "parser.h"
 #include "utilities.h"
 
-char	*get_and_expand_variable(char **input)
+char	*get_and_expand_variable(char **input, char **envp)
 {
 	char	*word;
 
 	word = ft_get_variable(input);
-	return (handle_variable_expansion(word));
+	return (handle_variable_expansion(word, envp));
 }
 
 void	merge_or_create_node(char *word, t_ast **prev, t_ast **parent,
@@ -43,7 +43,7 @@ void	merge_or_create_node(char *word, t_ast **prev, t_ast **parent,
 	}
 }
 
-void	handle_variable_parsing(char **input, t_ast **parent, t_ast **prev)
+void	handle_variable_parsing(char **input, t_ast **parent, t_ast **prev, char **envp)
 {
 	char	*word;
 	t_ast	*node;
@@ -65,7 +65,7 @@ void	handle_variable_parsing(char **input, t_ast **parent, t_ast **prev)
 	}
 	else
 	{
-		word = get_and_expand_variable(input);
+		word = get_and_expand_variable(input, envp);
 		merge_or_create_node(word, prev, parent, &data_len);
 	}
 }

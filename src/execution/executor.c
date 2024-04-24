@@ -6,7 +6,7 @@
 /*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 04:29:28 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/23 21:49:59 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/04/24 03:10:55 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@
 #include "redirection.h"
 #include "utilities.h"
 
-int	execute_external(char **args, int *exit_status)
+int	execute_external(char **args, int *exit_status, char ***envp)
 {
 	pid_t	pid;
 	char	*command_path;
@@ -27,7 +27,7 @@ int	execute_external(char **args, int *exit_status)
 	rl_catch_signals = 1;
 	if (!*args)
 		return (0);
-	command_path = get_command_path(args[0]);
+	command_path = get_command_path(args[0], *envp);
 	if (!command_path)
 	{
 		ft_error("minishell", "Command not found", args[0]);
@@ -39,7 +39,7 @@ int	execute_external(char **args, int *exit_status)
 		return (perror("fork"), 1);
 	else if (pid == 0)
 	{
-		execute_command_from_path(args, command_path, exit_status);
+		execute_command_from_path(args, command_path, exit_status, *envp);
 		return (1);
 	}
 	else
@@ -48,17 +48,19 @@ int	execute_external(char **args, int *exit_status)
 	return (free(command_path), *exit_status);
 }
 
-void	execute_simple_command(t_ast *node, int *exit_status)
+void	execute_simple_command(t_ast *node, int *exit_status, char ***envp)
 {
 	char	**args;
 	int		i;
 	t_ast	*current_node;
+	t_ast	*root;
 
-	if (handle_redirection(node->left, exit_status))
-		return ;
-	args = ft_calloc(ast_count_nodes(node->left) + 1, sizeof(char *));
-	i = 0;
+	root = node;
 	current_node = node->left;
+	if (handle_redirection(current_node, exit_status))
+		return ;
+	args = ft_calloc(ast_count_nodes(current_node) + 1, sizeof(char *));
+	i = 0;
 	while (current_node)
 	{
 		if (current_node->type != AST_WHITESPACE
@@ -68,9 +70,13 @@ void	execute_simple_command(t_ast *node, int *exit_status)
 	}
 	args[i] = NULL;
 	if (is_builtin(args[0]))
-		*exit_status = execute_builtin(node, exit_status);
+	{
+		free(args);
+		*exit_status = execute_builtin(node, root, exit_status, envp);
+		return ;
+	}
 	else
-		*exit_status = execute_external(args, exit_status);
+		*exit_status = execute_external(args, exit_status, envp);
 	free(args);
 }
 
@@ -117,7 +123,7 @@ int	syntax_check(t_ast *ast, int *exit_status)
 	return (0);
 }
 
-void	execute_ast(t_ast *ast, int *exit_status)
+void	execute_ast(t_ast *ast, int *exit_status, char ***envp)
 {
 	int	saved_stdin;
 	int	saved_stdout;
@@ -126,7 +132,7 @@ void	execute_ast(t_ast *ast, int *exit_status)
 		return ;
 	saved_stdin = dup(STDIN_FILENO);
 	saved_stdout = dup(STDOUT_FILENO);
-	execute_pipeline(ast, exit_status);
+	execute_pipeline(ast, exit_status, envp);
 	dup2(saved_stdin, STDIN_FILENO);
 	dup2(saved_stdout, STDOUT_FILENO);
 	close(saved_stdin);

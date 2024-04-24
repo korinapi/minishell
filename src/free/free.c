@@ -6,7 +6,7 @@
 /*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/29 00:22:57 by marvinleibe       #+#    #+#             */
-/*   Updated: 2024/04/23 22:02:49 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/04/24 03:54:49 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,5 +53,7 @@ void	free_ast(t_ast *ast)
 		free(ast->data);
 	if (ast->redirection_file)
 		free(ast->redirection_file);
+	if (ast->redirections)
+		free(ast->redirections);
 	free(ast);
 }

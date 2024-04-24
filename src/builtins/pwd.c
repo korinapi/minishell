@@ -6,13 +6,13 @@
 /*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/30 05:29:21 by marvinleibe       #+#    #+#             */
-/*   Updated: 2024/04/07 04:32:16 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/04/24 01:01:21 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	execute_pwd(void)
+int	execute_pwd()
 {
 	char	*cwd;
 
