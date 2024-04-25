@@ -6,7 +6,7 @@
 /*   By: cpuiu <cpuiu@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 04:29:28 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/24 21:03:58 by cpuiu            ###   ########.fr       */
+/*   Updated: 2024/04/25 12:38:15 by cpuiu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ int	execute_external(char **args, int *exit_status, char ***envp)
 	command_path = get_command_path(args[0], *envp);
 	if (!command_path)
 	{
-		ft_error("minishell", "Command not found", args[0]);
+		ft_error("minishell", "command not found", args[0]);
 		*exit_status = 127;
 		return (free(command_path), *exit_status);
 	}
@@ -48,6 +48,7 @@ int	execute_external(char **args, int *exit_status, char ***envp)
 	return (free(command_path), *exit_status);
 }
 
+
 void	execute_simple_command(t_ast *node, int *exit_status, char ***envp)
 {
 	char	**args;
@@ -57,6 +58,7 @@ void	execute_simple_command(t_ast *node, int *exit_status, char ***envp)
 
 	root = node;
 	current_node = node->left;
+	
 	if (handle_redirection(current_node, exit_status))
 		return ;
 	args = ft_calloc(ast_count_nodes(current_node) + 1, sizeof(char *));
@@ -136,6 +138,17 @@ int	syntax_check(t_ast *ast, int *exit_status)
 		*exit_status = 258;
 		return (1);
 	}
+	if (ast->type == AST_PIPELINE && (ast->left->type == AST_SIMPLE_COMMAND)
+		&& (ast->left->left && ast->left->left->type == AST_REDIRECTION
+			&& (ast->left->left->redirection_mode == REDIR_IN
+				|| ast->left->left->redirection_mode == REDIR_HEREDOC)
+			&& ft_strcmp(ast->left->left->redirection_file, "\0") == 0))
+	{
+		ft_fprintf(STDERR_FILENO,
+			"minishell: syntax error near unexpected token `|'\n");
+		*exit_status = 258;
+		return (1);
+	}
 	if (ast->type == AST_SIMPLE_COMMAND)
 	{
 		if (syntax_check_extra(ast, exit_status) == 1)
@@ -150,7 +163,7 @@ int	syntax_check(t_ast *ast, int *exit_status)
 // 	get_last_node(node->left);
 // 	get_last_node(node->right);
 // 	//printf("Node: %s     node type: %u       redir_mode: %d\n", node->data,
-		// node->type, node->redirection_mode);
+// node->type, node->redirection_mode);
 // 	return (node);
 // }
 

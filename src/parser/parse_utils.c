@@ -6,7 +6,7 @@
 /*   By: cpuiu <cpuiu@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/23 20:08:51 by cpuiu             #+#    #+#             */
-/*   Updated: 2024/04/24 08:56:12 by cpuiu            ###   ########.fr       */
+/*   Updated: 2024/04/25 11:09:32 by cpuiu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,9 +17,12 @@
 char	*get_and_expand_variable(char **input, char **envp)
 {
 	char	*word;
+	char	*expanded;
 
 	word = ft_get_variable(input);
-	return (handle_variable_expansion(word, envp));
+	expanded = handle_variable_expansion(word, envp);
+	free(word);
+	return (expanded);
 }
 
 void	merge_or_create_node(char *word, t_ast **prev, t_ast **parent,
@@ -69,4 +72,4 @@ void	handle_variable_parsing(char **input, t_ast **parent, t_ast **prev,
 		word = get_and_expand_variable(input, envp);
 		merge_or_create_node(word, prev, parent, &data_len);
 	}
-}
+	}
