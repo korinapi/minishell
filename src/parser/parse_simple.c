@@ -6,7 +6,7 @@
 /*   By: cpuiu <cpuiu@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/07 05:31:42 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/24 21:08:11 by cpuiu            ###   ########.fr       */
+/*   Updated: 2024/04/25 21:33:05 by cpuiu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,9 +109,7 @@ void	parse_command_segment(char **input, t_ast **parent, t_ast **prev,
 		(*input)++;
 	}
 	if (!**input || **input == '|')
-	{
 		return ;
-	}
 	else if (**input == '>' || **input == '<')
 		parse_redirection(input, parent);
 	else if (**input == '\'')

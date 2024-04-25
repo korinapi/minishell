@@ -6,7 +6,7 @@
 /*   By: cpuiu <cpuiu@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/23 20:59:43 by cpuiu             #+#    #+#             */
-/*   Updated: 2024/04/24 21:08:33 by cpuiu            ###   ########.fr       */
+/*   Updated: 2024/04/25 21:05:06 by cpuiu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ static char	*generate_tmp_file_name(void)
 	static const char	tmp_dir[] = "/tmp/minishell_";
 	const size_t		tmp_dir_len = ft_strlen(tmp_dir);
 	const size_t		filename_buffer_size = tmp_dir_len + RANDOM_BYTES * 2
-			+ 1;
+		+ 1;
 	char				*tmp_file;
 	unsigned char		random_bytes[RANDOM_BYTES];
 
