@@ -6,7 +6,7 @@
 /*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 04:29:28 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/25 17:40:14 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/04/25 19:58:42 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ int	execute_external(char **args, int *exit_status, char ***envp)
 	{
 		ft_error("minishell", "command not found", args[0]);
 		*exit_status = 127;
-		return (free(command_path), *exit_status);
+		return (*exit_status);
 	}
 	pid = fork();
 	if (pid == -1)
@@ -40,7 +40,7 @@ int	execute_external(char **args, int *exit_status, char ***envp)
 	else if (pid == 0)
 	{
 		execute_command_from_path(args, command_path, exit_status, *envp);
-		return (1);
+		return (0);
 	}
 	else
 		*exit_status = wait_and_update_status(pid);
@@ -48,21 +48,34 @@ int	execute_external(char **args, int *exit_status, char ***envp)
 	return (free(command_path), *exit_status);
 }
 
+void	free_args(char **args)
+{
+	int	i;
+
+	i = 0;
+	while (args[i])
+	{
+		free(args[i]);
+		i++;
+	}
+	free(args);
+}
 
 void	execute_simple_command(t_ast *node, int *exit_status, char ***envp)
 {
 	char	**args;
-	int		i;
 	t_ast	*current_node;
 	t_ast	*root;
+	int		arg_count;
+	char	*exit_stat_str;
 
+	int i;
 	root = node;
 	current_node = node->left;
-	// print_ast(root, 0, "Root1");
 	if (handle_redirection(current_node, exit_status))
 		return ;
-	// print_ast(root, 0, "Root2");
-	args = ft_calloc(ast_count_nodes(current_node) + 1, sizeof(char *));
+	arg_count = ast_count_nodes(current_node) + 1;
+	args = ft_calloc(arg_count, sizeof(char *));
 	if (!args)
 		return ;
 	i = 0;
@@ -70,20 +83,34 @@ void	execute_simple_command(t_ast *node, int *exit_status, char ***envp)
 	{
 		if (current_node->type != AST_WHITESPACE
 			&& current_node->type != AST_REDIRECTION)
-			args[i++] = current_node->data;
+		{
+			if (ft_strcmp(current_node->data, "$?") == 0)
+			{
+				exit_stat_str = ft_itoa(*exit_status);
+				args[i++] = exit_stat_str;
+			}
+			else
+			{
+				args[i++] = ft_strdup(current_node->data);
+			}
+		}
 		current_node = current_node->right;
 	}
 	args[i] = NULL;
 	if (is_builtin(args[0]))
 	{
-		free(args);
 		*exit_status = execute_builtin(node, root, exit_status, envp);
+		free_args(args);
 		return ;
 	}
 	else
+	{
 		*exit_status = execute_external(args, exit_status, envp);
-	free(args);
+	}
+	free_args(args);
 }
+
+
 
 // int	syntax_check(t_ast *last, int *exit_status)
 // {

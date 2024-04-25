@@ -6,7 +6,7 @@
 /*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 04:30:09 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/24 03:08:38 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/04/25 20:42:26 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,8 @@ int	execute_builtin(t_ast *ast, t_ast *root, int *exit_status, char ***envp)
 		ast = ast->left;
 	while (ast && ast->type == AST_WHITESPACE)
 		ast = ast->right;
+	if (!ast->data)
+		return (1);
 	if (!ft_strcmp(ft_strtolower(ast->data), "echo"))
 		return (execute_echo(ast, exit_status));
 	else if (!ft_strcmp(ast->data, "cd"))
