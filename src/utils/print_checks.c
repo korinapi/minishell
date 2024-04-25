@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   print_checks.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cpuiu <cpuiu@student.42.fr>                +#+  +:+       +#+        */
+/*   By: marvinleibenguth <marvinleibenguth@stud    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/25 23:19:33 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/24 21:02:10 by cpuiu            ###   ########.fr       */
+/*   Updated: 2024/04/25 12:52:57 by marvinleibe      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,11 +46,12 @@
 // 		printf("%s: AST_SPECIAL_PARAM: %s\n", node_type, node->data);
 // 		break ;
 // 	case AST_WHITESPACE:
-// 		printf("%s: AST_WHITESPACE: %s\n", node_type, node->data);
+// 		printf("%s: AST_WHITESPACE: file: %s mode: %d, data: %s\n", node_type,
+// 			node->redirection_file, node->redirection_mode, node->data);
 // 		break ;
 // 	case AST_REDIRECTION:
-// 		printf("%s: AST_REDIRECTION: file: %s mode: %d\n", node_type,
-// 			node->redirection_file, node->redirection_mode);
+// 		printf("%s: AST_REDIRECTION: file: %s mode: %d, data: %s\n", node_type,
+// 			node->redirection_file, node->redirection_mode, node->data);
 // 		break ;
 // 	case AST_PIPELINE:
 // 		printf("%s: AST_PIPELINE\n", node_type);

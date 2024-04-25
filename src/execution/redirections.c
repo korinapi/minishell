@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redirections.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cpuiu <cpuiu@student.42.fr>                +#+  +:+       +#+        */
+/*   By: marvinleibenguth <marvinleibenguth@stud    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 04:34:31 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/23 21:12:17 by cpuiu            ###   ########.fr       */
+/*   Updated: 2024/04/25 12:51:45 by marvinleibe      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,11 +43,16 @@ int	execute_file_redirection(t_ast *node)
 	return (0);
 }
 
-static t_ast	*skip_whitespace_nodes(t_ast *node)
+static t_ast *skip_whitespace_nodes(t_ast *node)
 {
-	while (node && node->type == AST_WHITESPACE)
-		node = node->right;
-	return (node);
+    t_ast *temp;
+    while (node && node->type == AST_WHITESPACE)
+    {
+        temp = node;
+        node = node->right;
+        free(temp);
+    }
+    return (node);
 }
 
 static void	process_redirection_nodes(t_ast **node_ptr, t_ast ***heredoc_tail,
