@@ -6,7 +6,7 @@
 /*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/07 05:27:01 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/25 21:48:43 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/04/25 22:10:56 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,21 @@ char	*ft_get_variable(char **input)
 	return (var);
 }
 
+char	*find_var_end(char *word, char **new_word, int *word_len)
+{
+	char	*var_end;
+
+	var_end = word + 1;
+	while (*var_end && (ft_isalnum(*var_end) || *var_end == '_'))
+		var_end++;
+	if (var_end == word + 1)
+	{
+		*new_word = ft_append_char(*new_word, word_len, *word);
+		*word_len += 1;
+	}
+	return (var_end);
+}
+
 char	*expand_variable(char *word, char **new_word, int *word_len,
 		char **envp)
 {
@@ -47,20 +62,16 @@ char	*expand_variable(char *word, char **new_word, int *word_len,
 	char	*var_value;
 	char	*result;
 
-	var_end = word + 1;
-	while (*var_end && (ft_isalnum(*var_end) || *var_end == '_'))
-		var_end++;
+	var_end = find_var_end(word, new_word, word_len);
 	if (var_end == word + 1)
-	{
-		*new_word = ft_append_char(*new_word, word_len, *word);
-		return var_end;
-	}
-		var_name = ft_substr(word + 1, 0, var_end - word - 1);
-		var_value = ft_getenv(var_name, envp);
-		free(var_name);
+		return (var_end);
+	var_name = ft_substr(word + 1, 0, var_end - word - 1);
+	var_value = ft_getenv(var_name, envp);
+	free(var_name);
 	if (var_value && *var_value)
 	{
 		*new_word = ft_append_str(*new_word, word_len, var_value);
+		*word_len += ft_strlen(var_value);
 		result = var_end;
 	}
 	else
