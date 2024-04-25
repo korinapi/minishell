@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redirections.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cpuiu <cpuiu@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 04:34:31 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/25 17:57:53 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/04/25 20:56:08 by cpuiu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,14 @@ int	execute_file_redirection(t_ast *node)
 	return (0);
 }
 
+t_ast	*set_new_nodes(t_ast *node, t_ast *new_node)
+{
+	new_node = create_ast_node(node->type, NULL);
+	new_node->redirection_mode = node->redirection_mode;
+	new_node->redirection_file = ft_strdup(node->redirection_file);
+	return (new_node);
+}
+
 static void	process_redirection_nodes(t_ast **node_ptr, t_ast ***heredoc_tail,
 		t_ast ***file_tail)
 {
@@ -54,9 +62,7 @@ static void	process_redirection_nodes(t_ast **node_ptr, t_ast ***heredoc_tail,
 	while (node && node->type == AST_REDIRECTION)
 	{
 		mode = node->redirection_mode;
-		new_node = create_ast_node(node->type, NULL);
-		new_node->redirection_mode = node->redirection_mode;
-		new_node->redirection_file = ft_strdup(node->redirection_file);
+		new_node = set_new_nodes(node, new_node);
 		if (mode == REDIR_HEREDOC)
 		{
 			**heredoc_tail = new_node;

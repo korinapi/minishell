@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor.h                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cpuiu <cpuiu@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 04:27:11 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/25 19:26:05 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/04/25 21:06:36 by cpuiu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,5 +44,6 @@ void		execute_command_from_path(char **args, char *command_path,
 				int *exit_status, char **envp);
 char		*find_command_path(char *command, char **paths);
 void		close_pipes(int *pipe_fds, int num_pipes);
+int			syntax_check(t_ast *ast, int *exit_status);
 
 #endif

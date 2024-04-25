@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipelines.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cpuiu <cpuiu@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/07 05:09:17 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/25 19:26:48 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/04/25 21:22:29 by cpuiu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,8 +19,7 @@
 #include "redirection.h"
 #include "utilities.h"
 
-int	execute_command_in_child(int i, int num_pipes, t_pipehelper p_help,
-		int *exit_status, char ***envp)
+void	handle_redirections(int i, int num_pipes, t_pipehelper p_help)
 {
 	if (i > 0)
 	{
@@ -32,21 +31,15 @@ int	execute_command_in_child(int i, int num_pipes, t_pipehelper p_help,
 		dup2(p_help.pipe_fds[2 * i + 1], STDOUT_FILENO);
 		close(p_help.pipe_fds[2 * i + 1]);
 	}
-	close_pipes(p_help.pipe_fds, num_pipes);
-	execute_simple_command(p_help.curr->left, exit_status, envp);
-	return (*exit_status);
 }
 
-void	fork_and_execute_commands_in_pipeline(t_ast *node, int num_pipes,
-		int *pipe_fds, int *exit_status, char ***envp)
+void	fork_and_execute_commands_in_pipeline(int num_pipes,
+		t_pipehelper p_helper, int *exit_status, char ***envp)
 {
-	int				i;
-	pid_t			pid;
-	t_pipehelper	p_helper;
+	int		i;
+	pid_t	pid;
 
 	i = 0;
-	p_helper.curr = node;
-	p_helper.pipe_fds = pipe_fds;
 	while (i <= num_pipes)
 	{
 		pid = fork();
@@ -57,8 +50,9 @@ void	fork_and_execute_commands_in_pipeline(t_ast *node, int num_pipes,
 		}
 		else if (pid == 0)
 		{
-			*exit_status = execute_command_in_child(i, num_pipes, p_helper,
-					exit_status, envp);
+			handle_redirections(i, num_pipes, p_helper);
+			close_pipes(p_helper.pipe_fds, num_pipes);
+			execute_simple_command(p_helper.curr->left, exit_status, envp);
 			exit(*exit_status);
 		}
 		p_helper.curr = p_helper.curr->right;
@@ -105,16 +99,19 @@ int	*prepare_pipeline_fds(t_ast *node, int *num_pipes)
 
 void	execute_pipeline(t_ast *node, int *exit_status, char ***envp)
 {
-	int	num_pipes;
-	int	*pipe_fds;
-	int	i;
+	int				num_pipes;
+	int				*pipe_fds;
+	int				i;
+	t_pipehelper	p_helper;
 
 	if (node->type == AST_PIPELINE)
 	{
 		pipe_fds = prepare_pipeline_fds(node, &num_pipes);
 		initialize_pipeline_pipes(num_pipes, pipe_fds);
-		fork_and_execute_commands_in_pipeline(node, num_pipes, pipe_fds,
-			exit_status, envp);
+		p_helper.curr = node;
+		p_helper.pipe_fds = pipe_fds;
+		fork_and_execute_commands_in_pipeline(num_pipes, p_helper, exit_status,
+			envp);
 		close_pipes(pipe_fds, num_pipes);
 		i = 0;
 		while (i <= num_pipes)

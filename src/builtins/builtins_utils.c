@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtins_utils.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cpuiu <cpuiu@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/19 10:03:08 by cpuiu             #+#    #+#             */
-/*   Updated: 2024/04/24 03:29:03 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/04/25 20:49:22 by cpuiu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,6 @@ void	set_pwd(char ***envp)
 		}
 	}
 }
-
 
 void	process_double_quoted_str(const char *quoted_str, char *exit_stat)
 {
