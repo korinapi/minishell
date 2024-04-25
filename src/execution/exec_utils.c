@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_utils.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cpuiu <cpuiu@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/05 19:42:46 by cpuiu             #+#    #+#             */
-/*   Updated: 2024/04/24 00:35:44 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/04/25 12:39:20 by cpuiu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,13 +44,34 @@ char	*find_command_path(char *command, char **paths)
 	return (NULL);
 }
 
-void	handle_specific_error(int *exit_status)
+void	handle_specific_error(char **args, int *exit_status)
 {
+	if (args[0] == NULL || *args[0] == '\0')
+			exit(0);
 	if (*exit_status == ENOENT || *exit_status == ENOTDIR
 		|| *exit_status == EACCES)
 	{
 		ft_fprintf(STDERR_FILENO, " %s\n", strerror(*exit_status));
 		exit(1);
+	}
+	if(ft_strcmp(args[0],".") == 0)
+	{
+		if (args[1] == NULL)
+		{
+			printf("minishell: .: filename argument required\n.: usage: . filename [arguments]\n");
+			exit(2);
+		}
+			else
+			{
+				printf("minishell: command not found\n");
+				exit(127);
+			}
+			
+	}
+	if (ft_strcmp(args[0],"..") == 0)
+	{
+		printf("minishell: command not found\n");
+		exit(127);
 	}
 }
 
@@ -72,7 +93,7 @@ char	*get_command_path(char *command, char **envp)
 void	execute_command_from_path(char **args, char *command_path,
 		int *exit_status, char **envp)
 {
-	handle_specific_error(exit_status);
+	handle_specific_error(args, exit_status);
 	if (execve(command_path, args, envp) == -1)
 	{
 		ft_fprintf(STDERR_FILENO, "execve failed: %s\n", strerror(errno));

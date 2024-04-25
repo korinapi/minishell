@@ -6,7 +6,7 @@
 /*   By: cpuiu <cpuiu@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/07 05:27:01 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/24 21:03:34 by cpuiu            ###   ########.fr       */
+/*   Updated: 2024/04/25 11:24:03 by cpuiu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,8 @@ char	*ft_get_variable(char **input)
 	while ((*input)[len] && (ft_isalnum((*input)[len]) || (*input)[len] == '_'))
 		len++;
 	var = ft_calloc(len + 1, sizeof(char));
+	if (!var)
+		return (NULL);
 	var[0] = '$';
 	i = 1;
 	while (i < len)
@@ -45,7 +47,7 @@ char	*expand_variable(char *word, char **new_word, int *word_len,
 	char	*var_value;
 
 	var_end = word + 1;
-	while (*var_end && ft_isalnum(*var_end))
+	while (*var_end && (ft_isalnum(*var_end) || *var_end == '_'))
 		var_end++;
 	if (var_end == word + 1)
 		*new_word = ft_append_char(*new_word, word_len, *word);
@@ -54,8 +56,13 @@ char	*expand_variable(char *word, char **new_word, int *word_len,
 		var_name = ft_substr(word + 1, 0, var_end - word - 1);
 		var_value = ft_getenv(var_name, envp);
 		free(var_name);
-		if (var_value)
+		if (var_value && *var_value)
 			*new_word = ft_append_str(*new_word, word_len, var_value);
+		else
+		{
+			free(*new_word);
+			return (ft_strdup(""));
+		}
 	}
 	return (var_end);
 }

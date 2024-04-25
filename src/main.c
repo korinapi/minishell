@@ -6,7 +6,7 @@
 /*   By: marvinleibenguth <marvinleibenguth@stud    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/01 19:59:44 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/25 12:53:04 by marvinleibe      ###   ########.fr       */
+/*   Updated: 2024/04/25 12:54:56 by marvinleibe      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,6 +98,7 @@ int	main(int argc, char **argv, char **envp)
 		ast = parse_input(input, my_envp);
 		if (ast)
 		{
+			// print_ast(ast, 0, "Root");
 			execute_ast(ast, &exit_status, &my_envp);
 			free_ast(ast);
 		}
