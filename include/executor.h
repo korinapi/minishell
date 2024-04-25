@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor.h                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cpuiu <cpuiu@student.42.fr>                +#+  +:+       +#+        */
+/*   By: marvinleibenguth <marvinleibenguth@stud    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 04:27:11 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/25 21:06:36 by cpuiu            ###   ########.fr       */
+/*   Updated: 2024/04/25 23:51:11 by marvinleibe      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,5 +45,6 @@ void		execute_command_from_path(char **args, char *command_path,
 char		*find_command_path(char *command, char **paths);
 void		close_pipes(int *pipe_fds, int num_pipes);
 int			syntax_check(t_ast *ast, int *exit_status);
+void		execute_simple_command_without_forks(t_ast *node, int *exit_status, char ***envp);
 
 #endif
