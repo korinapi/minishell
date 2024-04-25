@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redirections.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvinleibenguth <marvinleibenguth@stud    +#+  +:+       +#+        */
+/*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 04:34:31 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/25 12:51:45 by marvinleibe      ###   ########.fr       */
+/*   Updated: 2024/04/25 17:57:53 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,39 +43,34 @@ int	execute_file_redirection(t_ast *node)
 	return (0);
 }
 
-static t_ast *skip_whitespace_nodes(t_ast *node)
-{
-    t_ast *temp;
-    while (node && node->type == AST_WHITESPACE)
-    {
-        temp = node;
-        node = node->right;
-        free(temp);
-    }
-    return (node);
-}
-
 static void	process_redirection_nodes(t_ast **node_ptr, t_ast ***heredoc_tail,
 		t_ast ***file_tail)
 {
 	t_ast	*node;
 	int		mode;
+	t_ast	*new_node;
 
 	node = *node_ptr;
 	while (node && node->type == AST_REDIRECTION)
 	{
 		mode = node->redirection_mode;
+		new_node = create_ast_node(node->type, NULL);
+		new_node->redirection_mode = node->redirection_mode;
+		new_node->redirection_file = ft_strdup(node->redirection_file);
 		if (mode == REDIR_HEREDOC)
 		{
-			**heredoc_tail = node;
-			*heredoc_tail = &(node->right);
+			**heredoc_tail = new_node;
+			*heredoc_tail = &(new_node->right);
 		}
 		else
 		{
-			**file_tail = node;
-			*file_tail = &(node->right);
+			**file_tail = new_node;
+			*file_tail = &(new_node->right);
 		}
-		node = skip_whitespace_nodes(node->right);
+		if (node->right && node->right->type == AST_WHITESPACE)
+			node = node->right->right;
+		else
+			node = node->right;
 	}
 	*node_ptr = node;
 }
@@ -94,14 +89,15 @@ int	execute_redirection(t_ast *node)
 	file_list_ptr = NULL;
 	heredoc_tail = &heredoc_list_ptr;
 	file_tail = &file_list_ptr;
-	node = skip_whitespace_nodes(node);
 	while (node && node->type != AST_REDIRECTION)
 		node = node->right;
 	process_redirection_nodes(&node, &heredoc_tail, &file_tail);
 	result = execute_heredoc_list(heredoc_list_ptr);
+	free_ast(heredoc_list_ptr);
 	if (result != 0)
 		return (result);
 	result = execute_file_redirection_list(&file_list_ptr);
+	free_ast(file_list_ptr);
 	return (result);
 }
 

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvinleibenguth <marvinleibenguth@stud    +#+  +:+       +#+        */
+/*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/01 19:59:44 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/25 12:54:56 by marvinleibe      ###   ########.fr       */
+/*   Updated: 2024/04/25 17:07:26 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,7 +98,6 @@ int	main(int argc, char **argv, char **envp)
 		ast = parse_input(input, my_envp);
 		if (ast)
 		{
-			// print_ast(ast, 0, "Root");
 			execute_ast(ast, &exit_status, &my_envp);
 			free_ast(ast);
 		}

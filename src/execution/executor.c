@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvinleibenguth <marvinleibenguth@stud    +#+  +:+       +#+        */
+/*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 04:29:28 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/25 12:56:02 by marvinleibe      ###   ########.fr       */
+/*   Updated: 2024/04/25 17:40:14 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,9 +58,10 @@ void	execute_simple_command(t_ast *node, int *exit_status, char ***envp)
 
 	root = node;
 	current_node = node->left;
-	
+	// print_ast(root, 0, "Root1");
 	if (handle_redirection(current_node, exit_status))
 		return ;
+	// print_ast(root, 0, "Root2");
 	args = ft_calloc(ast_count_nodes(current_node) + 1, sizeof(char *));
 	if (!args)
 		return ;
