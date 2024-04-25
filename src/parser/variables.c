@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   variables.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cpuiu <cpuiu@student.42.fr>                +#+  +:+       +#+        */
+/*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/07 05:27:01 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/25 11:24:03 by cpuiu            ###   ########.fr       */
+/*   Updated: 2024/04/25 21:47:44 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,26 +45,32 @@ char	*expand_variable(char *word, char **new_word, int *word_len,
 	char	*var_end;
 	char	*var_name;
 	char	*var_value;
+	char	*result;
 
 	var_end = word + 1;
 	while (*var_end && (ft_isalnum(*var_end) || *var_end == '_'))
 		var_end++;
 	if (var_end == word + 1)
-		*new_word = ft_append_char(*new_word, word_len, *word);
-	else
 	{
+		*new_word = ft_append_char(*new_word, word_len, *word);
+		return var_end;
+	}
 		var_name = ft_substr(word + 1, 0, var_end - word - 1);
 		var_value = ft_getenv(var_name, envp);
 		free(var_name);
-		if (var_value && *var_value)
-			*new_word = ft_append_str(*new_word, word_len, var_value);
-		else
-		{
-			free(*new_word);
-			return (ft_strdup(""));
-		}
+	if (var_value && *var_value)
+	{
+		*new_word = ft_append_str(*new_word, word_len, var_value);
+		result = var_end;
 	}
-	return (var_end);
+	else
+	{
+		result = ft_strdup("");
+		free(*new_word);
+		*new_word = result;
+		*word_len = 0;
+	}
+	return (result);
 }
 
 char	*handle_variable_expansion(char *word, char **envp)
