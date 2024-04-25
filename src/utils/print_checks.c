@@ -6,24 +6,24 @@
 /*   By: marvinleibenguth <marvinleibenguth@stud    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/25 23:19:33 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/25 12:56:20 by marvinleibe      ###   ########.fr       */
+/*   Updated: 2024/04/25 12:57:26 by marvinleibe      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 #include "parser.h"
 
-void	print_ast(t_ast *node, int level, char *node_type)
-{
-	if (node == NULL)
-	{
-		return ;
-	}
+// void	print_ast(t_ast *node, int level, char *node_type)
+// {
+// 	if (node == NULL)
+// 	{
+// 		return ;
+// 	}
 
-	for (int i = 0; i < level; i++)
-	{
-		printf("  ");
-	}
+// 	for (int i = 0; i < level; i++)
+// 	{
+// 		printf("  ");
+// 	}
 
 // 	switch (node->type)
 // 	{
