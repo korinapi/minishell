@@ -6,7 +6,7 @@
 /*   By: cpuiu <cpuiu@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/23 20:43:53 by cpuiu             #+#    #+#             */
-/*   Updated: 2024/04/25 21:08:18 by cpuiu            ###   ########.fr       */
+/*   Updated: 2024/04/26 14:45:56 by cpuiu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,28 @@ void	close_pipes(int *pipe_fds, int num_pipes)
 		close(pipe_fds[i]);
 		i++;
 	}
+}
+
+void	fill_args(t_ast *current_node, int *exit_status, char **args)
+{
+	int	i;
+
+	i = 0;
+	while (current_node)
+	{
+		if (current_node->type != AST_WHITESPACE
+			&& current_node->type != AST_REDIRECTION)
+		{
+			if (!ft_strcmp(current_node->data, "$?"))
+			{
+				free(current_node->data);
+				current_node->data = ft_itoa(*exit_status);
+			}
+			args[i++] = current_node->data;
+		}
+		current_node = current_node->right;
+	}
+	args[i] = NULL;
 }
 
 int	syntax_check_extra(t_ast *ast, int *exit_status)

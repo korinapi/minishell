@@ -6,7 +6,7 @@
 /*   By: cpuiu <cpuiu@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/05 19:42:46 by cpuiu             #+#    #+#             */
-/*   Updated: 2024/04/25 20:48:55 by cpuiu            ###   ########.fr       */
+/*   Updated: 2024/04/26 15:10:06 by cpuiu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,12 +46,7 @@ char	*find_command_path(char *command, char **paths)
 
 void	handle_specific_error(char **args, int *exit_status)
 {
-	if (*exit_status == ENOENT || *exit_status == ENOTDIR
-		|| *exit_status == EACCES)
-	{
-		ft_fprintf(STDERR_FILENO, " %s\n", strerror(*exit_status));
-		exit(1);
-	}
+	(void)exit_status;
 	if (ft_strcmp(args[0], ".") == 0)
 	{
 		if (args[1] == NULL)

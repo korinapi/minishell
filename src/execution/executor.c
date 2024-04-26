@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvinleibenguth <marvinleibenguth@stud    +#+  +:+       +#+        */
+/*   By: cpuiu <cpuiu@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 04:29:28 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/25 23:51:45 by marvinleibe      ###   ########.fr       */
+/*   Updated: 2024/04/26 15:12:15 by cpuiu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 #include "free.h"
 #include "minishell.h"
 #include "redirection.h"
+#include "signals.h"
 #include "utilities.h"
 
 int	execute_external(char **args, int *exit_status, char ***envp)
@@ -24,9 +25,8 @@ int	execute_external(char **args, int *exit_status, char ***envp)
 	pid_t	pid;
 	char	*command_path;
 
+	setup_child_signals();
 	rl_catch_signals = 1;
-	if (!*args)
-		return (0);
 	command_path = get_command_path(args[0], *envp);
 	if (!command_path)
 	{
@@ -48,21 +48,6 @@ int	execute_external(char **args, int *exit_status, char ***envp)
 	return (free(command_path), *exit_status);
 }
 
-void	fill_args(t_ast *current_node, char **args)
-{
-	int	i;
-
-	i = 0;
-	while (current_node)
-	{
-		if (current_node->type != AST_WHITESPACE
-			&& current_node->type != AST_REDIRECTION)
-			args[i++] = current_node->data;
-		current_node = current_node->right;
-	}
-	args[i] = NULL;
-}
-
 void	execute_simple_command(t_ast *node, int *exit_status, char ***envp)
 {
 	char	**args;
@@ -76,7 +61,7 @@ void	execute_simple_command(t_ast *node, int *exit_status, char ***envp)
 	args = ft_calloc(ast_count_nodes(current_node) + 1, sizeof(char *));
 	if (!args)
 		return ;
-	fill_args(current_node, args);
+	fill_args(current_node, exit_status, args);
 	if (is_builtin(args[0]))
 	{
 		free(args);
@@ -84,7 +69,11 @@ void	execute_simple_command(t_ast *node, int *exit_status, char ***envp)
 		return ;
 	}
 	else
-		*exit_status = execute_external(args, exit_status, envp);
+	{
+		if (*args)
+			*exit_status = execute_external(args, exit_status, envp);
+	}
+	setup_signals();
 	free(args);
 }
 
@@ -105,11 +94,11 @@ void	execute_ast(t_ast *ast, int *exit_status, char ***envp)
 	return ;
 }
 
-
 int	execute_external_without_forks(char **args, int *exit_status, char ***envp)
 {
 	char	*command_path;
 
+	setup_child_signals();
 	rl_catch_signals = 1;
 	if (!*args)
 		return (0);
@@ -120,13 +109,14 @@ int	execute_external_without_forks(char **args, int *exit_status, char ***envp)
 		*exit_status = 127;
 		return (free(command_path), *exit_status);
 	}
-		execute_command_from_path(args, command_path, exit_status, *envp);
-		return (1);
+	execute_command_from_path(args, command_path, exit_status, *envp);
+	return (1);
 	rl_catch_signals = 0;
 	return (free(command_path), *exit_status);
 }
 
-void	execute_simple_command_without_forks(t_ast *node, int *exit_status, char ***envp)
+void	execute_simple_command_without_forks(t_ast *node, int *exit_status,
+		char ***envp)
 {
 	char	**args;
 	t_ast	*current_node;
@@ -139,12 +129,12 @@ void	execute_simple_command_without_forks(t_ast *node, int *exit_status, char **
 	args = ft_calloc(ast_count_nodes(current_node) + 1, sizeof(char *));
 	if (!args)
 		return ;
-	fill_args(current_node, args);
+	fill_args(current_node, exit_status, args);
 	if (is_builtin(args[0]))
 	{
 		free(args);
 		*exit_status = execute_builtin(node, root, exit_status, envp);
-		return ;
+		exit(*exit_status);
 	}
 	else
 		*exit_status = execute_external_without_forks(args, exit_status, envp);

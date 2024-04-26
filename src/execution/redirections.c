@@ -6,7 +6,7 @@
 /*   By: cpuiu <cpuiu@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 04:34:31 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/25 20:56:08 by cpuiu            ###   ########.fr       */
+/*   Updated: 2024/04/26 14:52:12 by cpuiu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,6 +97,8 @@ int	execute_redirection(t_ast *node)
 	file_tail = &file_list_ptr;
 	while (node && node->type != AST_REDIRECTION)
 		node = node->right;
+	if (!node)
+		return (0);
 	process_redirection_nodes(&node, &heredoc_tail, &file_tail);
 	result = execute_heredoc_list(heredoc_list_ptr);
 	free_ast(heredoc_list_ptr);
