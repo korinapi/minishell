@@ -6,7 +6,7 @@
 /*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/07 05:09:17 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/26 15:24:23 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/04/26 15:26:56 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,8 @@
 #include "free.h"
 #include "minishell.h"
 #include "redirection.h"
-#include "utilities.h"
 #include "signals.h"
+#include "utilities.h"
 
 void	handle_redirections(int i, int num_pipes, t_pipehelper p_help)
 {
@@ -54,7 +54,8 @@ void	fork_and_execute_commands_in_pipeline(int num_pipes,
 		{
 			handle_redirections(i, num_pipes, p_helper);
 			close_pipes(p_helper.pipe_fds, num_pipes);
-			execute_simple_command_without_forks(p_helper.curr->left, exit_status, envp);
+			execute_simple_command_without_forks(p_helper.curr->left,
+				exit_status, envp);
 			exit(*exit_status);
 		}
 		p_helper.curr = p_helper.curr->right;
