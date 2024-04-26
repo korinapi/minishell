@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_utils_extra.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cpuiu <cpuiu@student.42.fr>                +#+  +:+       +#+        */
+/*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/23 20:43:53 by cpuiu             #+#    #+#             */
-/*   Updated: 2024/04/26 14:45:56 by cpuiu            ###   ########.fr       */
+/*   Updated: 2024/04/26 18:00:57 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ void	fill_args(t_ast *current_node, int *exit_status, char **args)
 		if (current_node->type != AST_WHITESPACE
 			&& current_node->type != AST_REDIRECTION)
 		{
-			if (!ft_strcmp(current_node->data, "$?"))
+			if (current_node->type != AST_SINGLEQUOTED_WORD && !ft_strcmp(current_node->data, "$?"))
 			{
 				free(current_node->data);
 				current_node->data = ft_itoa(*exit_status);
