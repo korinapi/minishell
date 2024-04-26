@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cpuiu <cpuiu@student.42.fr>                +#+  +:+       +#+        */
+/*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 04:29:28 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/26 15:12:15 by cpuiu            ###   ########.fr       */
+/*   Updated: 2024/04/26 15:24:56 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -138,5 +138,6 @@ void	execute_simple_command_without_forks(t_ast *node, int *exit_status,
 	}
 	else
 		*exit_status = execute_external_without_forks(args, exit_status, envp);
+	setup_signals();
 	free(args);
 }

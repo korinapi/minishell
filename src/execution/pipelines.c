@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipelines.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cpuiu <cpuiu@student.42.fr>                +#+  +:+       +#+        */
+/*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/07 05:09:17 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/25 21:22:29 by cpuiu            ###   ########.fr       */
+/*   Updated: 2024/04/26 15:24:23 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 #include "minishell.h"
 #include "redirection.h"
 #include "utilities.h"
+#include "signals.h"
 
 void	handle_redirections(int i, int num_pipes, t_pipehelper p_help)
 {
@@ -40,6 +41,7 @@ void	fork_and_execute_commands_in_pipeline(int num_pipes,
 	pid_t	pid;
 
 	i = 0;
+	setup_child_signals();
 	while (i <= num_pipes)
 	{
 		pid = fork();
@@ -52,7 +54,7 @@ void	fork_and_execute_commands_in_pipeline(int num_pipes,
 		{
 			handle_redirections(i, num_pipes, p_helper);
 			close_pipes(p_helper.pipe_fds, num_pipes);
-			execute_simple_command(p_helper.curr->left, exit_status, envp);
+			execute_simple_command_without_forks(p_helper.curr->left, exit_status, envp);
 			exit(*exit_status);
 		}
 		p_helper.curr = p_helper.curr->right;
@@ -119,6 +121,7 @@ void	execute_pipeline(t_ast *node, int *exit_status, char ***envp)
 			*exit_status = wait_and_update_status(-1);
 			i++;
 		}
+		setup_signals();
 		free(pipe_fds);
 	}
 	else
