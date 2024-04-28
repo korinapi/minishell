@@ -33,7 +33,7 @@ $(LIBFT):
 %.o: %.c
 	@$(CC) $(CFLAGS) -o $@ -c $< $(HEADERS)
 
-$(NAME): compile_message $(OBJS)
+$(NAME): $(OBJS)
 	@$(CC) $(OBJS) $(LIBS) $(HEADERS) -o $(NAME)
 	@echo "$(COLOR_GREEN)Compilation for $(NAME) complete$(COLOR_RESET)"
 

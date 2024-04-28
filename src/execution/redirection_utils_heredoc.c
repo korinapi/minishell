@@ -6,7 +6,7 @@
 /*   By: cpuiu <cpuiu@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/23 21:00:57 by cpuiu             #+#    #+#             */
-/*   Updated: 2024/04/24 09:13:17 by cpuiu            ###   ########.fr       */
+/*   Updated: 2024/04/28 22:06:56 by cpuiu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,6 +62,8 @@ int	execute_heredoc_list(t_ast *heredoc_node)
 		fd = create_temp_file(&tmp_file);
 		if (fd == -1)
 			return (1);
+		// if (tmp_file)
+		// 	free(tmp_file);
 		read_heredoc_input(fd, heredoc_node->redirection_file);
 		heredoc_node = heredoc_node->right;
 	}
