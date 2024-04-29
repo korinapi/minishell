@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redirections.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cpuiu <cpuiu@student.42.fr>                +#+  +:+       +#+        */
+/*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 04:34:31 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/26 14:52:12 by cpuiu            ###   ########.fr       */
+/*   Updated: 2024/04/29 17:22:36 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,19 +59,22 @@ static void	process_redirection_nodes(t_ast **node_ptr, t_ast ***heredoc_tail,
 	t_ast	*new_node;
 
 	node = *node_ptr;
-	while (node && node->type == AST_REDIRECTION)
+	while (node)
 	{
-		mode = node->redirection_mode;
-		new_node = set_new_nodes(node, new_node);
-		if (mode == REDIR_HEREDOC)
+		if (node->type == AST_REDIRECTION)
 		{
-			**heredoc_tail = new_node;
-			*heredoc_tail = &(new_node->right);
-		}
-		else
-		{
-			**file_tail = new_node;
-			*file_tail = &(new_node->right);
+			mode = node->redirection_mode;
+			new_node = set_new_nodes(node, new_node);
+			if (mode == REDIR_HEREDOC)
+			{
+				**heredoc_tail = new_node;
+				*heredoc_tail = &(new_node->right);
+			}
+			else
+			{
+				**file_tail = new_node;
+				*file_tail = &(new_node->right);
+			}
 		}
 		if (node->right && node->right->type == AST_WHITESPACE)
 			node = node->right->right;

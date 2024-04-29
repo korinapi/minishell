@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redirection_utils_heredoc.c                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cpuiu <cpuiu@student.42.fr>                +#+  +:+       +#+        */
+/*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/23 21:00:57 by cpuiu             #+#    #+#             */
-/*   Updated: 2024/04/24 09:13:17 by cpuiu            ###   ########.fr       */
+/*   Updated: 2024/04/29 17:16:47 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,15 +59,30 @@ int	execute_heredoc_list(t_ast *heredoc_node)
 	fd = -1;
 	while (heredoc_node && heredoc_node->redirection_file != NULL)
 	{
-		fd = create_temp_file(&tmp_file);
-		if (fd == -1)
-			return (1);
+		if (tmp_file != NULL)
+		{
+			fd = open(tmp_file, O_WRONLY | O_TRUNC);
+			if (fd == -1)
+			{
+				perror("Error reopening heredoc temp file");
+				free(tmp_file);
+				return (1);
+			}
+		}
+		else
+		{
+			fd = create_temp_file(&tmp_file);
+			if (fd == -1)
+			{
+				return (1);
+			}
+		}
 		read_heredoc_input(fd, heredoc_node->redirection_file);
+		close(fd);
 		heredoc_node = heredoc_node->right;
 	}
-	if (fd != -1)
+	if (tmp_file != NULL)
 	{
-		close(fd);
 		result = redirect_stdin_from_file(tmp_file);
 		free(tmp_file);
 	}
@@ -77,13 +92,9 @@ int	execute_heredoc_list(t_ast *heredoc_node)
 bool	has_redirection_nodes(t_ast *node)
 {
 	if (node == NULL)
-	{
 		return (false);
-	}
 	if (node->type == AST_REDIRECTION)
-	{
 		return (true);
-	}
 	return (has_redirection_nodes(node->left)
 		|| has_redirection_nodes(node->right));
 }
