@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cpuiu <cpuiu@student.42.fr>                +#+  +:+       +#+        */
+/*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 04:26:02 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/24 08:55:22 by cpuiu            ###   ########.fr       */
+/*   Updated: 2024/04/29 18:17:47 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,8 +68,8 @@ void				parse_simple_command(char **input, t_ast **ast,
 char				*parse_quotes(char **input, char quote_char);
 char				*parse_quotes_two(char **input, char quote_char);
 void				parse_redirection(char **input, t_ast **ast);
-void				handle_output_redirection(char **input, t_ast **ast);
-void				handle_input_redirection(char **input, t_ast **ast);
+void				handle_output_redir(char **input, t_ast **ast);
+void				handle_input_redir(char **input, t_ast **ast);
 void				parse_pipeline(char **input, t_ast **ast, char **envp);
 void				parse_command_segment(char **input, t_ast **parent,
 						t_ast **prev, char **envp);

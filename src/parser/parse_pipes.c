@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse_pipes.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cpuiu <cpuiu@student.42.fr>                +#+  +:+       +#+        */
+/*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/07 05:31:22 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/24 21:02:43 by cpuiu            ###   ########.fr       */
+/*   Updated: 2024/04/29 18:14:29 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,17 +14,7 @@
 #include "parser.h"
 #include "utilities.h"
 
-void	trim_whitespace_from_command_node(t_ast **command_node)
-{
-	while ((*command_node)->right
-		&& (*command_node)->right->type == AST_WHITESPACE)
-		(*command_node)->right = (*command_node)->right->right;
-	while ((*command_node)->left
-		&& (*command_node)->left->type == AST_WHITESPACE)
-		(*command_node)->left = (*command_node)->left->right;
-}
-
-int	handle_pipeline_continuation_or_redirection(char **input, t_ast **node)
+int	handle_pipe_cont_or_redir(char **input, t_ast **node)
 {
 	if (**input == '|')
 	{
@@ -53,7 +43,7 @@ void	parse_pipeline(char **input, t_ast **ast, char **envp)
 	while (**input)
 	{
 		parse_simple_command(input, &node->left, envp);
-		if (handle_pipeline_continuation_or_redirection(input, &node))
+		if (handle_pipe_cont_or_redir(input, &node))
 			break ;
 	}
 	if (start == *input)

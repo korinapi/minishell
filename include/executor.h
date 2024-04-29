@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor.h                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cpuiu <cpuiu@student.42.fr>                +#+  +:+       +#+        */
+/*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 04:27:11 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/26 14:30:19 by cpuiu            ###   ########.fr       */
+/*   Updated: 2024/04/29 18:27:27 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,5 +48,6 @@ int			syntax_check(t_ast *ast, int *exit_status);
 void		execute_simple_command_without_forks(t_ast *node, int *exit_status,
 				char ***envp);
 void		fill_args(t_ast *current_node, int *exit_status, char **args);
+void		wait_loop(int num_pipes, int *exit_status, int cmd_ex_stat);
 
 #endif

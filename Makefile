@@ -14,7 +14,7 @@ src/builtins/cd.c src/builtins/pwd.c src/environment/env_mem_funcs.c src/executi
 src/utils/utilities.c src/execution/pipelines.c src/utils/append_utils.c src/parser/variables.c \
 src/parser/parse_pipes.c src/parser/parse_quotes.c src/parser/parse_redirect.c src/parser/parse_simple.c \
 src/parser/parse_utils.c src/execution/exec_utils_extra.c src/execution/redirection_utils_heredoc.c \
-src/execution/redirection_utils.c src/execution/redirection_files_heredoc_utils.c
+src/execution/redirection_utils.c src/execution/pipe_redir_utils.c
 
 OBJS		:= $(SRCS:.c=.o)
 

@@ -6,7 +6,7 @@
 /*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/07 05:09:17 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/26 15:26:56 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/04/29 18:26:12 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,8 +104,8 @@ void	execute_pipeline(t_ast *node, int *exit_status, char ***envp)
 {
 	int				num_pipes;
 	int				*pipe_fds;
-	int				i;
 	t_pipehelper	p_helper;
+	int				cmd_ex_stat;
 
 	if (node->type == AST_PIPELINE)
 	{
@@ -113,15 +113,11 @@ void	execute_pipeline(t_ast *node, int *exit_status, char ***envp)
 		initialize_pipeline_pipes(num_pipes, pipe_fds);
 		p_helper.curr = node;
 		p_helper.pipe_fds = pipe_fds;
+		cmd_ex_stat = 0;
 		fork_and_execute_commands_in_pipeline(num_pipes, p_helper, exit_status,
 			envp);
 		close_pipes(pipe_fds, num_pipes);
-		i = 0;
-		while (i <= num_pipes)
-		{
-			*exit_status = wait_and_update_status(-1);
-			i++;
-		}
+		wait_loop(num_pipes, exit_status, cmd_ex_stat);
 		setup_signals();
 		free(pipe_fds);
 	}
