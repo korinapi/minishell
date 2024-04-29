@@ -6,7 +6,7 @@
 /*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/23 20:59:43 by cpuiu             #+#    #+#             */
-/*   Updated: 2024/04/29 17:27:01 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/04/29 17:29:25 by mleibeng         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,15 +91,6 @@ int	create_temp_file(char **tmp_file)
 		*tmp_file = NULL;
 		return (-1);
 	}
-	// if (tmp_file)
-	// {
-	// 	while(*tmp_file)
-	// 	{
-	// 		if (*tmp_file)
-	// 			free(*tmp_file);
-	// 		tmp_file++;
-	// 	}
-	// }
 	return (fd);
 }
 
