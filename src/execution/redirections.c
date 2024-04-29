@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redirections.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cpuiu <cpuiu@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 04:34:31 by mleibeng          #+#    #+#             */
-/*   Updated: 2024/04/29 17:24:11 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/04/29 18:05:19 by cpuiu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,15 +66,9 @@ static void	process_redirection_nodes(t_ast **node_ptr, t_ast ***heredoc_tail,
 			mode = node->redirection_mode;
 			new_node = set_new_nodes(node, new_node);
 			if (mode == REDIR_HEREDOC)
-			{
-				**heredoc_tail = new_node;
-				*heredoc_tail = &(new_node->right);
-			}
+				handle_heredoc_mode_redirection(new_node, heredoc_tail);
 			else
-			{
-				**file_tail = new_node;
-				*file_tail = &(new_node->right);
-			}
+				handle_file_mode_redirection(new_node, file_tail);
 		}
 		if (node->right && node->right->type == AST_WHITESPACE)
 			node = node->right->right;

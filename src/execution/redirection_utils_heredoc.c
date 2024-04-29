@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redirection_utils_heredoc.c                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mleibeng <mleibeng@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cpuiu <cpuiu@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/23 21:00:57 by cpuiu             #+#    #+#             */
-/*   Updated: 2024/04/29 17:27:49 by mleibeng         ###   ########.fr       */
+/*   Updated: 2024/04/29 17:57:21 by cpuiu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,27 @@ int	redirect_stdin_from_file(const char *filename)
 	return (0);
 }
 
+int	check_tmp_file(char **tmp_file, int *fd)
+{
+	if (*tmp_file != NULL)
+	{
+		*fd = open(*tmp_file, O_WRONLY | O_TRUNC);
+		if (*fd == -1)
+		{
+			perror("Error reopening heredoc temp file");
+			free(*tmp_file);
+			return (1);
+		}
+	}
+	else
+	{
+		*fd = create_temp_file(tmp_file);
+		if (*fd == -1)
+			return (1);
+	}
+	return (0);
+}
+
 int	execute_heredoc_list(t_ast *heredoc_node)
 {
 	int		result;
@@ -59,24 +80,8 @@ int	execute_heredoc_list(t_ast *heredoc_node)
 	fd = -1;
 	while (heredoc_node && heredoc_node->redirection_file != NULL)
 	{
-		if (tmp_file != NULL)
-		{
-			fd = open(tmp_file, O_WRONLY | O_TRUNC);
-			if (fd == -1)
-			{
-				perror("Error reopening heredoc temp file");
-				free(tmp_file);
-				return (1);
-			}
-		}
-		else
-		{
-			fd = create_temp_file(&tmp_file);
-			if (fd == -1)
-			{
-				return (1);
-			}
-		}
+		if (check_tmp_file(&tmp_file, &fd) == 1)
+			return (1);
 		read_heredoc_input(fd, heredoc_node->redirection_file);
 		close(fd);
 		heredoc_node = heredoc_node->right;
